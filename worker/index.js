@@ -1,25 +1,41 @@
-/* Yoso contact form: a Cloudflare Worker at https://forms.yoso.one/contact
-   It checks the message, checks Cloudflare Turnstile (the invisible spam check),
-   then emails it to Yoso's verified address. Replying in Gmail goes to the sender.
+/* Yoso forms: a Cloudflare Worker at https://forms.yoso.one
+     /contact    the contact form on kuro.yoso.one: emails the message to Yoso
+                 (and, if ticked, adds the sender to the mailing list)
+     /subscribe  the mailing-list form on every Yoso site (assets/list-choice.js):
+                 adds the reader to Buttondown with the newsletters they ticked
+   Both check Cloudflare Turnstile (the mostly invisible spam check) first.
 
-   Settings live in wrangler.toml; the Turnstile secret is a Worker secret
-   (npx wrangler secret put TURNSTILE_SECRET), and so is the Buttondown API key used when someone
-   ticks 'join the mailing list' (npx wrangler secret put BUTTONDOWN_KEY). Nothing secret is in this file. */
+   Settings live in wrangler.toml. Two Worker secrets, never in this file:
+     npx wrangler secret put TURNSTILE_SECRET   (Turnstile widget 'Yoso forms')
+     npx wrangler secret put BUTTONDOWN_KEY     (Buttondown API key) */
 import { EmailMessage } from "cloudflare:email";
 
-// Sites allowed to send messages here. Add another Yoso site's address to use the same form.
-const ORIGINS = ["https://kuro.yoso.one"];
+// Yoso sites allowed to use these forms. A new site: add it here, add its hostname to the
+// Turnstile widget, and redeploy (npx wrangler deploy).
+const ORIGINS = [
+  "https://kuro.yoso.one",
+  "https://hub.yoso.one",
+  "https://shinsei.yoso.one",
+  "https://river.yoso.one",
+  "https://on.yoso.one",
+  "https://one.yoso.one",
+];
+// The newsletters readers can choose; each is a Buttondown tag. Same list as check.py on every site.
+const NEWSLETTERS = ["one", "yosokuro", "shinsei", "river", "on"];
 const TOPICS = { print: "Print request", general: "General", other: "Other" };
 const LIMIT = { name: 120, email: 254, photo: 40, message: 5000 };
+const EMAIL = /^[^\s@<>"]+@[^\s@<>"]+\.[^\s@<>"]+$/;
 
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
+    const route = { "/contact": contact, "/subscribe": subscribe }[url.pathname];
+    if (!route) return new Response("Not found", { status: 404 });
+
     const origin = request.headers.get("Origin") || "";
     const allowed = ORIGINS.includes(origin) || (env.DEV_ORIGIN && origin === env.DEV_ORIGIN);
     const cors = allowed ? { "Access-Control-Allow-Origin": origin, "Vary": "Origin" } : { "Vary": "Origin" };
 
-    if (url.pathname !== "/contact") return new Response("Not found", { status: 404 });
     if (request.method === "OPTIONS") {
       return new Response(null, { status: 204, headers: { ...cors,
         "Access-Control-Allow-Methods": "POST", "Access-Control-Allow-Headers": "Content-Type",
@@ -35,84 +51,101 @@ export default {
     // Honeypot: a hidden field people never fill in. Bots that do get a quiet 'ok'.
     if (get("website")) return reply(cors, 200);
 
-    const name = oneLine(get("name")).slice(0, LIMIT.name);
-    const email = oneLine(get("email")).slice(0, LIMIT.email);
-    const topic = TOPICS[get("topic")] ? get("topic") : "general";
-    const photo = oneLine(get("photo")).replace(/[^A-Za-z0-9_-]/g, "").slice(0, LIMIT.photo);
-    const message = get("message").slice(0, LIMIT.message);
-    const subscribe = get("subscribe") === "yosokuro";
-
-    if (!name || !message) return reply(cors, 400, "missing");
-    if (!/^[^\s@<>"]+@[^\s@<>"]+\.[^\s@<>"]+$/.test(email)) return reply(cors, 400, "email");
-
-    // Turnstile: Cloudflare confirms the visitor is a person.
-    const check = await fetch("https://challenges.cloudflare.com/turnstile/v0/siteverify", {
-      method: "POST",
-      body: new URLSearchParams({
-        secret: env.TURNSTILE_SECRET || "",
-        response: get("cf-turnstile-response"),
-        remoteip: request.headers.get("CF-Connecting-IP") || "",
-      }),
-    }).then(r => r.json()).catch(() => ({ success: false }));
-    if (!check.success) return reply(cors, 403, "spam");
-
-    const site = new URL(origin).host;
-    const subject = `${TOPICS[topic]}${photo ? " · " + photo.toUpperCase() : ""} · ${name} (${site})`;
-    const body = [
-      `From: ${name} <${email}>`,
-      `Topic: ${TOPICS[topic]}`,
-      photo ? `Photograph: ${photo.toUpperCase()} (https://${site}/#f-${photo.toLowerCase()})` : null,
-      `Sent from: ${site}`,
-      subscribe ? "Mailing list: asked to join (Buttondown sends them a confirmation email)" : null,
-      "",
-      message,
-      "",
-      "—",
-      "Reply to this email to answer them directly.",
-    ].filter(l => l !== null).join("\r\n");
-
-    const raw = mime({
-      from: `Yoso website <${env.FROM}>`,
-      to: env.TO,
-      replyTo: `${word(name)} <${email}>`,
-      subject,
-      body,
-      domain: env.FROM.split("@")[1],
-    });
-
-    try {
-      await env.MAILER.send(new EmailMessage(env.FROM, env.TO, raw));
-    } catch (e) {
-      console.log("send failed", e && e.message);
-      return reply(cors, 502, "send");
-    }
-
-    // Mailing list: add them to Buttondown (tag yosokuro). Buttondown emails them to confirm.
-    // A failure here never stops the message, which has already been sent.
-    if (subscribe && env.BUTTONDOWN_KEY) {
-      try {
-        const r = await fetch("https://api.buttondown.com/v1/subscribers", {
-          method: "POST",
-          headers: {
-            "Authorization": `Token ${env.BUTTONDOWN_KEY}`,
-            "Content-Type": "application/json",
-            "X-Buttondown-Collision-Behavior": "add",
-          },
-          body: JSON.stringify({
-            email_address: email,
-            tags: ["yosokuro"],
-            ip_address: request.headers.get("CF-Connecting-IP") || undefined,
-            referrer_url: `https://${site}/`,
-          }),
-        });
-        if (!r.ok) console.log("buttondown", r.status, (await r.text()).slice(0, 300));
-      } catch (e) {
-        console.log("buttondown failed", e && e.message);
-      }
-    }
-    return reply(cors, 200);
+    const ctx = { request, env, form, get, cors, site: new URL(origin).host,
+                  ip: request.headers.get("CF-Connecting-IP") || "" };
+    return route(ctx);
   },
 };
+
+async function contact({ env, get, cors, site, ip }) {
+  const name = oneLine(get("name")).slice(0, LIMIT.name);
+  const email = oneLine(get("email")).slice(0, LIMIT.email);
+  const topic = TOPICS[get("topic")] ? get("topic") : "general";
+  const photo = oneLine(get("photo")).replace(/[^A-Za-z0-9_-]/g, "").slice(0, LIMIT.photo);
+  const message = get("message").slice(0, LIMIT.message);
+  const join = get("subscribe") === "yosokuro";
+
+  if (!name || !message) return reply(cors, 400, "missing");
+  if (!EMAIL.test(email)) return reply(cors, 400, "email");
+  if (!(await human(env, get("cf-turnstile-response"), ip))) return reply(cors, 403, "spam");
+
+  const subject = `${TOPICS[topic]}${photo ? " · " + photo.toUpperCase() : ""} · ${name} (${site})`;
+  const body = [
+    `From: ${name} <${email}>`,
+    `Topic: ${TOPICS[topic]}`,
+    photo ? `Photograph: ${photo.toUpperCase()} (https://${site}/#f-${photo.toLowerCase()})` : null,
+    `Sent from: ${site}`,
+    join ? "Mailing list: asked to join (Buttondown sends them a confirmation email)" : null,
+    "",
+    message,
+    "",
+    "—",
+    "Reply to this email to answer them directly.",
+  ].filter(l => l !== null).join("\r\n");
+
+  const raw = mime({
+    from: `Yoso website <${env.FROM}>`,
+    to: env.TO,
+    replyTo: `${word(name)} <${email}>`,
+    subject,
+    body,
+    domain: env.FROM.split("@")[1],
+  });
+
+  try {
+    await env.MAILER.send(new EmailMessage(env.FROM, env.TO, raw));
+  } catch (e) {
+    console.log("send failed", e && e.message);
+    return reply(cors, 502, "send");
+  }
+
+  // The message has gone; a mailing-list problem never turns it into an error.
+  if (join) await addToList(env, email, ["yosokuro"], ip, site);
+  return reply(cors, 200);
+}
+
+async function subscribe({ env, form, get, cors, site, ip }) {
+  const email = oneLine(get("email")).slice(0, LIMIT.email);
+  const tags = [...new Set(form.getAll("tag").map(String))].filter(t => NEWSLETTERS.includes(t));
+
+  if (!EMAIL.test(email)) return reply(cors, 400, "email");
+  if (!tags.length) return reply(cors, 400, "none");
+  if (!(await human(env, get("cf-turnstile-response"), ip))) return reply(cors, 403, "spam");
+
+  return (await addToList(env, email, tags, ip, site)) ? reply(cors, 200) : reply(cors, 502, "list");
+}
+
+// Turnstile: Cloudflare confirms the visitor is a person.
+async function human(env, token, ip) {
+  if (!token) return false;
+  const r = await fetch("https://challenges.cloudflare.com/turnstile/v0/siteverify", {
+    method: "POST",
+    body: new URLSearchParams({ secret: env.TURNSTILE_SECRET || "", response: token, remoteip: ip }),
+  }).then(r => r.json()).catch(() => ({ success: false }));
+  return !!r.success;
+}
+
+// Buttondown: adds the reader (or adds tags to an existing reader). New readers get
+// Buttondown's confirmation email. The reader's own IP goes along for Buttondown's spam check.
+async function addToList(env, email, tags, ip, site) {
+  if (!env.BUTTONDOWN_KEY) { console.log("buttondown: no key"); return false; }
+  try {
+    const r = await fetch("https://api.buttondown.com/v1/subscribers", {
+      method: "POST",
+      headers: {
+        "Authorization": `Token ${env.BUTTONDOWN_KEY}`,
+        "Content-Type": "application/json",
+        "X-Buttondown-Collision-Behavior": "add",
+      },
+      body: JSON.stringify({ email_address: email, tags, ip_address: ip || undefined, referrer_url: `https://${site}/` }),
+    });
+    if (r.ok) return true;
+    console.log("buttondown", r.status, (await r.text()).slice(0, 300));
+  } catch (e) {
+    console.log("buttondown failed", e && e.message);
+  }
+  return false;
+}
 
 function reply(cors, status, error) {
   return new Response(JSON.stringify(error ? { ok: false, error } : { ok: true }), {
