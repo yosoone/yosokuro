@@ -145,6 +145,34 @@ footer b{font:800 18px/1 var(--f-kanji);letter-spacing:0;text-transform:none;col
 #subMsg{min-height:1.5em;text-transform:none;letter-spacing:.02em}
 @media (max-width:820px){.sub-band{grid-template-columns:minmax(0,1fr);padding-block:44px}}
 
+/* Contact form (posts to the yoso-forms Worker; see worker/) */
+.contact{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr);gap:28px 56px;padding-block:56px;border-bottom:1px solid var(--rule)}
+.contact h2{margin:0 0 10px;font:800 clamp(26px,3vw,38px)/1.1 var(--f-kanji)}
+.contact .lead p{margin:0 0 12px;max-width:44ch;color:var(--dust)}
+.contact .lead p a{color:var(--paper)}
+.cf{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px 20px}
+.cf .full{grid-column:1/-1}
+.cf label{display:block;margin-bottom:8px;font:400 11px/1 var(--f-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--dust)}
+.cf input,.cf select,.cf textarea{display:block;width:100%;background:transparent;border:1px solid var(--rule);border-radius:0;color:var(--paper);font:400 16px/1.4 var(--f-text);padding:12px 14px;min-height:44px;outline:none;transition:border-color .2s}
+.cf select{appearance:none;background-image:linear-gradient(45deg,transparent 50%,var(--dust) 50%),linear-gradient(135deg,var(--dust) 50%,transparent 50%);background-position:calc(100% - 20px) 50%,calc(100% - 15px) 50%;background-size:5px 5px;background-repeat:no-repeat;padding-right:40px}
+.cf select option{background:var(--ink);color:var(--paper)}
+.cf textarea{min-height:160px;resize:vertical}
+.cf input:focus-visible,.cf select:focus-visible,.cf textarea:focus-visible{border-color:var(--paper);outline:2px solid var(--paper);outline-offset:2px}
+.cf .photo-tag{display:flex;align-items:center;gap:12px;font:400 11px/1.4 var(--f-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--paper)}
+.cf .photo-tag button{background:none;border:1px solid var(--rule);color:var(--dust);cursor:pointer;font:inherit;padding:6px 10px;min-height:32px}
+.cf .photo-tag button:hover{color:var(--paper);border-color:var(--paper)}
+.cf .hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+.cf .send{display:flex;flex-wrap:wrap;align-items:center;gap:12px 20px}
+.cf .send button{background:var(--paper);color:var(--ink);border:0;cursor:pointer;padding:0 24px;min-height:44px;font:500 11px/1 var(--f-mono);letter-spacing:.14em;text-transform:uppercase}
+.cf .send button[disabled]{opacity:.5;cursor:wait}
+.cf .send button:focus-visible{outline:2px solid var(--paper);outline-offset:3px}
+#cfMsg{min-height:1.5em;font:400 13px/1.5 var(--f-text);color:var(--paper)}
+.cf .note{margin:0;font:400 11px/1.6 var(--f-mono);letter-spacing:.06em;color:var(--dust)}
+@media (max-width:820px){.contact{grid-template-columns:minmax(0,1fr);padding-block:44px}.cf{grid-template-columns:minmax(0,1fr)}}
+.lb .cap .order{margin-left:6px;border:1px solid #3a3936;padding:8px 12px;color:#e8e6e2}
+.lb .cap .order:hover{border-color:#e8e6e2}
+.lb .cap{align-items:center}
+
 .mail{color:inherit;text-decoration:underline;text-underline-offset:3px;text-transform:none;letter-spacing:.04em}
 .mail:hover{color:var(--paper)}
 
@@ -222,7 +250,7 @@ footer b{font:800 18px/1 var(--f-kanji);letter-spacing:0;text-transform:none;col
           <span class="pt">Prints available on request</span>
           <span class="ps">Every photograph on this site · <a class="mail" href="mailto:yosotattoo@gmail.com?subject=Yosokuro%20print">yosotattoo@gmail.com</a></span>
         </div>
-        <a class="btn" href="mailto:yosotattoo@gmail.com?subject=Yosokuro%20print">Request a print</a>
+        <a class="btn" href="#contact" data-topic="print">Request a print</a>
       </div>
     </div>
     <ol class="idx" id="idx"></ol>
@@ -253,7 +281,7 @@ footer b{font:800 18px/1 var(--f-kanji);letter-spacing:0;text-transform:none;col
           <dt>Series</dt><dd>Yosokuro (photography) · Shinsei (painting)</dd>
           <dt>Cameras</dt><dd>Ricoh GR II · Ricoh GR III</dd>
           <dt>Web</dt><dd><a href="https://kuro.yoso.one" target="_blank" rel="noopener">kuro.yoso.one</a> · <a href="https://www.yoso.one" target="_blank" rel="noopener">www.yoso.one</a></dd>
-          <dt>Prints</dt><dd>Available on request · <a class="mail" href="mailto:yosotattoo@gmail.com?subject=Yosokuro%20print">yosotattoo@gmail.com</a></dd>
+          <dt>Prints</dt><dd>Available on request · <a href="#contact" data-topic="print">Contact form</a> · <a class="mail" href="mailto:yosotattoo@gmail.com?subject=Yosokuro%20print">yosotattoo@gmail.com</a></dd>
           <dt>Follow</dt><dd><a href="feed.xml">RSS feed</a> · <a href="#subHead">Mailing list</a></dd>
         </dl>
       </div>
@@ -262,6 +290,29 @@ footer b{font:800 18px/1 var(--f-kanji);letter-spacing:0;text-transform:none;col
 </div>
 
 <div class="wrap">
+  <section class="contact" id="contact" aria-labelledby="cfHead">
+    <div class="lead">
+      <h2 id="cfHead">Contact</h2>
+      <p>Prints of every photograph on this site are available on request. Write about a print, or anything else, and Yoso will reply by email.</p>
+      <p>Or email <a class="mail" href="mailto:yosotattoo@gmail.com?subject=Yosokuro">yosotattoo@gmail.com</a></p>
+    </div>
+    <!-- Contact form: posts to the yoso-forms Worker on Cloudflare (worker/ in this repo), which emails Yoso. -->
+    <form class="cf" id="cf" action="https://forms.yoso.one/contact" method="post" novalidate>
+      <div><label for="cfName">Name</label><input id="cfName" name="name" autocomplete="name" maxlength="120" required></div>
+      <div><label for="cfEmail">Email</label><input id="cfEmail" name="email" type="email" autocomplete="email" maxlength="254" required></div>
+      <div class="full"><label for="cfTopic">About</label>
+        <select id="cfTopic" name="topic"><option value="print">A print</option><option value="general" selected>General</option><option value="other">Something else</option></select></div>
+      <div class="full photo-tag" id="cfPhotoTag" hidden><span>Photograph <b id="cfPhotoNo"></b></span><button type="button" id="cfPhotoClear">Remove</button></div>
+      <input type="hidden" name="photo" id="cfPhoto">
+      <div class="hp" aria-hidden="true"><label for="cfWebsite">Leave this empty</label><input id="cfWebsite" name="website" tabindex="-1" autocomplete="off"></div>
+      <div class="full"><label for="cfMessage">Message</label><textarea id="cfMessage" name="message" maxlength="5000" required></textarea></div>
+      <!-- Turnstile: Cloudflare's spam check, set to invisible. Site key from the Turnstile widget for kuro.yoso.one. -->
+      <div class="full cf-turnstile" data-sitekey="TURNSTILE_SITE_KEY" data-appearance="interaction-only"></div>
+      <div class="full send"><button type="submit" id="cfSend">Send</button><span id="cfMsg" role="status" aria-live="polite"></span></div>
+      <p class="full note">Your name, email and message go to Yoso by email and are used only to reply. Nothing is kept on this site. A spam check by Cloudflare runs in the background.</p>
+      <noscript><p class="full note">This form needs JavaScript. Please email the address above instead.</p></noscript>
+    </form>
+  </section>
   <section class="sub-band" aria-labelledby="subHead">
     <div>
       <h2 id="subHead">Mailing list</h2>
@@ -306,7 +357,7 @@ footer b{font:800 18px/1 var(--f-kanji);letter-spacing:0;text-transform:none;col
     <img id="lbImg" alt="">
     <button type="button" class="nav next" id="lbNext" aria-label="Next photograph">→</button>
   </div>
-  <div class="cap"><span class="k" id="lbK"></span><span id="lbNo"></span></div>
+  <div class="cap"><span class="k" id="lbK"></span><span id="lbNo"></span><button type="button" class="order" id="lbOrder">Request this print</button></div>
 </div>
 
 <script src="assets/works.js"></script>
@@ -381,7 +432,40 @@ fillKuro();
 if("ResizeObserver" in window){let last=0;new ResizeObserver(()=>{const h=work.scrollHeight;if(Math.abs(h-last)>40){last=h;fillKuro()}}).observe(work)}
 addEventListener("hashchange",fillKuro);
 
+/* Contact form: sends to the yoso-forms Worker, which emails Yoso */
+const cf=document.getElementById("cf"),cfMsg=document.getElementById("cfMsg"),cfSend=document.getElementById("cfSend");
+const cfPhoto=document.getElementById("cfPhoto"),cfTag=document.getElementById("cfPhotoTag");
+function setPhoto(id){cfPhoto.value=id||"";cfTag.hidden=!id;document.getElementById("cfPhotoNo").textContent=id?label(id):""}
+function toContact(topic,id){
+  if(topic)document.getElementById("cfTopic").value=topic;
+  if(id!==undefined)setPhoto(id);
+  if(location.hash!=="#contact")location.hash="contact";else document.getElementById("contact").scrollIntoView();
+  setTimeout(()=>document.getElementById("cfName").focus({preventScroll:true}),50);
+}
+document.querySelectorAll('a[data-topic]').forEach(a=>a.addEventListener("click",e=>{e.preventDefault();toContact(a.dataset.topic)}));
+document.getElementById("cfPhotoClear").onclick=()=>setPhoto("");
+document.getElementById("lbOrder").onclick=()=>{const id=seq[cur].id;closeLB();toContact("print",id)};
+const say=(t)=>{cfMsg.textContent=t};
+const ERR={missing:"Please add your name and a message.",email:"Please check your email address.",spam:"The spam check didn’t pass. Please try again.",
+  send:"The message couldn’t be sent just now. Please try again, or email instead."};
+cf.addEventListener("submit",async e=>{
+  e.preventDefault();
+  const F=cf.elements,name=F["name"].value.trim(),email=F["email"].value.trim(),msg=F["message"].value.trim();
+  if(!name||!msg){say(ERR.missing);(name?F["message"]:F["name"]).focus();return}
+  if(!F["email"].checkValidity()||!email){say(ERR.email);F["email"].focus();return}
+  cfSend.disabled=true;say("Sending…");
+  try{
+    const r=await fetch(cf.action,{method:"POST",body:new FormData(cf)});
+    const j=await r.json().catch(()=>({}));
+    if(r.ok&&j.ok){cf.reset();setPhoto("");say("Thank you. Your message is on its way, and Yoso will reply by email.")}
+    else say(ERR[j.error]||ERR.send);
+  }catch{say(ERR.send)}
+  cfSend.disabled=false;
+  if(window.turnstile)try{turnstile.reset()}catch{}
+});
+
 </script>
 <script src="assets/list-choice.js" defer></script>
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 </body>
 </html>

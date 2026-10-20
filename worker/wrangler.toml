@@ -1,0 +1,17 @@
+# Yoso contact form Worker. Deploy from this folder with:  npx wrangler deploy
+# The Turnstile secret is set once with:  npx wrangler secret put TURNSTILE_SECRET
+name = "yoso-forms"
+main = "index.js"
+compatibility_date = "2026-06-01"
+
+# The form posts to https://forms.yoso.one/contact (Cloudflare adds the DNS record itself).
+routes = [{ pattern = "forms.yoso.one", custom_domain = true }]
+
+[vars]
+FROM = "contact@yoso.one"        # sender; must be on yoso.one, which has Email Routing switched on
+TO = "yosotattoo@gmail.com"      # must be a verified destination address in Email Routing
+
+# Lets the Worker email the verified address above (free on the Workers Free plan).
+[[send_email]]
+name = "MAILER"
+destination_address = "yosotattoo@gmail.com"
