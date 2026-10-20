@@ -88,6 +88,10 @@ footer{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px 32px;p
 footer b{font:800 18px/1 var(--f-kanji);letter-spacing:0;text-transform:none;color:var(--paper)}
 
 /* Site bar */
+/* Family mark: centred at the top of every Yoso site, linking to the hub */
+.family-mark{display:block;width:48px;margin:20px auto 8px;line-height:0}
+.family-mark img{display:block;width:48px;height:48px}
+.family-mark:focus-visible{outline:2px solid var(--paper);outline-offset:4px}
 .bar-top{border-bottom:1px solid var(--rule)}
 .bar-top .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-block:14px}
 .bar-top .name{font:800 17px/1 var(--f-kanji);text-decoration:none;letter-spacing:.01em}
@@ -165,6 +169,7 @@ footer b{font:800 18px/1 var(--f-kanji);letter-spacing:0;text-transform:none;col
 </style>
 </head>
 <body>
+<a class="family-mark" href="https://hub.yoso.one"><img src="images/yoso-mark.png" alt="Yoso" width="48" height="48"></a>
 <header class="bar-top">
   <div class="wrap">
     <a class="name" href="#work">Yosokuro</a>
