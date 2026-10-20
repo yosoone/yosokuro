@@ -140,7 +140,6 @@ footer b{font:800 18px/1 var(--f-kanji);letter-spacing:0;text-transform:none;col
 
 .mail{color:inherit;text-decoration:underline;text-underline-offset:3px;text-transform:none;letter-spacing:.04em}
 .mail:hover{color:var(--paper)}
-.lb .mail{color:#e8e6e2;padding:10px}
 
 /* Back to top */
 .top{position:fixed;z-index:40;right:calc(max(16px,env(safe-area-inset-right,0px)) + 4px);bottom:calc(env(safe-area-inset-bottom,0px) + 20px);
@@ -280,7 +279,7 @@ footer b{font:800 18px/1 var(--f-kanji);letter-spacing:0;text-transform:none;col
   </section>
   <footer>
     <span><b>Yosokuro</b></span>
-    <span>© <a class="hub-link" href="https://hub.yoso.one">Yoso</a> · kuro.yoso.one · <a href="feed.xml">RSS</a> · <span class="version" data-version>Beta 0.14</span></span>
+    <span>© <a class="hub-link" href="https://hub.yoso.one">Yoso</a> · kuro.yoso.one · <a href="feed.xml">RSS</a> · <span class="version" data-version>Beta 0.15</span></span>
     <span>Ricoh GR II · GR III</span>
   </footer>
 </div>
@@ -288,7 +287,7 @@ footer b{font:800 18px/1 var(--f-kanji);letter-spacing:0;text-transform:none;col
 <button type="button" class="top" id="toTop" aria-label="Back to top" tabindex="-1"><span class="k">上</span>Top</button>
 
 <div class="lb" id="lb" hidden role="dialog" aria-modal="true" aria-label="Photograph viewer">
-  <div class="bar"><span id="lbPos"></span><a class="mail" id="lbMail" href="mailto:yosotattoo@gmail.com?subject=Yosokuro%20print">yosotattoo@gmail.com</a><button type="button" id="lbClose">Close ✕</button></div>
+  <div class="bar"><span id="lbPos"></span><button type="button" id="lbClose">Close ✕</button></div>
   <div class="stage">
     <button type="button" class="nav prev" id="lbPrev" aria-label="Previous photograph">←</button>
     <img id="lbImg" alt="">
@@ -322,7 +321,6 @@ document.getElementById("count").textContent=seq.length+" frames";
 const lb=document.getElementById("lb"),li=document.getElementById("lbImg");let cur=0,last=null;
 function show(n){cur=(n+seq.length)%seq.length;const {id,c}=seq[cur];
   li.src=`img/full/${id}.jpg`;li.alt=`${c.e}, frame ${label(id)}`;
-  document.getElementById("lbMail").href="mailto:yosotattoo@gmail.com?subject="+encodeURIComponent("Yosokuro print — "+label(id));
   document.getElementById("lbK").textContent=c.k;
   document.getElementById("lbNo").textContent=label(id);
   document.getElementById("lbPos").textContent=`${String(cur+1).padStart(2,"0")} / ${seq.length}`;
