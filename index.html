@@ -61,6 +61,7 @@ a{color:inherit}
 
 /* Statement + index */
 .intro{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:48px;padding-block:72px 56px;border-bottom:1px solid var(--rule)}
+.intro .prints{margin-top:22px;font:400 11px/1.5 var(--f-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--dust)}
 .intro p{margin:0;max-width:34ch;font:500 clamp(22px,2.4vw,32px)/1.38 var(--f-kanji);text-wrap:pretty}
 .idx{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:0 24px;align-content:start}
 .idx a{display:flex;align-items:baseline;gap:12px;padding-block:10px;border-top:1px solid var(--rule);text-decoration:none}
@@ -204,7 +205,10 @@ footer b{font:800 18px/1 var(--f-kanji);letter-spacing:0;text-transform:none;col
 
 <main class="wrap">
   <section class="intro">
-    <p>A lifelong black-and-white photography project documenting Japan’s urban reality and the spirit of the Kami.</p>
+    <div>
+      <p>A lifelong black-and-white photography project documenting Japan’s urban reality and the spirit of the Kami.</p>
+      <div class="prints">Prints available on request</div>
+    </div>
     <ol class="idx" id="idx"></ol>
   </section>
   <div id="chapters"></div>
@@ -233,6 +237,7 @@ footer b{font:800 18px/1 var(--f-kanji);letter-spacing:0;text-transform:none;col
           <dt>Series</dt><dd>Yosokuro (photography) · Shinsei (painting)</dd>
           <dt>Cameras</dt><dd>Ricoh GR II · Ricoh GR III</dd>
           <dt>Web</dt><dd><a href="https://kuro.yoso.one" target="_blank" rel="noopener">kuro.yoso.one</a> · <a href="https://www.yoso.one" target="_blank" rel="noopener">www.yoso.one</a></dd>
+          <dt>Prints</dt><dd>Available on request</dd>
           <dt>Follow</dt><dd><a href="feed.xml">RSS feed</a> · <a href="#subHead">Mailing list</a></dd>
         </dl>
       </div>
@@ -271,7 +276,7 @@ footer b{font:800 18px/1 var(--f-kanji);letter-spacing:0;text-transform:none;col
   </section>
   <footer>
     <span><b>Yosokuro</b></span>
-    <span>© <a class="hub-link" href="https://hub.yoso.one">Yoso</a> · kuro.yoso.one · <a href="feed.xml">RSS</a> · <span class="version" data-version>Beta 0.11</span></span>
+    <span>© <a class="hub-link" href="https://hub.yoso.one">Yoso</a> · kuro.yoso.one · <a href="feed.xml">RSS</a> · <span class="version" data-version>Beta 0.12</span></span>
     <span>Ricoh GR II · GR III</span>
   </footer>
 </div>
@@ -279,7 +284,7 @@ footer b{font:800 18px/1 var(--f-kanji);letter-spacing:0;text-transform:none;col
 <button type="button" class="top" id="toTop" aria-label="Back to top" tabindex="-1"><span class="k">上</span>Top</button>
 
 <div class="lb" id="lb" hidden role="dialog" aria-modal="true" aria-label="Photograph viewer">
-  <div class="bar"><span id="lbPos"></span><button type="button" id="lbClose">Close ✕</button></div>
+  <div class="bar"><span id="lbPos"></span><span>Prints available on request</span><button type="button" id="lbClose">Close ✕</button></div>
   <div class="stage">
     <button type="button" class="nav prev" id="lbPrev" aria-label="Previous photograph">←</button>
     <img id="lbImg" alt="">
