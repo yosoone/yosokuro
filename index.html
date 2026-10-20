@@ -35,6 +35,7 @@ img{max-width:100%}
   --film:#171614; /* filmstrip base in the lightbox */
   --hole:#8f8c86; /* filmstrip sprocket holes */
   --mark:#151514; /* the large 黒 behind the lightbox */
+  --mark-page:#121211; /* the repeated 黒 behind the main page */
   --f-kanji:"Shippori Mincho B1","Hiragino Mincho ProN","Yu Mincho",serif;
   --f-text:"IBM Plex Sans","Helvetica Neue",Arial,sans-serif;
   --f-mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
@@ -43,9 +44,9 @@ img{max-width:100%}
   color-scheme:dark;
 }
 @media (prefers-color-scheme: light){
-  :root:not([data-theme="dark"]){--ink:#f7f7f5;--paper:#121212;--dust:#6c6b68;--rule:#d9d8d4;--frame:#e6e5e1;color-scheme:light}
+  :root:not([data-theme="dark"]){--ink:#f7f7f5;--paper:#121212;--dust:#6c6b68;--rule:#d9d8d4;--frame:#e6e5e1;--mark-page:#efeeea;color-scheme:light}
 }
-:root[data-theme="light"]{--ink:#f7f7f5;--paper:#121212;--dust:#6c6b68;--rule:#d9d8d4;--frame:#e6e5e1;color-scheme:light}
+:root[data-theme="light"]{--ink:#f7f7f5;--paper:#121212;--dust:#6c6b68;--rule:#d9d8d4;--frame:#e6e5e1;--mark-page:#efeeea;color-scheme:light}
 
 *{box-sizing:border-box}
 body{background:var(--ink);color:var(--paper);font:400 15px/1.65 var(--f-text);-webkit-font-smoothing:antialiased}
@@ -151,6 +152,11 @@ footer b{font:800 18px/1 var(--f-kanji);letter-spacing:0;text-transform:none;col
 .lb{position:fixed;inset:0;z-index:50;overflow:hidden;background:var(--veil);display:grid;grid-template-rows:auto minmax(0,1fr) auto;color:#e8e6e2;
   padding:env(safe-area-inset-top,0px) env(safe-area-inset-right,0px) env(safe-area-inset-bottom,0px) env(safe-area-inset-left,0px)}
 .lb .bar{display:flex;justify-content:space-between;align-items:center;padding:14px 18px;font:400 11px/1 var(--f-mono);letter-spacing:.12em;text-transform:uppercase;color:#9a9893}
+/* 黒 (kuro) repeated down the main page, behind everything */
+#work{position:relative;isolation:isolate}
+.kuro-bg{position:absolute;inset:0;overflow:hidden;z-index:-1;pointer-events:none;user-select:none;
+  display:flex;flex-direction:column;align-items:center}
+.kuro-bg span{display:block;font:800 min(175vh,175vw)/1 var(--f-kanji);color:var(--mark-page);flex:none}
 /* 黒 (kuro): one large dark-grey kanji behind the filmstrip */
 .lb::before{content:"黒";position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
   font:800 min(175vh,175vw)/1 var(--f-kanji);color:var(--mark);pointer-events:none;user-select:none;z-index:0}
@@ -197,6 +203,7 @@ footer b{font:800 18px/1 var(--f-kanji);letter-spacing:0;text-transform:none;col
 </header>
 
 <div id="work">
+<div class="kuro-bg" id="kuroBg" aria-hidden="true"></div>
 <section class="open" aria-label="Opening photograph">
   <img src="img/full/r024803.jpg" alt="From above: the long shadow of a figure and a palm frond stretch across pale paving stones.">
   <div class="mark wrap">
@@ -274,7 +281,7 @@ footer b{font:800 18px/1 var(--f-kanji);letter-spacing:0;text-transform:none;col
   </section>
   <footer>
     <span><b>Yosokuro</b></span>
-    <span>© <a class="hub-link" href="https://hub.yoso.one">Yoso</a> · kuro.yoso.one · <a href="feed.xml">RSS</a> · <span class="version" data-version>Beta 0.6</span></span>
+    <span>© <a class="hub-link" href="https://hub.yoso.one">Yoso</a> · kuro.yoso.one · <a href="feed.xml">RSS</a> · <span class="version" data-version>Beta 0.7</span></span>
     <span>Ricoh GR II · GR III</span>
   </footer>
 </div>
@@ -361,6 +368,16 @@ function route(){
   onScroll();
 }
 addEventListener("hashchange",route);route();
+
+/* Fill the main page with as many 黒 as its height needs */
+const kb=document.getElementById("kuroBg");
+function fillKuro(){if(work.hidden)return;
+  kb.textContent="";const one=document.createElement("span");one.textContent="黒";kb.appendChild(one);
+  const h=one.getBoundingClientRect().height||1,n=Math.ceil(work.scrollHeight/h);
+  for(let i=1;i<n;i++)kb.appendChild(one.cloneNode(true));}
+fillKuro();
+if("ResizeObserver" in window){let last=0;new ResizeObserver(()=>{const h=work.scrollHeight;if(Math.abs(h-last)>40){last=h;fillKuro()}}).observe(work)}
+addEventListener("hashchange",fillKuro);
 </script>
 <script src="assets/list-choice.js" defer></script>
 </body>
