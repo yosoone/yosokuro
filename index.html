@@ -313,9 +313,6 @@ const tt=document.getElementById("toTop");
 const onScroll=()=>{const on=scrollY>window.innerHeight*.8;tt.classList.toggle("on",on);tt.tabIndex=on?0:-1};
 addEventListener("scroll",onScroll,{passive:true});onScroll();
 tt.onclick=()=>{const rm=matchMedia("(prefers-reduced-motion: reduce)").matches;scrollTo({top:0,behavior:rm?"auto":"smooth"})};
-    msg.textContent=r.ok?"Subscribed. Check your inbox to confirm.":"That didn’t go through. Please try again in a moment.";if(r.ok)em.value=""}
-  catch(_){msg.textContent="That didn’t go through. Please try again in a moment."}
-});
 
 const work=document.getElementById("work"),prof=document.getElementById("profile");
 function route(){
