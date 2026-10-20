@@ -31,7 +31,7 @@ img{max-width:100%}
   --dust:#8d8b87;         /* captions, metadata */
   --rule:#262625;         /* hairlines */
   --frame:#141413;        /* placeholder behind loading frames */
-  --veil:rgba(5,5,5,.97); /* lightbox ground, always dark */
+  --veil:#050505; /* lightbox ground, always dark */
   --f-kanji:"Shippori Mincho B1","Hiragino Mincho ProN","Yu Mincho",serif;
   --f-text:"IBM Plex Sans","Helvetica Neue",Arial,sans-serif;
   --f-mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
@@ -257,7 +257,7 @@ footer b{font:800 18px/1 var(--f-kanji);letter-spacing:0;text-transform:none;col
   </section>
   <footer>
     <span><b>Yosokuro</b></span>
-    <span>© <a class="hub-link" href="https://hub.yoso.one">Yoso</a> · kuro.yoso.one · <a href="feed.xml">RSS</a> · <span class="version" data-version>Beta 0.2</span></span>
+    <span>© <a class="hub-link" href="https://hub.yoso.one">Yoso</a> · kuro.yoso.one · <a href="feed.xml">RSS</a> · <span class="version" data-version>Beta 0.3</span></span>
     <span>Ricoh GR II · GR III</span>
   </footer>
 </div>
@@ -271,7 +271,7 @@ footer b{font:800 18px/1 var(--f-kanji);letter-spacing:0;text-transform:none;col
     <img id="lbImg" alt="">
     <button type="button" class="nav next" id="lbNext" aria-label="Next photograph">→</button>
   </div>
-  <div class="cap"><span class="k" id="lbK"></span><span id="lbE"></span><span id="lbNo"></span><span id="lbCam"></span></div>
+  <div class="cap"><span class="k" id="lbK"></span><span id="lbNo"></span></div>
 </div>
 
 <script>
@@ -307,9 +307,8 @@ document.getElementById("count").textContent=seq.length+" frames";
 const lb=document.getElementById("lb"),li=document.getElementById("lbImg");let cur=0,last=null;
 function show(n){cur=(n+seq.length)%seq.length;const {id,c}=seq[cur];
   li.src=`img/full/${id}.jpg`;li.alt=`${c.e}, frame ${label(id)}`;
-  document.getElementById("lbK").textContent=c.k;document.getElementById("lbE").textContent=c.e;
+  document.getElementById("lbK").textContent=c.k;
   document.getElementById("lbNo").textContent=label(id);
-  document.getElementById("lbCam").textContent=id.startsWith("r000")?"Ricoh GR III":"Ricoh GR II";
   document.getElementById("lbPos").textContent=`${String(cur+1).padStart(2,"0")} / ${seq.length}`;
   [cur+1,cur-1].forEach(j=>{const p=seq[(j+seq.length)%seq.length];new Image().src=`img/full/${p.id}.jpg`});
 }
