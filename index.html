@@ -311,7 +311,7 @@ footer b{font:800 18px/1 var(--f-kanji);letter-spacing:0;text-transform:none;col
       <div class="full"><label for="cfMessage">Message</label><textarea id="cfMessage" name="message" maxlength="5000" required></textarea></div>
       <!-- Turnstile: Cloudflare's spam check, set to invisible. Site key from the Turnstile widget for kuro.yoso.one. -->
       <div class="full"><label class="sub" for="cfSub"><input type="checkbox" id="cfSub" name="subscribe" value="yosokuro"><span>Also join the Yosokuro mailing list<small>New photographs now and then. Buttondown emails you to confirm.</small></span></label></div>
-      <div class="full cf-turnstile" data-sitekey="0x4AAAAAAFeWKK51BEJbKJSu" data-appearance="interaction-only"></div>
+      <div class="full cf-turnstile" id="cfTs" data-sitekey="0x4AAAAAAFeWKK51BEJbKJSu" data-appearance="interaction-only"></div>
       <div class="full send"><button type="submit" id="cfSend">Send</button><span id="cfMsg" role="status" aria-live="polite"></span></div>
       <p class="full note">Your name, email and message go to Yoso by email and are used only to reply. Nothing is kept on this site. A spam check by Cloudflare runs in the background.</p>
       <noscript><p class="full note">This form needs JavaScript. Please email the address above instead.</p></noscript>
@@ -465,7 +465,7 @@ cf.addEventListener("submit",async e=>{
     else say(ERR[j.error]||ERR.send);
   }catch{say(ERR.send)}
   cfSend.disabled=false;
-  if(window.turnstile)try{turnstile.reset()}catch{}
+  if(window.turnstile)try{turnstile.reset("#cfTs")}catch{}
 });
 
 </script>
