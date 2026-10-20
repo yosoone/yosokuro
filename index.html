@@ -310,7 +310,7 @@ footer b{font:800 18px/1 var(--f-kanji);letter-spacing:0;text-transform:none;col
       <div class="hp" aria-hidden="true"><label for="cfWebsite">Leave this empty</label><input id="cfWebsite" name="website" tabindex="-1" autocomplete="off"></div>
       <div class="full"><label for="cfMessage">Message</label><textarea id="cfMessage" name="message" maxlength="5000" required></textarea></div>
       <!-- Turnstile: Cloudflare's spam check, set to invisible. Site key from the Turnstile widget for kuro.yoso.one. -->
-      <div class="full"><label class="sub" for="cfSub"><input type="checkbox" id="cfSub" name="subscribe" value="yosokuro"><span>Also join the Yosokuro mailing list<small>New photographs now and then. Buttondown opens in a new tab to confirm.</small></span></label></div>
+      <div class="full"><label class="sub" for="cfSub"><input type="checkbox" id="cfSub" name="subscribe" value="yosokuro"><span>Also join the Yosokuro mailing list<small>New photographs now and then. Buttondown emails you to confirm.</small></span></label></div>
       <div class="full cf-turnstile" data-sitekey="0x4AAAAAAFeWKK51BEJbKJSu" data-appearance="interaction-only"></div>
       <div class="full send"><button type="submit" id="cfSend">Send</button><span id="cfMsg" role="status" aria-live="polite"></span></div>
       <p class="full note">Your name, email and message go to Yoso by email and are used only to reply. Nothing is kept on this site. A spam check by Cloudflare runs in the background.</p>
@@ -457,18 +457,11 @@ cf.addEventListener("submit",async e=>{
   const F=cf.elements,name=F["name"].value.trim(),email=F["email"].value.trim(),msg=F["message"].value.trim();
   if(!name||!msg){say(ERR.missing);(name?F["message"]:F["name"]).focus();return}
   if(!F["email"].checkValidity()||!email){say(ERR.email);F["email"].focus();return}
-  // Mailing list: posts straight to Buttondown (same list and tag as the sign-up form), in a new tab
-  // so the reader can confirm. Done here, before any waiting, so the browser allows the new tab.
-  if(F["subscribe"].checked){
-    const s=document.createElement("form");s.action="https://buttondown.com/api/emails/embed-subscribe/yoso";s.method="post";s.target="_blank";s.hidden=true;
-    [["email",email],["tag","yosokuro"],["embed","1"]].forEach(([n,v])=>{const i=document.createElement("input");i.type="hidden";i.name=n;i.value=v;s.appendChild(i)});
-    document.body.appendChild(s);s.submit();s.remove();
-  }
   cfSend.disabled=true;say("Sending…");
   try{
     const r=await fetch(cf.action,{method:"POST",body:new FormData(cf)});
     const j=await r.json().catch(()=>({}));
-    if(r.ok&&j.ok){const sub=F["subscribe"].checked;cf.reset();setPhoto("");say("Thank you. Your message is on its way, and Yoso will reply by email."+(sub?" Please confirm the mailing list from the email Buttondown sends you.":""))}
+    if(r.ok&&j.ok){const sub=F["subscribe"].checked;cf.reset();setPhoto("");say("Thank you. Your message is on its way, and Yoso will reply by email."+(sub?" Buttondown will email you to confirm the mailing list.":""))}
     else say(ERR[j.error]||ERR.send);
   }catch{say(ERR.send)}
   cfSend.disabled=false;
