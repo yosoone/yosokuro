@@ -271,7 +271,7 @@ footer b{font:800 18px/1 var(--f-kanji);letter-spacing:0;text-transform:none;col
   </section>
   <footer>
     <span><b>Yosokuro</b></span>
-    <span>© <a class="hub-link" href="https://hub.yoso.one">Yoso</a> · kuro.yoso.one · <a href="feed.xml">RSS</a> · <span class="version" data-version>Beta 0.10</span></span>
+    <span>© <a class="hub-link" href="https://hub.yoso.one">Yoso</a> · kuro.yoso.one · <a href="feed.xml">RSS</a> · <span class="version" data-version>Beta 0.11</span></span>
     <span>Ricoh GR II · GR III</span>
   </footer>
 </div>
@@ -288,17 +288,9 @@ footer b{font:800 18px/1 var(--f-kanji);letter-spacing:0;text-transform:none;col
   <div class="cap"><span class="k" id="lbK"></span><span id="lbNo"></span></div>
 </div>
 
+<script src="assets/works.js"></script>
 <script>
-const R={"r0000576":1.5,"r0000613":1.4409,"r0000654":1.5,"r0000681":1.5,"r0006178":0.6667,"r0006180":0.6667,"r0006182":0.6623,"r021961":1.5098,"r021962":1.5098,"r021963":1.5098,"r021973":1.5098,"r021976":0.6623,"r021978":1.5098,"r023923":1.5098,"r023924":1.5098,"r023953":1.5098,"r023955":1.5098,"r023956":1.5098,"r024689":0.6623,"r024690":0.6623,"r024691":0.6623,"r024692":0.6623,"r024803":1.5839,"r024854":0.6623,"r024855":0.6623,"r024856":0.6623,"r024862":0.6623,"r024880":0.6623,"r024979":0.6623,"r024980":0.6623,"r025038":1.5098,"r025052":0.6623,"r025053":1.5098,"r025128":0.6623,"r025178":0.6623,"r025185":0.6623,"r025186":0.6623,"r025243":0.6623,"r025296":1.5098,"r025300":0.637,"r025302":0.6623,"r025308":0.6623,"r025309":0.6623,"r025310":0.6623,"r025311":0.6623,"r025312":0.6623,"r025313":0.6623,"r025314":0.6623,"r025450":0.6623,"r025452":0.6623,"r025453":0.6623,"r025455":1.5098};
-const CH=[
-  {id:"night",k:"夜",e:"Night",f:["r0000576","r0000613","r0000654","r0000681","r025450","r025455"]},
-  {id:"train",k:"電車",e:"Train",f:["r021961","r021962","r021963","r021973","r021976","r021978","r025128"]},
-  {id:"street",k:"街",e:"Street",f:["r025178","r025038","r024979","r024980","r025052","r025053","r025185","r025186","r025452","r025453"]},
-  {id:"shadow",k:"影",e:"Shadow",f:["r0006178","r0006180","r0006182","r024803"]},
-  {id:"water",k:"水",e:"Water",f:["r024854","r024855","r024856","r024862","r024880","r023953","r023955","r023956"]},
-  {id:"cat",k:"猫",e:"Cat",f:["r024689","r024690","r024691","r024692","r023923","r023924"]},
-  {id:"fire",k:"花火",e:"Fireworks",f:["r025243","r025296","r025300","r025302","r025308","r025309","r025310","r025311","r025312","r025313","r025314"]}
-];
+const {R,CH}=window.YOSOKURO;
 const seq=[];const label=id=>id.toUpperCase().replace(/^R0(?=2)/,"_R0");
 const idx=document.getElementById("idx"),box=document.getElementById("chapters");
 CH.forEach(c=>{

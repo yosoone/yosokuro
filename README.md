@@ -10,6 +10,15 @@
 - `index.html` — the whole site (photographs and profile)
 - `img/full/` — 2400 px images for the full-screen viewer
 - `img/thumb/` — 960 px images for the grid
+- `assets/works.js` — the one list of photographs: each frame's shape and which chapter it sits in, in order
+
+## Adding photographs
+
+1. Export from Lightroom: JPEG, sRGB, 2400 px on the long edge, about 80% quality.
+2. Make a 960 px copy of each for the grid.
+3. Name both copies after the frame number in lower case without the underscore (`_R025300.jpg` becomes `r025300.jpg`) and put them in `img/full/` and `img/thumb/`.
+4. In `assets/works.js`, add the frame's width ÷ height to `R` and its name to a chapter's list in `CH`, where its position sets the order. A new chapter is one more line in `CH`.
+5. Add an item for each new frame to `feed.xml`, then publish with `python3 release.py "What changed"`.
 - `feed.xml` — RSS feed, one item per photograph
 - `CNAME` — custom domain for GitHub Pages
 
