@@ -120,7 +120,7 @@ footer b{font:800 18px/1 var(--f-kanji);letter-spacing:0;text-transform:none;col
 .sub-form{display:grid;grid-template-columns:minmax(0,1fr);gap:10px}
 .sub-form label{font:400 11px/1 var(--f-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--dust)}
 .sub-row{display:flex;gap:0;border:1px solid var(--rule);transition:border-color .2s}
-.sub-row:focus-within{border-color:var(--paper)}
+.sub-row:focus-within{border-color:var(--paper);outline:2px solid var(--paper);outline-offset:2px}
 .sub-row input{flex:1;min-width:0;background:transparent;border:0;color:var(--paper);font:400 16px/1 var(--f-text);padding:14px 14px;outline:none}
 .sub-row input::placeholder{color:var(--dust)}
 .sub-row button{background:var(--paper);color:var(--ink);border:0;cursor:pointer;padding:0 20px;font:500 11px/1 var(--f-mono);letter-spacing:.14em;text-transform:uppercase}
@@ -225,14 +225,17 @@ footer b{font:800 18px/1 var(--f-kanji);letter-spacing:0;text-transform:none;col
       <h2 id="subHead">Mailing list</h2>
       <p>New Yosokuro photographs and news, sent by email now and then.</p>
     </div>
-    <form class="sub-form" id="subForm" novalidate>
+    <!-- Mailing list: one Buttondown list for all Yoso sites; the hidden tag records that the sign-up came from Yosokuro. -->
+    <form class="sub-form" id="subForm" action="https://buttondown.com/api/emails/embed-subscribe/yoso" method="post" target="_blank">
+      <input type="hidden" name="tag" value="yosokuro">
+      <input type="hidden" name="embed" value="1">
       <label for="subEmail">Email address</label>
       <div class="sub-row">
         <input id="subEmail" name="email" type="email" autocomplete="email" placeholder="you@example.com" required>
         <button type="submit">Subscribe</button>
       </div>
       <div class="sub-meta">
-        <span id="subMsg" role="status" aria-live="polite"></span>
+        <span id="subMsg">Sent through Buttondown. Confirm by email; unsubscribe any time.</span>
         <span>Or follow by <a href="feed.xml">RSS</a></span>
       </div>
     </form>
@@ -310,14 +313,6 @@ const tt=document.getElementById("toTop");
 const onScroll=()=>{const on=scrollY>window.innerHeight*.8;tt.classList.toggle("on",on);tt.tabIndex=on?0:-1};
 addEventListener("scroll",onScroll,{passive:true});onScroll();
 tt.onclick=()=>{const rm=matchMedia("(prefers-reduced-motion: reduce)").matches;scrollTo({top:0,behavior:rm?"auto":"smooth"})};
-/* Mailing list: set LIST_ENDPOINT to the sign-up URL from your mailing-list service once the site is live. */
-const LIST_ENDPOINT="";
-document.getElementById("subForm").addEventListener("submit",async e=>{
-  e.preventDefault();const em=document.getElementById("subEmail"),msg=document.getElementById("subMsg");
-  if(!em.value||!em.checkValidity()){msg.textContent="Enter a full email address, like name@example.com.";em.focus();return}
-  if(!LIST_ENDPOINT){msg.textContent="Sign-up isn’t connected yet. Please check back soon.";return}
-  msg.textContent="Sending…";
-  try{const r=await fetch(LIST_ENDPOINT,{method:"POST",body:new URLSearchParams({email:em.value})});
     msg.textContent=r.ok?"Subscribed. Check your inbox to confirm.":"That didn’t go through. Please try again in a moment.";if(r.ok)em.value=""}
   catch(_){msg.textContent="That didn’t go through. Please try again in a moment."}
 });
