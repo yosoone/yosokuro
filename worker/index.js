@@ -3,7 +3,8 @@
    then emails it to Yoso's verified address. Replying in Gmail goes to the sender.
 
    Settings live in wrangler.toml; the Turnstile secret is a Worker secret
-   (npx wrangler secret put TURNSTILE_SECRET). Nothing secret is in this file. */
+   (npx wrangler secret put TURNSTILE_SECRET), and so is the Buttondown API key used when someone
+   ticks 'join the mailing list' (npx wrangler secret put BUTTONDOWN_KEY). Nothing secret is in this file. */
 import { EmailMessage } from "cloudflare:email";
 
 // Sites allowed to send messages here. Add another Yoso site's address to use the same form.
@@ -39,6 +40,7 @@ export default {
     const topic = TOPICS[get("topic")] ? get("topic") : "general";
     const photo = oneLine(get("photo")).replace(/[^A-Za-z0-9_-]/g, "").slice(0, LIMIT.photo);
     const message = get("message").slice(0, LIMIT.message);
+    const subscribe = get("subscribe") === "yosokuro";
 
     if (!name || !message) return reply(cors, 400, "missing");
     if (!/^[^\s@<>"]+@[^\s@<>"]+\.[^\s@<>"]+$/.test(email)) return reply(cors, 400, "email");
@@ -61,6 +63,7 @@ export default {
       `Topic: ${TOPICS[topic]}`,
       photo ? `Photograph: ${photo.toUpperCase()} (https://${site}/#f-${photo.toLowerCase()})` : null,
       `Sent from: ${site}`,
+      subscribe ? "Mailing list: asked to join (Buttondown sends them a confirmation email)" : null,
       "",
       message,
       "",
@@ -82,6 +85,30 @@ export default {
     } catch (e) {
       console.log("send failed", e && e.message);
       return reply(cors, 502, "send");
+    }
+
+    // Mailing list: add them to Buttondown (tag yosokuro). Buttondown emails them to confirm.
+    // A failure here never stops the message, which has already been sent.
+    if (subscribe && env.BUTTONDOWN_KEY) {
+      try {
+        const r = await fetch("https://api.buttondown.com/v1/subscribers", {
+          method: "POST",
+          headers: {
+            "Authorization": `Token ${env.BUTTONDOWN_KEY}`,
+            "Content-Type": "application/json",
+            "X-Buttondown-Collision-Behavior": "add",
+          },
+          body: JSON.stringify({
+            email_address: email,
+            tags: ["yosokuro"],
+            ip_address: request.headers.get("CF-Connecting-IP") || undefined,
+            referrer_url: `https://${site}/`,
+          }),
+        });
+        if (!r.ok) console.log("buttondown", r.status, (await r.text()).slice(0, 300));
+      } catch (e) {
+        console.log("buttondown failed", e && e.message);
+      }
     }
     return reply(cors, 200);
   },
