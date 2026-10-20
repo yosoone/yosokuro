@@ -127,7 +127,9 @@ footer b{font:800 18px/1 var(--f-kanji);letter-spacing:0;text-transform:none;col
 .sub-row:focus-within{border-color:var(--paper);outline:2px solid var(--paper);outline-offset:2px}
 .sub-row input{flex:1;min-width:0;background:transparent;border:0;color:var(--paper);font:400 16px/1 var(--f-text);padding:14px 14px;outline:none}
 .sub-row input::placeholder{color:var(--dust)}
-.sub-row button{background:var(--paper);color:var(--ink);border:0;cursor:pointer;padding:0 20px;font:500 11px/1 var(--f-mono);letter-spacing:.14em;text-transform:uppercase}
+.sub-row button{background:var(--paper);color:var(--ink);border:0;cursor:pointer;padding:0 20px;min-height:44px;font:500 11px/1 var(--f-mono);letter-spacing:.14em;text-transform:uppercase}
+/* Newsletter-choice step: the row holds only the button, so drop the field's border */
+.sub-row:has(> input.lc-hidden){border-color:transparent;outline:0}
 .sub-meta{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px 20px;font:400 11px/1.5 var(--f-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--dust)}
 .sub-meta a{color:var(--paper);text-underline-offset:3px}
 #subMsg{min-height:1.5em;text-transform:none;letter-spacing:.02em}
@@ -230,15 +232,23 @@ footer b{font:800 18px/1 var(--f-kanji);letter-spacing:0;text-transform:none;col
       <h2 id="subHead">Mailing list</h2>
       <p>New Yosokuro photographs and news, sent by email now and then.</p>
     </div>
-    <!-- Mailing list: one Buttondown list for all Yoso sites; the hidden tag records that the sign-up came from Yosokuro. -->
+    <!-- Mailing list: one Buttondown list for all Yoso sites; readers choose their newsletters, each one a tag. -->
     <form class="sub-form" id="subForm" action="https://buttondown.com/api/emails/embed-subscribe/yoso" method="post" target="_blank">
-      <input type="hidden" name="tag" value="yosokuro">
       <input type="hidden" name="embed" value="1">
       <label for="subEmail">Email address</label>
       <div class="sub-row">
         <input id="subEmail" name="email" type="email" autocomplete="email" placeholder="you@example.com" required>
         <button type="submit">Subscribe</button>
       </div>
+      <!-- Newsletter choice: each ticked box becomes a Buttondown tag. Shown after the email step by assets/list-choice.js. -->
+      <fieldset class="list-choice" data-list-choice>
+        <legend>Which newsletters would you like?</legend>
+        <label class="lc-box"><input type="checkbox" name="tag" value="one"><span><span class="lc-name">The Vault</span><span class="lc-desc">Notes, essays and research from one.yoso.one</span></span></label>
+        <label class="lc-box"><input type="checkbox" name="tag" value="yosokuro" checked><span><span class="lc-name">Yosokuro</span><span class="lc-desc">Black-and-white photographs of Japan</span></span></label>
+        <label class="lc-box"><input type="checkbox" name="tag" value="shinsei"><span><span class="lc-name">Shinsei</span><span class="lc-desc">New paintings, scrolls and exhibitions</span></span></label>
+        <label class="lc-box"><input type="checkbox" name="tag" value="river"><span><span class="lc-name">River</span><span class="lc-desc">New short texts</span></span></label>
+        <label class="lc-box"><input type="checkbox" name="tag" value="on"><span><span class="lc-name">On</span><span class="lc-desc">Each numbered issue of the magazine</span></span></label>
+      </fieldset>
       <div class="sub-meta">
         <span id="subMsg">Sent through Buttondown. Confirm by email; unsubscribe any time.</span>
         <span>Or follow by <a href="feed.xml">RSS</a></span>
@@ -247,7 +257,7 @@ footer b{font:800 18px/1 var(--f-kanji);letter-spacing:0;text-transform:none;col
   </section>
   <footer>
     <span><b>Yosokuro</b></span>
-    <span>© <a class="hub-link" href="https://hub.yoso.one">Yoso</a> · kuro.yoso.one · <a href="feed.xml">RSS</a> · <span class="version" data-version>Beta 0.1</span></span>
+    <span>© <a class="hub-link" href="https://hub.yoso.one">Yoso</a> · kuro.yoso.one · <a href="feed.xml">RSS</a> · <span class="version" data-version>Beta 0.2</span></span>
     <span>Ricoh GR II · GR III</span>
   </footer>
 </div>
@@ -335,5 +345,6 @@ function route(){
 }
 addEventListener("hashchange",route);route();
 </script>
+<script src="assets/list-choice.js" defer></script>
 </body>
 </html>
