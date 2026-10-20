@@ -138,30 +138,9 @@ footer b{font:800 18px/1 var(--f-kanji);letter-spacing:0;text-transform:none;col
 #subMsg{min-height:1.5em;text-transform:none;letter-spacing:.02em}
 @media (max-width:820px){.sub-band{grid-template-columns:minmax(0,1fr);padding-block:44px}}
 
-/* Print requests: a form that opens the visitor's email app */
-.print-link{background:none;border:0;padding:0;color:inherit;font:inherit;letter-spacing:inherit;text-transform:inherit;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
-.print-link:hover{color:var(--paper)}
-.lb .print-link{color:#e8e6e2;padding:10px}
-dialog.req{width:min(520px,calc(100vw - 32px));max-height:calc(100vh - 32px);overflow:auto;margin:auto;padding:0;border:1px solid var(--rule);background:var(--ink);color:var(--paper)}
-dialog.req::backdrop{background:rgba(0,0,0,.72)}
-.req form{display:grid;gap:16px;padding:28px max(20px,4vw) 24px}
-.req h2{margin:0;font:800 30px/1.1 var(--f-kanji)}
-.req .intro-line{margin:-6px 0 4px;color:var(--dust);font-size:14px}
-.req label{display:grid;gap:6px;font:400 11px/1 var(--f-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--dust)}
-.req input,.req textarea,.req select{width:100%;min-width:0;box-sizing:border-box;background:transparent;color:var(--paper);border:1px solid var(--rule);padding:12px;font:400 16px/1.4 var(--f-text);text-transform:none;letter-spacing:0}
-.req select option{background:var(--ink);color:var(--paper)}
-.req textarea{min-height:96px;resize:vertical}
-.req input:focus-visible,.req textarea:focus-visible,.req select:focus-visible{outline:2px solid var(--paper);outline-offset:2px}
-.req .row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px}
-.req .actions{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
-.req .send{min-height:44px;padding:0 22px;border:0;background:var(--paper);color:var(--ink);cursor:pointer;font:500 11px/1 var(--f-mono);letter-spacing:.14em;text-transform:uppercase}
-.req .cancel{min-height:44px;padding:0 14px;border:1px solid var(--rule);background:none;color:var(--paper);cursor:pointer;font:400 11px/1 var(--f-mono);letter-spacing:.14em;text-transform:uppercase}
-.req .note{margin:0;font-size:13px;color:var(--dust)}
-.req .direct{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;padding-top:12px;border-top:1px solid var(--rule);font-size:14px}
-.req .direct code{font:400 14px/1.4 var(--f-mono);user-select:all;word-break:break-all}
-.req .copy{min-height:36px;padding:0 12px;border:1px solid var(--rule);background:none;color:var(--paper);cursor:pointer;font:400 11px/1 var(--f-mono);letter-spacing:.12em;text-transform:uppercase}
-#reqMsg{min-height:1.4em}
-@media (max-width:480px){.req .row{grid-template-columns:minmax(0,1fr)}}
+.mail{color:inherit;text-decoration:underline;text-underline-offset:3px;text-transform:none;letter-spacing:.04em}
+.mail:hover{color:var(--paper)}
+.lb .mail{color:#e8e6e2;padding:10px}
 
 /* Back to top */
 .top{position:fixed;z-index:40;right:calc(max(16px,env(safe-area-inset-right,0px)) + 4px);bottom:calc(env(safe-area-inset-bottom,0px) + 20px);
@@ -232,7 +211,7 @@ dialog.req::backdrop{background:rgba(0,0,0,.72)}
   <section class="intro">
     <div>
       <p>A lifelong black-and-white photography project documenting Japan’s urban reality and the spirit of the Kami.</p>
-      <div class="prints"><button type="button" class="print-link" data-request>Prints available on request</button></div>
+      <div class="prints">Prints available on request · <a class="mail" href="mailto:yosotattoo@gmail.com?subject=Yosokuro%20print">yosotattoo@gmail.com</a></div>
     </div>
     <ol class="idx" id="idx"></ol>
   </section>
@@ -262,7 +241,7 @@ dialog.req::backdrop{background:rgba(0,0,0,.72)}
           <dt>Series</dt><dd>Yosokuro (photography) · Shinsei (painting)</dd>
           <dt>Cameras</dt><dd>Ricoh GR II · Ricoh GR III</dd>
           <dt>Web</dt><dd><a href="https://kuro.yoso.one" target="_blank" rel="noopener">kuro.yoso.one</a> · <a href="https://www.yoso.one" target="_blank" rel="noopener">www.yoso.one</a></dd>
-          <dt>Prints</dt><dd><button type="button" class="print-link" data-request>Available on request</button></dd>
+          <dt>Prints</dt><dd>Available on request · <a class="mail" href="mailto:yosotattoo@gmail.com?subject=Yosokuro%20print">yosotattoo@gmail.com</a></dd>
           <dt>Follow</dt><dd><a href="feed.xml">RSS feed</a> · <a href="#subHead">Mailing list</a></dd>
         </dl>
       </div>
@@ -301,36 +280,15 @@ dialog.req::backdrop{background:rgba(0,0,0,.72)}
   </section>
   <footer>
     <span><b>Yosokuro</b></span>
-    <span>© <a class="hub-link" href="https://hub.yoso.one">Yoso</a> · kuro.yoso.one · <a href="feed.xml">RSS</a> · <span class="version" data-version>Beta 0.13</span></span>
+    <span>© <a class="hub-link" href="https://hub.yoso.one">Yoso</a> · kuro.yoso.one · <a href="feed.xml">RSS</a> · <span class="version" data-version>Beta 0.14</span></span>
     <span>Ricoh GR II · GR III</span>
   </footer>
 </div>
 
-<dialog class="req" id="reqDlg" aria-labelledby="reqHead">
-  <form id="reqForm" method="dialog" novalidate>
-    <h2 id="reqHead">Request a print</h2>
-    <p class="intro-line">Prints are available on request. Send the details below and Yoso will reply by email.</p>
-    <div class="row">
-      <label for="reqName">Your name<input id="reqName" name="name" autocomplete="name" required></label>
-      <label for="reqFrame">Frame number<input id="reqFrame" name="frame" placeholder="e.g. R0000940" autocomplete="off"></label>
-    </div>
-    <label for="reqSize">Size<select id="reqSize" name="size">
-      <option value="">Not sure yet</option><option>A4</option><option>A3</option><option>A2</option><option>Other (say in the message)</option>
-    </select></label>
-    <label for="reqMsgText">Message<textarea id="reqMsgText" name="message" placeholder="Anything else: paper, framing, where to send it"></textarea></label>
-    <div class="actions">
-      <button type="submit" class="send">Open my email</button>
-      <button type="button" class="cancel" id="reqCancel">Cancel</button>
-    </div>
-    <p class="note" id="reqMsg" role="status" aria-live="polite">This opens your own email app with the request written out. Press Send there.</p>
-    <div class="direct"><span>Or write directly:</span><code id="reqAddr"></code><button type="button" class="copy" id="reqCopy">Copy</button></div>
-  </form>
-</dialog>
-
 <button type="button" class="top" id="toTop" aria-label="Back to top" tabindex="-1"><span class="k">上</span>Top</button>
 
 <div class="lb" id="lb" hidden role="dialog" aria-modal="true" aria-label="Photograph viewer">
-  <div class="bar"><span id="lbPos"></span><button type="button" class="print-link" id="lbReq">Request a print</button><button type="button" id="lbClose">Close ✕</button></div>
+  <div class="bar"><span id="lbPos"></span><a class="mail" id="lbMail" href="mailto:yosotattoo@gmail.com?subject=Yosokuro%20print">yosotattoo@gmail.com</a><button type="button" id="lbClose">Close ✕</button></div>
   <div class="stage">
     <button type="button" class="nav prev" id="lbPrev" aria-label="Previous photograph">←</button>
     <img id="lbImg" alt="">
@@ -364,6 +322,7 @@ document.getElementById("count").textContent=seq.length+" frames";
 const lb=document.getElementById("lb"),li=document.getElementById("lbImg");let cur=0,last=null;
 function show(n){cur=(n+seq.length)%seq.length;const {id,c}=seq[cur];
   li.src=`img/full/${id}.jpg`;li.alt=`${c.e}, frame ${label(id)}`;
+  document.getElementById("lbMail").href="mailto:yosotattoo@gmail.com?subject="+encodeURIComponent("Yosokuro print — "+label(id));
   document.getElementById("lbK").textContent=c.k;
   document.getElementById("lbNo").textContent=label(id);
   document.getElementById("lbPos").textContent=`${String(cur+1).padStart(2,"0")} / ${seq.length}`;
@@ -377,7 +336,7 @@ document.getElementById("lbNext").onclick=()=>show(cur+1);
 const stage=lb.querySelector(".stage");
 stage.addEventListener("click",e=>{if(e.target.closest(".nav"))return;const r=stage.getBoundingClientRect();show(cur+(e.clientX-r.left<r.width/2?-1:1))});
 stage.addEventListener("mousemove",e=>{const r=stage.getBoundingClientRect();stage.style.cursor=e.clientX-r.left<r.width/2?"w-resize":"e-resize"});
-document.addEventListener("keydown",e=>{if(lb.hidden||document.getElementById("reqDlg").open)return;if(e.key==="Escape")closeLB();if(e.key==="ArrowRight")show(cur+1);if(e.key==="ArrowLeft")show(cur-1)});
+document.addEventListener("keydown",e=>{if(lb.hidden)return;if(e.key==="Escape")closeLB();if(e.key==="ArrowRight")show(cur+1);if(e.key==="ArrowLeft")show(cur-1)});
 let tx=null;lb.addEventListener("touchstart",e=>{tx=e.touches[0].clientX},{passive:true});
 lb.addEventListener("touchend",e=>{if(tx===null)return;const d=e.changedTouches[0].clientX-tx;if(Math.abs(d)>50)show(cur+(d<0?1:-1));tx=null});
 const tt=document.getElementById("toTop");
@@ -411,36 +370,6 @@ fillKuro();
 if("ResizeObserver" in window){let last=0;new ResizeObserver(()=>{const h=work.scrollHeight;if(Math.abs(h-last)>40){last=h;fillKuro()}}).observe(work)}
 addEventListener("hashchange",fillKuro);
 
-/* Print requests: build the address only in script, then open a prefilled email */
-const reqTo=["yosotattoo","gmail.com"].join("@");
-const dlg=document.getElementById("reqDlg"),rf=document.getElementById("reqForm"),rmsg=document.getElementById("reqMsg");
-const rmsgDefault=rmsg.textContent;
-document.getElementById("reqAddr").textContent=reqTo;
-function openReq(frame){
-  if(frame!==undefined)document.getElementById("reqFrame").value=frame;
-  rmsg.textContent=rmsgDefault;
-  if(typeof dlg.showModal==="function")dlg.showModal();else dlg.setAttribute("open","");
-  document.getElementById("reqName").focus();
-}
-document.querySelectorAll("[data-request]").forEach(b=>b.addEventListener("click",()=>openReq()));
-document.getElementById("lbReq").addEventListener("click",e=>{e.stopPropagation();openReq(label(seq[cur].id))});
-document.getElementById("reqCancel").addEventListener("click",()=>dlg.close());
-rf.addEventListener("submit",e=>{
-  e.preventDefault();
-  const name=document.getElementById("reqName");
-  if(!name.value.trim()){rmsg.textContent="Please add your name.";name.focus();return}
-  const frame=document.getElementById("reqFrame").value.trim(),size=document.getElementById("reqSize").value,msg=document.getElementById("reqMsgText").value.trim();
-  const subject="Yosokuro print request"+(frame?" — "+frame:"");
-  const body=["Name: "+name.value.trim(),"Frame: "+(frame||"(not given)"),"Size: "+(size||"Not sure yet"),"","Message:",msg||"(none)","","Sent from kuro.yoso.one"].join("\n");
-  location.href="mailto:"+reqTo+"?subject="+encodeURIComponent(subject)+"&body="+encodeURIComponent(body);
-  rmsg.textContent="Your email app should now open with the request. If nothing happened, copy the address below and write directly.";
-});
-document.getElementById("reqCopy").addEventListener("click",async()=>{
-  const b=document.getElementById("reqCopy");
-  try{await navigator.clipboard.writeText(reqTo);b.textContent="Copied"}
-  catch(_){const r=document.createRange();r.selectNodeContents(document.getElementById("reqAddr"));const sel=getSelection();sel.removeAllRanges();sel.addRange(r);b.textContent="Selected"}
-  setTimeout(()=>{b.textContent="Copy"},2000);
-});
 </script>
 <script src="assets/list-choice.js" defer></script>
 </body>
