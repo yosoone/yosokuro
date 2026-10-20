@@ -32,6 +32,8 @@ img{max-width:100%}
   --rule:#262625;         /* hairlines */
   --frame:#141413;        /* placeholder behind loading frames */
   --veil:#050505; /* lightbox ground, always dark */
+  --film:#171614; /* filmstrip base in the lightbox */
+  --hole:#8f8c86; /* filmstrip sprocket holes */
   --f-kanji:"Shippori Mincho B1","Hiragino Mincho ProN","Yu Mincho",serif;
   --f-text:"IBM Plex Sans","Helvetica Neue",Arial,sans-serif;
   --f-mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
@@ -150,6 +152,15 @@ footer b{font:800 18px/1 var(--f-kanji);letter-spacing:0;text-transform:none;col
 .lb .bar{display:flex;justify-content:space-between;align-items:center;padding:14px 18px;font:400 11px/1 var(--f-mono);letter-spacing:.12em;text-transform:uppercase;color:#9a9893}
 .lb .stage{position:relative;display:flex;align-items:center;justify-content:center;min-height:0;padding:0 56px}
 .lb .stage img{max-width:100%;max-height:100%;object-fit:contain;display:block;user-select:none}
+/* Filmstrip: the frame sits on a strip of film base with sprocket holes along the long edges */
+.lb .stage img{box-sizing:border-box;padding:26px 8px;background-color:var(--film);
+  background-image:repeating-linear-gradient(90deg,transparent 0 8px,var(--hole) 8px 17px,transparent 17px 26px),repeating-linear-gradient(90deg,transparent 0 8px,var(--hole) 8px 17px,transparent 17px 26px);
+  background-size:100% 11px,100% 11px;background-position:0 7px,0 calc(100% - 7px);background-repeat:repeat-x;border-radius:2px}
+.lb .stage img.tall{padding:8px 26px;
+  background-image:repeating-linear-gradient(180deg,transparent 0 8px,var(--hole) 8px 17px,transparent 17px 26px),repeating-linear-gradient(180deg,transparent 0 8px,var(--hole) 8px 17px,transparent 17px 26px);
+  background-size:11px 100%,11px 100%;background-position:7px 0,calc(100% - 7px) 0;background-repeat:repeat-y}
+@media (max-width:820px){.lb .stage img{padding:18px 6px;background-size:100% 8px,100% 8px;background-position:0 5px,0 calc(100% - 5px)}
+  .lb .stage img.tall{padding:6px 18px;background-size:8px 100%,8px 100%;background-position:5px 0,calc(100% - 5px) 0}}
 .lb button{background:none;border:0;color:#e8e6e2;cursor:pointer;font:400 11px/1 var(--f-mono);letter-spacing:.12em;text-transform:uppercase;padding:10px}
 .lb .nav{position:absolute;top:0;bottom:0;width:56px;font-size:22px;letter-spacing:0;opacity:.6}
 .lb .nav:hover{opacity:1}
@@ -257,7 +268,7 @@ footer b{font:800 18px/1 var(--f-kanji);letter-spacing:0;text-transform:none;col
   </section>
   <footer>
     <span><b>Yosokuro</b></span>
-    <span>© <a class="hub-link" href="https://hub.yoso.one">Yoso</a> · kuro.yoso.one · <a href="feed.xml">RSS</a> · <span class="version" data-version>Beta 0.3</span></span>
+    <span>© <a class="hub-link" href="https://hub.yoso.one">Yoso</a> · kuro.yoso.one · <a href="feed.xml">RSS</a> · <span class="version" data-version>Beta 0.4</span></span>
     <span>Ricoh GR II · GR III</span>
   </footer>
 </div>
@@ -307,6 +318,7 @@ document.getElementById("count").textContent=seq.length+" frames";
 const lb=document.getElementById("lb"),li=document.getElementById("lbImg");let cur=0,last=null;
 function show(n){cur=(n+seq.length)%seq.length;const {id,c}=seq[cur];
   li.src=`img/full/${id}.jpg`;li.alt=`${c.e}, frame ${label(id)}`;
+  li.classList.toggle("tall",R[id]<1);
   document.getElementById("lbK").textContent=c.k;
   document.getElementById("lbNo").textContent=label(id);
   document.getElementById("lbPos").textContent=`${String(cur+1).padStart(2,"0")} / ${seq.length}`;
