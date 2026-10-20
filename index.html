@@ -61,7 +61,14 @@ a{color:inherit}
 
 /* Statement + index */
 .intro{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:48px;padding-block:72px 56px;border-bottom:1px solid var(--rule)}
-.intro .prints{margin-top:22px;font:400 11px/1.5 var(--f-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--dust)}
+/* Prints notice: framed so it reads as an offer, not a caption */
+.intro .prints{margin-top:36px;max-width:34rem;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px 24px;padding:20px 22px;border:1px solid var(--paper)}
+.prints .pt{display:block;font:800 clamp(20px,2vw,24px)/1.2 var(--f-kanji);color:var(--paper)}
+.prints .ps{display:block;margin-top:6px;font:400 11px/1.5 var(--f-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--dust)}
+.prints .ps .mail{letter-spacing:.04em}
+.prints .btn{display:inline-flex;align-items:center;min-height:44px;padding:0 20px;background:var(--paper);color:var(--ink);font:500 11px/1 var(--f-mono);letter-spacing:.14em;text-transform:uppercase;text-decoration:none;white-space:nowrap}
+.prints .btn:hover{opacity:.85}
+.prints .btn:focus-visible{outline:2px solid var(--paper);outline-offset:3px}
 .intro p{margin:0;max-width:34ch;font:500 clamp(22px,2.4vw,32px)/1.38 var(--f-kanji);text-wrap:pretty}
 .idx{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:0 24px;align-content:start}
 .idx a{display:flex;align-items:baseline;gap:12px;padding-block:10px;border-top:1px solid var(--rule);text-decoration:none}
@@ -210,7 +217,13 @@ footer b{font:800 18px/1 var(--f-kanji);letter-spacing:0;text-transform:none;col
   <section class="intro">
     <div>
       <p>A lifelong black-and-white photography project documenting Japan’s urban reality and the spirit of the Kami.</p>
-      <div class="prints">Prints available on request · <a class="mail" href="mailto:yosotattoo@gmail.com?subject=Yosokuro%20print">yosotattoo@gmail.com</a></div>
+      <div class="prints">
+        <div>
+          <span class="pt">Prints available on request</span>
+          <span class="ps">Every photograph on this site · <a class="mail" href="mailto:yosotattoo@gmail.com?subject=Yosokuro%20print">yosotattoo@gmail.com</a></span>
+        </div>
+        <a class="btn" href="mailto:yosotattoo@gmail.com?subject=Yosokuro%20print">Request a print</a>
+      </div>
     </div>
     <ol class="idx" id="idx"></ol>
   </section>
@@ -279,7 +292,7 @@ footer b{font:800 18px/1 var(--f-kanji);letter-spacing:0;text-transform:none;col
   </section>
   <footer>
     <span><b>Yosokuro</b></span>
-    <span>© <a class="hub-link" href="https://hub.yoso.one">Yoso</a> · kuro.yoso.one · <a href="feed.xml">RSS</a> · <span class="version" data-version>Beta 0.15</span></span>
+    <span>© <a class="hub-link" href="https://hub.yoso.one">Yoso</a> · kuro.yoso.one · <a href="feed.xml">RSS</a> · <span class="version" data-version>Beta 0.16</span></span>
     <span>Ricoh GR II · GR III</span>
   </footer>
 </div>
