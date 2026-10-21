@@ -1,5 +1,5 @@
 /* Yoso forms: a Cloudflare Worker at https://forms.yoso.one
-     /contact    the contact form on kuro.yoso.one: emails the message to Yoso
+     /contact    the contact forms (kuro.yoso.one, shinsei.yoso.one): emails the message to Yoso
                  (and, if ticked, adds the sender to the mailing list)
      /subscribe  the mailing-list form on every Yoso site (assets/list-choice.js):
                  adds the reader to Buttondown with the newsletters they ticked
@@ -22,8 +22,10 @@ const ORIGINS = [
 ];
 // The newsletters readers can choose; each is a Buttondown tag. Same list as check.py on every site.
 const NEWSLETTERS = ["one", "yosokuro", "shinsei", "river", "on"];
-const TOPICS = { print: "Print request", general: "General", other: "Other" };
-const LIMIT = { name: 120, email: 254, photo: 40, message: 5000 };
+// Topics a contact form may offer (each site shows its own choice of these).
+const TOPICS = { print: "Print request", work: "About a work", commission: "Commission",
+                 exhibition: "Exhibition", general: "General", other: "Other" };
+const LIMIT = { name: 120, email: 254, photo: 40, work: 160, message: 5000 };
 const EMAIL = /^[^\s@<>"]+@[^\s@<>"]+\.[^\s@<>"]+$/;
 
 export default {
@@ -62,8 +64,10 @@ async function contact({ env, get, cors, site, ip }) {
   const email = oneLine(get("email")).slice(0, LIMIT.email);
   const topic = TOPICS[get("topic")] ? get("topic") : "general";
   const photo = oneLine(get("photo")).replace(/[^A-Za-z0-9_-]/g, "").slice(0, LIMIT.photo);
+  const work = oneLine(get("work")).slice(0, LIMIT.work);
   const message = get("message").slice(0, LIMIT.message);
-  const join = get("subscribe") === "yosokuro";
+  // 'Also join the mailing list': the box's value is that site's newsletter tag.
+  const join = NEWSLETTERS.includes(get("subscribe")) ? get("subscribe") : "";
 
   if (!name || !message) return reply(cors, 400, "missing");
   if (!EMAIL.test(email)) return reply(cors, 400, "email");
@@ -74,8 +78,9 @@ async function contact({ env, get, cors, site, ip }) {
     `From: ${name} <${email}>`,
     `Topic: ${TOPICS[topic]}`,
     photo ? `Photograph: ${photo.toUpperCase()} (https://${site}/#f-${photo.toLowerCase()})` : null,
+    work ? `Work: ${work}` : null,
     `Sent from: ${site}`,
-    join ? "Mailing list: asked to join (Buttondown sends them a confirmation email)" : null,
+    join ? `Mailing list: asked to join (${join}); Buttondown confirms by email if needed` : null,
     "",
     message,
     "",
@@ -100,7 +105,7 @@ async function contact({ env, get, cors, site, ip }) {
   }
 
   // The message has gone; a mailing-list problem never turns it into an error.
-  if (join) await addToList(env, email, ["yosokuro"], ip, site);
+  if (join) await addToList(env, email, [join], ip, site);
   return reply(cors, 200);
 }
 
