@@ -125,22 +125,43 @@ async function human(env, token, ip) {
   return !!r.success;
 }
 
-// Buttondown: adds the reader (or adds tags to an existing reader). New readers get
-// Buttondown's confirmation email. The reader's own IP goes along for Buttondown's spam check.
+// Buttondown: every sign-up must be confirmed by the reader (double opt-in).
+//  - New address: created as usual; Buttondown sends its confirmation email.
+//  - Already an active subscriber: the ticked newsletters are added as tags; no email needed.
+//  - Known but not active (unsubscribed, removed, still unconfirmed): set back to 'unactivated',
+//    which sends a fresh confirmation email. Never re-subscribed directly, so nobody can put
+//    someone else back on the list just by typing their address.
+//  - Blocked, bounced or complained addresses are left alone.
+// The reader's own IP goes along for Buttondown's spam check.
+const ACTIVE = ["regular", "premium", "gifted", "trialed", "churning", "past_due", "paused", "cancelled", "unpaid"];
+const LEAVE = ["blocked", "complained", "undeliverable", "spammy"];
+
 async function addToList(env, email, tags, ip, site) {
-  if (!env.BUTTONDOWN_KEY) { console.log("buttondown: no key"); return false; }
+  const key = (env.BUTTONDOWN_KEY || "").trim();
+  if (!key) { console.log("buttondown: no key"); return false; }
+  const api = "https://api.buttondown.com/v1/subscribers";
+  const auth = { "Authorization": `Token ${key}`, "Content-Type": "application/json" };
+  const base = { email_address: email, tags, ip_address: ip || undefined, referrer_url: `https://${site}/` };
   try {
-    const r = await fetch("https://api.buttondown.com/v1/subscribers", {
+    let r = await fetch(api, { method: "POST", headers: auth, body: JSON.stringify(base) });
+    if (r.ok) return true;
+    const first = (await r.text()).slice(0, 300);
+    if (r.status !== 400) { console.log("buttondown create", r.status, first); return false; }
+
+    // 400: most likely the address already exists. Look it up.
+    const g = await fetch(`${api}/${encodeURIComponent(email)}`, { headers: auth });
+    if (!g.ok) { console.log("buttondown create", r.status, first, "| lookup", g.status); return false; }
+    const type = String((await g.json()).type || "");
+    if (LEAVE.includes(type)) { console.log("buttondown: left alone, type", type); return true; }
+
+    const body = ACTIVE.includes(type) ? base : { ...base, type: "unactivated" };
+    r = await fetch(api, {
       method: "POST",
-      headers: {
-        "Authorization": `Token ${env.BUTTONDOWN_KEY}`,
-        "Content-Type": "application/json",
-        "X-Buttondown-Collision-Behavior": "add",
-      },
-      body: JSON.stringify({ email_address: email, tags, ip_address: ip || undefined, referrer_url: `https://${site}/` }),
+      headers: { ...auth, "X-Buttondown-Collision-Behavior": "add" },
+      body: JSON.stringify(body),
     });
     if (r.ok) return true;
-    console.log("buttondown", r.status, (await r.text()).slice(0, 300));
+    console.log("buttondown update", type, r.status, (await r.text()).slice(0, 300));
   } catch (e) {
     console.log("buttondown failed", e && e.message);
   }
