@@ -55,6 +55,8 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;paddin
 .chrome>*{pointer-events:auto}
 .chrome.top{top:0;padding-top:calc(env(safe-area-inset-top,0px) + 16px)}
 .chrome.bot{bottom:0;padding-bottom:calc(env(safe-area-inset-bottom,0px) + 16px);font-variant-numeric:tabular-nums}
+.chrome .brand{display:flex;align-items:baseline;gap:12px}
+.chrome .beta{font-size:10px;letter-spacing:.18em;opacity:.7}
 .chrome .name{font:800 15px/1 var(--f-kanji);letter-spacing:.04em;text-transform:none;text-decoration:none}
 .chrome nav{display:flex;gap:22px}
 .chrome .k{font:800 14px/1 var(--f-kanji);letter-spacing:.05em;margin-right:12px}
@@ -144,6 +146,7 @@ body.still .chrome>*{pointer-events:none}
 /* Family mark on the cover */
 .family-mark{position:absolute;top:calc(env(safe-area-inset-top,0px) + 20px);left:50%;transform:translateX(-50%);display:block;width:48px;line-height:0}
 .family-mark img{display:block;width:48px;height:48px}
+@media (max-width:560px){.family-mark{top:calc(env(safe-area-inset-top,0px) + 64px)}}
 /* Test notice */
 .test{display:inline-block;margin:0 0 28px;padding:6px 10px;border:1px solid var(--line);font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--ash)}
 .info h3{margin:48px 0 14px;font:800 24px/1.2 var(--f-kanji)}
@@ -169,7 +172,7 @@ body.still .chrome>*{pointer-events:none}
 <main id="reel" aria-label="Yosokuro photographs"></main>
 
 <div class="chrome top">
-  <a class="name" href="#" id="toStart">Yosokuro</a>
+  <span class="brand"><a class="name" href="#" id="toStart">Yosokuro</a><span class="beta"><span class="version" data-version>Beta 0.31</span></span></span>
   <nav><button type="button" id="openIdx">Index</button><button type="button" id="openPrints">Prints<span id="pCount"></span></button><button type="button" id="openInfo">Info</button></nav>
 </div>
 <div class="chrome bot"><span><span class="k" id="nowK"></span><span id="nowNo"></span><button type="button" class="add" id="addBtn" aria-pressed="false" hidden>＋ Print</button></span><span id="nowN"></span></div>
@@ -236,7 +239,7 @@ body.still .chrome>*{pointer-events:none}
     </form>
 
     <footer>
-      <span>© <a class="hub-link" href="https://hub.yoso.one">Yoso</a> · kuro.yoso.one/full · <span class="version" data-version>Beta 0.30</span></span>
+      <span>© <a class="hub-link" href="https://hub.yoso.one">Yoso</a> · kuro.yoso.one/full · <span class="version" data-version>Beta 0.31</span></span>
       <span><a href="./">Current site</a></span>
     </footer>
   </div>
@@ -275,9 +278,14 @@ reel.querySelectorAll(".frame").forEach(f=>load.observe(f));
 
 /* Caption follows the screen in view */
 let curId="";
+/* The address bar follows the screen in view, so copying it shares that photograph */
+let addrT;
+function setAddress(sec){clearTimeout(addrT);addrT=setTimeout(()=>{
+  const h=sec.classList.contains("frame")?"#f-"+sec.dataset.id:(sec.id?"#"+sec.id:"");
+  if(location.hash!==h)try{history.replaceState(null,"",h||location.pathname+location.search)}catch{}},250)}
 const nowK=document.getElementById("nowK"),nowNo=document.getElementById("nowNo"),nowN=document.getElementById("nowN");
 const seen=new IntersectionObserver(es=>es.forEach(e=>{if(e.intersectionRatio<.6)return;const d=e.target.dataset;
-  nowK.textContent=d.k;nowNo.textContent=e.target.classList.contains("frame")?d.no:"";nowN.textContent=d.n;curId=d.id||"";syncAdd()}),{root:reel,threshold:.6});
+  nowK.textContent=d.k;nowNo.textContent=e.target.classList.contains("frame")?d.no:"";nowN.textContent=d.n;curId=d.id||"";syncAdd();setAddress(e.target)}),{root:reel,threshold:.6});
 reel.querySelectorAll("section").forEach(s=>seen.observe(s));
 
 /* Keyboard: arrows and space step one screen */
