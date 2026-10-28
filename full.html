@@ -36,7 +36,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;paddin
 :focus-visible{outline:1px solid var(--bone);outline-offset:4px}
 
 /* The reel */
-#reel{height:100%;overflow-y:auto;scroll-snap-type:y mandatory;overscroll-behavior:contain;scrollbar-width:none}
+#reel{height:100%;overflow-y:auto;touch-action:pan-y;scroll-snap-type:y mandatory;overscroll-behavior:contain;scrollbar-width:none}
 #reel::-webkit-scrollbar{display:none}
 .frame,.title{height:100%;scroll-snap-align:start;scroll-snap-stop:always;position:relative;display:flex;align-items:center;justify-content:center}
 .frame img{display:block;width:100%;height:100%;object-fit:contain;opacity:0;transition:opacity .6s ease}
@@ -66,12 +66,28 @@ body.still{cursor:none}
   padding:calc(env(safe-area-inset-top,0px) + 64px) max(16px,env(safe-area-inset-right,0px)) calc(env(safe-area-inset-bottom,0px) + 48px) var(--edge)}
 .ov .close{position:fixed;top:calc(env(safe-area-inset-top,0px) + 16px);right:max(16px,env(safe-area-inset-right,0px));font-size:11px;letter-spacing:.18em;text-transform:uppercase}
 .ov .inner{max-width:880px;margin-inline:auto}
-.chapters{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:0 40px}
-.chapters a{display:flex;align-items:baseline;gap:16px;padding-block:16px;border-top:1px solid var(--line);text-decoration:none}
-.chapters .k{font:800 34px/1 var(--f-kanji);min-width:2.2em}
-.chapters .e{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--ash)}
-.chapters .n{margin-left:auto;font-size:11px;color:var(--ash);font-variant-numeric:tabular-nums}
+.chapters{list-style:none;margin:0 0 8px;padding:0;display:flex;flex-wrap:wrap;gap:6px 22px}
+.chapters a{display:flex;align-items:baseline;gap:6px;padding-block:6px;text-decoration:none}
+.chapters .k{font:800 22px/1 var(--f-kanji)}
+.chapters .n{font-size:10px;color:var(--ash);font-variant-numeric:tabular-nums}
 .chapters a:hover .k{color:#fff}
+/* Contact sheet: every frame small, in justified rows that keep each frame's shape */
+#idx{background:var(--night)}
+#idx .inner{max-width:1400px}
+.sheet{--mrow:104px;--mgap:6px}
+.sheet section{padding-top:36px}
+.sheet h3{display:flex;align-items:baseline;gap:12px;margin:0 0 12px;font:800 26px/1 var(--f-kanji)}
+.sheet h3 span{font:400 10px/1 var(--f-mono);letter-spacing:.2em;text-transform:uppercase;color:var(--ash)}
+.rows{display:flex;flex-wrap:wrap;gap:var(--mgap)}
+.rows::after{content:"";flex-grow:999999}
+.m{position:relative;display:block;flex-grow:calc(var(--r)*100);width:calc(var(--r)*var(--mrow));background:#111;overflow:hidden}
+.m i{display:block;padding-bottom:calc(100%/var(--r))}
+.m img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;opacity:.82;transition:opacity .2s}
+.m:hover img,.m:focus-visible img{opacity:1}
+.m.now{outline:1px solid var(--bone);outline-offset:2px}
+.m.now img{opacity:1}
+.m.inlist::after{content:"✓";position:absolute;right:4px;bottom:3px;font-size:10px;color:#fff;mix-blend-mode:difference}
+@media (max-width:600px){.sheet{--mrow:64px;--mgap:4px}}
 .info h2{margin:0 0 28px;font:800 clamp(44px,8vw,80px)/1 var(--f-kanji)}
 .info p{margin:0 0 18px;max-width:58ch;font:500 17px/1.7 var(--f-kanji)}
 .info dl{margin:36px 0 0;display:grid;grid-template-columns:max-content minmax(0,1fr);max-width:58ch}
@@ -158,9 +174,9 @@ body.still .chrome>*{pointer-events:none}
 </div>
 <div class="chrome bot"><span><span class="k" id="nowK"></span><span id="nowNo"></span><button type="button" class="add" id="addBtn" aria-pressed="false" hidden>＋ Print</button></span><span id="nowN"></span></div>
 
-<section class="ov" id="idx" hidden aria-label="Chapters">
+<section class="ov" id="idx" hidden aria-label="Contact sheet">
   <button type="button" class="close" data-close>Close ✕</button>
-  <div class="inner"><ol class="chapters" id="chList"></ol></div>
+  <div class="inner"><ol class="chapters" id="chList"></ol><div class="sheet" id="sheet"></div></div>
 </section>
 
 <section class="ov prints" id="prints" hidden aria-label="Print list">
@@ -220,7 +236,7 @@ body.still .chrome>*{pointer-events:none}
     </form>
 
     <footer>
-      <span>© <a class="hub-link" href="https://hub.yoso.one">Yoso</a> · kuro.yoso.one/full · <span class="version" data-version>Beta 0.28</span></span>
+      <span>© <a class="hub-link" href="https://hub.yoso.one">Yoso</a> · kuro.yoso.one/full · <span class="version" data-version>Beta 0.29</span></span>
       <span><a href="./">Current site</a></span>
     </footer>
   </div>
@@ -238,10 +254,11 @@ const pad=n=>String(n).padStart(3,"0");
 reel.insertAdjacentHTML("beforeend",`<section class="title cover" data-k="" data-no="" data-n=""><a class="family-mark" href="https://hub.yoso.one"><img src="images/yoso-mark.png" alt="Yoso" width="48" height="48"></a><div class="k">黒</div><p class="line">Yosokuro. Black-and-white photographs of Japan by Yoso.</p><div class="hint">Scroll</div></section>`);
 
 /* Chapters: one kanji screen, then each frame full screen */
-let n=0;const list=document.getElementById("chList");
+let n=0;const list=document.getElementById("chList"),sheet=document.getElementById("sheet");
 CH.forEach(c=>{
   reel.insertAdjacentHTML("beforeend",`<section class="title" id="${c.id}" data-k="${c.k}" data-no="${c.e}" data-n=""><div class="k">${c.k}</div><div class="e">${c.e} · ${c.f.length}</div></section>`);
-  list.insertAdjacentHTML("beforeend",`<li><a href="#${c.id}" data-jump="${c.id}"><span class="k">${c.k}</span><span class="e">${c.e}</span><span class="n">${String(c.f.length).padStart(2,"0")}</span></a></li>`);
+  list.insertAdjacentHTML("beforeend",`<li><a href="#s-${c.id}" data-sheet="${c.id}" title="${c.e}"><span class="k">${c.k}</span><span class="n">${c.f.length}</span></a></li>`);
+  sheet.insertAdjacentHTML("beforeend",`<section id="s-${c.id}"><h3>${c.k}<span>${c.e} · ${c.f.length}</span></h3><div class="rows">${c.f.map(id=>`<a class="m" href="#f-${id}" data-go="${id}" style="--r:${R[id]}" aria-label="${c.e}, frame ${label(id)}"><i></i><img data-src="img/mini/${id}.jpg" alt=""></a>`).join("")}</div></section>`);
   c.f.forEach(id=>{n++;
     const s=document.createElement("section");s.className="frame";s.id="f-"+id;s.dataset.id=id;s.dataset.e=c.e;
     s.dataset.k=c.k;s.dataset.no=label(id);s.dataset.n=pad(n)+" / "+total;
@@ -271,7 +288,7 @@ addEventListener("keydown",e=>{
   if(e.key==="p"||e.key==="P"){if(curId)toggle(curId);return}
   if(["ArrowDown","ArrowRight","PageDown"," "].includes(e.key)){e.preventDefault();step(1)}
   if(["ArrowUp","ArrowLeft","PageUp"].includes(e.key)){e.preventDefault();step(-1)}
-  if(e.key==="i"||e.key==="I")open(idx);
+  if(e.key==="i"||e.key==="I"||e.key==="g"||e.key==="G")openSheet();
 });
 
 /* Chrome fades after 2.5 s without movement */
@@ -282,6 +299,12 @@ let tx=0,ty=0,tt=0;
 addEventListener("touchstart",e=>{const p=e.touches[0];tx=p.clientX;ty=p.clientY;tt=Date.now()},{passive:true,capture:true});
 addEventListener("touchend",e=>{const p=e.changedTouches[0];if(Math.hypot(p.clientX-tx,p.clientY-ty)<10&&Date.now()-tt<400)wake()},{passive:true,capture:true});
 addEventListener("focusin",wake);
+/* Pinch inwards on a photograph: zoom out to the contact sheet */
+let pinch0=0;
+reel.addEventListener("touchstart",e=>{pinch0=e.touches.length===2?Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY):0},{passive:true});
+reel.addEventListener("touchmove",e=>{if(!pinch0||e.touches.length!==2)return;
+  const d=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY);
+  if(d<pinch0*.7){pinch0=0;openSheet()}},{passive:true});
 /* A tap on hidden labels only reveals them; it never presses a button underneath */
 let wasStill=false;
 addEventListener("pointerdown",()=>{wasStill=document.body.classList.contains("still")},{capture:true,passive:true});
@@ -292,10 +315,19 @@ wake();
 const idx=document.getElementById("idx"),info=document.getElementById("info"),prints=document.getElementById("prints");
 function open(o){if(o===prints)renderList();closeAll();o.hidden=false;o.querySelector(".close").focus();wake()}
 function closeAll(){idx.hidden=true;info.hidden=true;prints.hidden=true}
-document.getElementById("openIdx").onclick=()=>open(idx);
+document.getElementById("openIdx").onclick=openSheet;
 document.getElementById("openInfo").onclick=()=>open(info);
 document.querySelectorAll("[data-close]").forEach(b=>b.onclick=closeAll);
-list.addEventListener("click",e=>{const a=e.target.closest("[data-jump]");if(!a)return;e.preventDefault();closeAll();document.getElementById(a.dataset.jump).scrollIntoView()});
+list.addEventListener("click",e=>{const a=e.target.closest("[data-sheet]");if(!a)return;e.preventDefault();document.getElementById("s-"+a.dataset.sheet).scrollIntoView({block:"start"})});
+sheet.addEventListener("click",e=>{const a=e.target.closest("[data-go]");if(!a)return;e.preventDefault();closeAll();document.getElementById("f-"+a.dataset.go).scrollIntoView()});
+/* Opening the sheet: load the small images once, mark where you are and what's in the print list */
+function openSheet(){
+  sheet.querySelectorAll("img[data-src]").forEach(im=>{im.src=im.dataset.src;im.removeAttribute("data-src")});
+  sheet.querySelectorAll(".m").forEach(m=>{const id=m.dataset.go;m.classList.toggle("now",id===curId);m.classList.toggle("inlist",has(id))});
+  open(idx);
+  const here=curId?sheet.querySelector(`[data-go="${curId}"]`):null;
+  if(here){here.scrollIntoView({block:"center"});here.focus({preventScroll:true})}else idx.scrollTop=0;
+}
 document.getElementById("toStart").onclick=e=>{e.preventDefault();closeAll();reel.scrollTo({top:0})};
 /* Print list: kept in this browser only */
 const SIZES=["Not sure yet","A4","A3","A2","A1"];
