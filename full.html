@@ -236,7 +236,7 @@ body.still .chrome>*{pointer-events:none}
     </form>
 
     <footer>
-      <span>© <a class="hub-link" href="https://hub.yoso.one">Yoso</a> · kuro.yoso.one/full · <span class="version" data-version>Beta 0.29</span></span>
+      <span>© <a class="hub-link" href="https://hub.yoso.one">Yoso</a> · kuro.yoso.one/full · <span class="version" data-version>Beta 0.30</span></span>
       <span><a href="./">Current site</a></span>
     </footer>
   </div>
@@ -294,7 +294,12 @@ addEventListener("keydown",e=>{
 /* Chrome fades after 2.5 s without movement */
 let t;function wake(){document.body.classList.remove("still");clearTimeout(t);t=setTimeout(()=>{if(idx.hidden&&info.hidden&&prints.hidden)document.body.classList.add("still")},2500)}
 /* Swipes and scrolling leave it hidden; a tap, a mouse move or keyboard focus brings it back */
-addEventListener("pointermove",e=>{if(e.pointerType==="mouse")wake()},{passive:true});
+/* Only a real mouse movement counts: browsers also send "moves" while the page scrolls under a still mouse */
+let mx=null,my=null;
+addEventListener("pointermove",e=>{if(e.pointerType!=="mouse")return;
+  if(mx!==null&&Math.abs(e.screenX-mx)<3&&Math.abs(e.screenY-my)<3)return;
+  const first=mx===null;mx=e.screenX;my=e.screenY;if(!first)wake()},{passive:true});
+addEventListener("keydown",wake,{capture:true});
 let tx=0,ty=0,tt=0;
 addEventListener("touchstart",e=>{const p=e.touches[0];tx=p.clientX;ty=p.clientY;tt=Date.now()},{passive:true,capture:true});
 addEventListener("touchend",e=>{const p=e.changedTouches[0];if(Math.hypot(p.clientX-tx,p.clientY-ty)<10&&Date.now()-tt<400)wake()},{passive:true,capture:true});
