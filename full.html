@@ -19,7 +19,8 @@
   --bone:#e9e7e2;          /* text */
   --ash:#8b8984;           /* secondary text */
   --line:#262624;          /* hairlines in overlays */
-  --veil:rgba(0,0,0,.94);  /* index and info overlays */
+  --veil:rgba(0,0,0,.94);
+  --gold:#e3bb4a;          /* the family mark's gold: marks the frame you were watching */  /* index and info overlays */
   --f-kanji:"Shippori Mincho B1","Hiragino Mincho ProN","Yu Mincho",serif;
   --f-mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
   --edge:max(16px,env(safe-area-inset-left,0px));
@@ -39,6 +40,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;paddin
 #reel{height:100%;overflow-y:auto;touch-action:pan-y;scroll-snap-type:y mandatory;overscroll-behavior:contain;scrollbar-width:none}
 #reel::-webkit-scrollbar{display:none}
 .frame,.title{height:100%;scroll-snap-align:start;scroll-snap-stop:always;position:relative;display:flex;align-items:center;justify-content:center}
+.frame{cursor:zoom-out}
 .frame img{display:block;width:100%;height:100%;object-fit:contain;opacity:0;transition:opacity .6s ease}
 .frame img.ok{opacity:1}
 .title{flex-direction:column;gap:18px}
@@ -91,8 +93,11 @@ body.still{cursor:none}
 .m i{display:block;padding-bottom:calc(100%/var(--r))}
 .m img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;opacity:.82;transition:opacity .2s}
 .m:hover img,.m:focus-visible img{opacity:1}
-.m.now{outline:1px solid var(--bone);outline-offset:2px}
+.m.now{outline:2px solid var(--gold);outline-offset:3px;box-shadow:0 0 22px 2px rgba(227,187,74,.45);z-index:1}
 .m.now img{opacity:1}
+.m.now.glow{animation:glow 1.6s ease-in-out 2}
+@keyframes glow{0%,100%{box-shadow:0 0 22px 2px rgba(227,187,74,.45)}50%{box-shadow:0 0 44px 10px rgba(227,187,74,.75)}}
+@media (prefers-reduced-motion:reduce){.m.now.glow{animation:none}}
 .m.inlist::after{content:"✓";position:absolute;right:4px;bottom:3px;font-size:10px;color:#fff;mix-blend-mode:difference}
 @media (max-width:600px){.sheet{--mrow:64px;--mgap:4px}}
 .info h2{margin:0 0 28px;font:800 clamp(44px,8vw,80px)/1 var(--f-kanji)}
@@ -177,7 +182,7 @@ body.still .chrome>*{pointer-events:none}
 <main id="reel" aria-label="Yosokuro photographs"></main>
 
 <div class="chrome top">
-  <span class="brand"><a class="name" href="#" id="toStart">Yosokuro</a><span class="beta"><span class="version" data-version>Beta 0.32</span></span></span>
+  <span class="brand"><a class="name" href="#" id="toStart">Yosokuro</a><span class="beta"><span class="version" data-version>Beta 0.33</span></span></span>
   <nav><button type="button" id="openIdx">Index</button><button type="button" id="openPrints">Prints<span id="pCount"></span></button><button type="button" id="openInfo">Info</button></nav>
 </div>
 <div class="chrome bot"><span><span class="k" id="nowK"></span><span id="nowNo"></span><button type="button" class="add" id="addBtn" aria-pressed="false" hidden>＋ Print</button></span><span id="nowN"></span></div>
@@ -244,7 +249,7 @@ body.still .chrome>*{pointer-events:none}
     </form>
 
     <footer>
-      <span>© <a class="hub-link" href="https://hub.yoso.one">Yoso</a> · kuro.yoso.one/full · <span class="version" data-version>Beta 0.32</span></span>
+      <span>© <a class="hub-link" href="https://hub.yoso.one">Yoso</a> · kuro.yoso.one/full · <span class="version" data-version>Beta 0.33</span></span>
       <span><a href="./">Current site</a></span>
     </footer>
   </div>
@@ -317,6 +322,15 @@ let tx=0,ty=0,tt=0;
 addEventListener("touchstart",e=>{const p=e.touches[0];tx=p.clientX;ty=p.clientY;tt=Date.now()},{passive:true,capture:true});
 addEventListener("touchend",e=>{const p=e.changedTouches[0];if(Math.hypot(p.clientX-tx,p.clientY-ty)<10&&Date.now()-tt<400)wake()},{passive:true,capture:true});
 addEventListener("focusin",wake);
+/* Click or tap on the photograph itself: zoom out to the contact sheet.
+   A tap on the black around it only shows the menu. */
+reel.addEventListener("click",e=>{
+  const f=e.target.closest(".frame");if(!f){wake();return}
+  const im=f.querySelector("img"),r=im.getBoundingClientRect(),ratio=R[f.dataset.id];
+  let w=r.width,h=w/ratio;if(h>r.height){h=r.height;w=h*ratio}
+  const x0=r.left+(r.width-w)/2,y0=r.top+(r.height-h)/2;
+  if(e.clientX>=x0&&e.clientX<=x0+w&&e.clientY>=y0&&e.clientY<=y0+h)openSheet();else wake();
+});
 /* Pinch inwards on a photograph: zoom out to the contact sheet */
 let pinch0=0;
 reel.addEventListener("touchstart",e=>{pinch0=e.touches.length===2?Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY):0},{passive:true});
@@ -344,7 +358,8 @@ function openSheet(){
   sheet.querySelectorAll(".m").forEach(m=>{const id=m.dataset.go;m.classList.toggle("now",id===curId);m.classList.toggle("inlist",has(id))});
   open(idx);
   const here=curId?sheet.querySelector(`[data-go="${curId}"]`):null;
-  if(here){here.scrollIntoView({block:"center"});here.focus({preventScroll:true})}else idx.scrollTop=0;
+  sheet.querySelectorAll(".glow").forEach(m=>m.classList.remove("glow"));
+  if(here){here.scrollIntoView({block:"center"});here.focus({preventScroll:true});void here.offsetWidth;here.classList.add("glow")}else idx.scrollTop=0;
 }
 document.getElementById("toStart").onclick=e=>{e.preventDefault();closeAll();reel.scrollTo({top:0})};
 /* Print list: kept in this browser only */
