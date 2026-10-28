@@ -81,6 +81,50 @@ body.still{cursor:none}
 .info a{text-underline-offset:3px}
 @media (prefers-reduced-motion:reduce){.frame img,.chrome{transition:none}}
 
+/* Print list */
+.chrome .add{margin-left:14px;padding:6px 0;letter-spacing:.18em}
+.chrome .add[aria-pressed="true"]::before{content:"✓ "}
+.chrome .add[hidden]{display:none}
+body.still .chrome>*{pointer-events:none}
+.plist{list-style:none;margin:0 0 36px;padding:0;max-width:640px}
+.plist li{display:grid;grid-template-columns:72px minmax(0,1fr) auto auto;gap:14px;align-items:center;padding-block:12px;border-top:1px solid var(--line)}
+.plist img{width:72px;height:72px;object-fit:cover;display:block;background:#111}
+.plist .who{display:grid;gap:4px;min-width:0}
+.plist .who b{font:800 18px/1 var(--f-kanji)}
+.plist .who a{font-size:11px;letter-spacing:.12em;color:var(--ash);text-decoration:none}
+.plist select{background:transparent;color:var(--bone);border:1px solid var(--line);font:inherit;font-size:12px;padding:10px 8px;min-height:44px}
+.plist select option{background:#000}
+.plist .rm{border:1px solid var(--line);min-width:44px;min-height:44px;font-size:12px;color:var(--ash)}
+.plist .rm:hover{color:var(--bone);border-color:var(--bone)}
+.empty{margin:0 0 28px;color:var(--ash);font:500 16px/1.7 var(--f-kanji);max-width:46ch}
+.prints h2{margin:0 0 10px;font:800 clamp(40px,7vw,72px)/1 var(--f-kanji)}
+.prints .lede{margin:0 0 32px;color:var(--ash);max-width:58ch;font:500 15px/1.7 var(--f-kanji)}
+.prints .cf{max-width:640px}
+@media (max-width:520px){.plist li{grid-template-columns:56px minmax(0,1fr) auto;row-gap:10px}.plist img{width:56px;height:56px}.plist select{grid-column:2/3}.plist .rm{grid-column:3/4;grid-row:1/3}}
+/* Contact form (same look as the main page) */
+.cf{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px 20px}
+.cf .full{grid-column:1/-1}
+.cf label{display:block;margin-bottom:8px;font:400 11px/1 var(--f-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--dust)}
+.cf input,.cf select,.cf textarea{display:block;width:100%;background:transparent;border:1px solid var(--rule);border-radius:0;color:var(--paper);font:400 16px/1.4 var(--f-text);padding:12px 14px;min-height:44px;outline:none;transition:border-color .2s}
+.cf select{appearance:none;background-image:linear-gradient(45deg,transparent 50%,var(--dust) 50%),linear-gradient(135deg,var(--dust) 50%,transparent 50%);background-position:calc(100% - 20px) 50%,calc(100% - 15px) 50%;background-size:5px 5px;background-repeat:no-repeat;padding-right:40px}
+.cf select option{background:var(--ink);color:var(--paper)}
+.cf textarea{min-height:160px;resize:vertical}
+.cf input:focus-visible,.cf select:focus-visible,.cf textarea:focus-visible{border-color:var(--paper);outline:2px solid var(--paper);outline-offset:2px}
+.cf .photo-tag{display:flex;align-items:center;gap:12px;font:400 11px/1.4 var(--f-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--paper)}
+.cf .photo-tag button{background:none;border:1px solid var(--rule);color:var(--dust);cursor:pointer;font:inherit;padding:6px 10px;min-height:32px}
+.cf .photo-tag button:hover{color:var(--paper);border-color:var(--paper)}
+.cf .hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+.cf .send{display:flex;flex-wrap:wrap;align-items:center;gap:12px 20px}
+.cf .send button{background:var(--paper);color:var(--ink);border:0;cursor:pointer;padding:0 24px;min-height:44px;font:500 11px/1 var(--f-mono);letter-spacing:.14em;text-transform:uppercase}
+.cf .send button[disabled]{opacity:.5;cursor:wait}
+.cf .send button:focus-visible{outline:2px solid var(--paper);outline-offset:3px}
+#cfMsg{min-height:1.5em;font:400 13px/1.5 var(--f-text);color:var(--paper)}
+.cf .sub{display:flex;align-items:flex-start;gap:12px;cursor:pointer;margin:0;font:400 14px/1.5 var(--f-text);letter-spacing:0;text-transform:none;color:var(--paper)}
+.cf .sub input{flex:none;width:20px;height:20px;min-height:0;margin:1px 0 0;padding:0;accent-color:var(--paper)}
+.cf .sub small{display:block;color:var(--dust);font-size:13px}
+.cf .note{margin:0;font:400 11px/1.6 var(--f-mono);letter-spacing:.06em;color:var(--dust)}
+@media (max-width:520px){.cf{grid-template-columns:minmax(0,1fr)}}
+
 /* Family mark on the cover */
 .family-mark{position:absolute;top:calc(env(safe-area-inset-top,0px) + 20px);left:50%;transform:translateX(-50%);display:block;width:48px;line-height:0}
 .family-mark img{display:block;width:48px;height:48px}
@@ -110,13 +154,36 @@ body.still{cursor:none}
 
 <div class="chrome top">
   <a class="name" href="#" id="toStart">Yosokuro</a>
-  <nav><button type="button" id="openIdx">Index</button><button type="button" id="openInfo">Info</button></nav>
+  <nav><button type="button" id="openIdx">Index</button><button type="button" id="openPrints">Prints<span id="pCount"></span></button><button type="button" id="openInfo">Info</button></nav>
 </div>
-<div class="chrome bot"><span><span class="k" id="nowK"></span><span id="nowNo"></span></span><span id="nowN"></span></div>
+<div class="chrome bot"><span><span class="k" id="nowK"></span><span id="nowNo"></span><button type="button" class="add" id="addBtn" aria-pressed="false" hidden>＋ Print</button></span><span id="nowN"></span></div>
 
 <section class="ov" id="idx" hidden aria-label="Chapters">
   <button type="button" class="close" data-close>Close ✕</button>
   <div class="inner"><ol class="chapters" id="chList"></ol></div>
+</section>
+
+<section class="ov prints" id="prints" hidden aria-label="Print list">
+  <button type="button" class="close" data-close>Close ✕</button>
+  <div class="inner">
+    <h2>Prints</h2>
+    <p class="lede">Prints of every photograph are available on request. Add frames with ＋ Print, choose a size for each, and send the list. Yoso will reply by email with prices and details.</p>
+    <p class="empty" id="pEmpty">Your print list is empty. Tap a photograph to show ＋ Print, then add it here.</p>
+    <ol class="plist" id="pList"></ol>
+    <form class="cf" id="cf" action="https://forms.yoso.one/contact" method="post" novalidate hidden>
+      <input type="hidden" name="topic" value="print">
+      <input type="hidden" name="photo" id="cfPhoto">
+      <div><label for="cfName">Name</label><input id="cfName" name="name" autocomplete="name" maxlength="120" required></div>
+      <div><label for="cfEmail">Email</label><input id="cfEmail" name="email" type="email" autocomplete="email" maxlength="254" required></div>
+      <div class="hp" aria-hidden="true"><label for="cfWebsite">Leave this empty</label><input id="cfWebsite" name="website" tabindex="-1" autocomplete="off"></div>
+      <div class="full"><label for="cfNotes">Notes (optional)</label><textarea id="cfNotes" maxlength="3000" placeholder="Paper, framing, where to send it"></textarea></div>
+      <textarea name="message" id="cfMessage" hidden></textarea>
+      <div class="full"><label class="sub" for="cfSub"><input type="checkbox" id="cfSub" name="subscribe" value="yosokuro"><span>Also join the Yosokuro mailing list<small>New photographs now and then. Buttondown confirms by email.</small></span></label></div>
+      <div class="full cf-turnstile" id="cfTs" data-sitekey="0x4AAAAAAFeWKK51BEJbKJSu" data-appearance="interaction-only"></div>
+      <div class="full send"><button type="submit" id="cfSend">Send request</button><span id="cfMsg" role="status" aria-live="polite"></span></div>
+      <p class="full note">Your name, email and list go to Yoso by email and are used only to reply. Nothing is kept on this site. A spam check by Cloudflare runs in the background.</p>
+    </form>
+  </div>
 </section>
 
 <section class="ov info" id="info" hidden aria-label="About">
@@ -127,7 +194,7 @@ body.still{cursor:none}
     <p>A lifelong black-and-white photography project documenting Japan’s urban reality and the spirit of the Kami.</p>
     <p>Photographs by Yoso, a tattoo artist and multimedia practitioner based in Miyazaki, Japan.</p>
     <dl>
-      <dt>Prints</dt><dd>Available on request · <a href="./#contact">Contact form</a> · <a href="mailto:yosotattoo@gmail.com?subject=Yosokuro%20print">yosotattoo@gmail.com</a></dd>
+      <dt>Prints</dt><dd>Available on request · add frames with ＋ Print · <a href="mailto:yosotattoo@gmail.com?subject=Yosokuro%20print">yosotattoo@gmail.com</a></dd>
       <dt>Feedback</dt><dd>On this test version: <a href="mailto:yosotattoo@gmail.com?subject=Yosokuro%20full-screen%20test">yosotattoo@gmail.com</a></dd>
       <dt>Cameras</dt><dd>Ricoh GR II · Ricoh GR III</dd>
       <dt>Follow</dt><dd><a href="feed.xml">RSS</a></dd>
@@ -153,7 +220,7 @@ body.still{cursor:none}
     </form>
 
     <footer>
-      <span>© <a class="hub-link" href="https://hub.yoso.one">Yoso</a> · kuro.yoso.one/full · <span class="version" data-version>Beta 0.27</span></span>
+      <span>© <a class="hub-link" href="https://hub.yoso.one">Yoso</a> · kuro.yoso.one/full · <span class="version" data-version>Beta 0.28</span></span>
       <span><a href="./">Current site</a></span>
     </footer>
   </div>
@@ -176,7 +243,7 @@ CH.forEach(c=>{
   reel.insertAdjacentHTML("beforeend",`<section class="title" id="${c.id}" data-k="${c.k}" data-no="${c.e}" data-n=""><div class="k">${c.k}</div><div class="e">${c.e} · ${c.f.length}</div></section>`);
   list.insertAdjacentHTML("beforeend",`<li><a href="#${c.id}" data-jump="${c.id}"><span class="k">${c.k}</span><span class="e">${c.e}</span><span class="n">${String(c.f.length).padStart(2,"0")}</span></a></li>`);
   c.f.forEach(id=>{n++;
-    const s=document.createElement("section");s.className="frame";s.id="f-"+id;
+    const s=document.createElement("section");s.className="frame";s.id="f-"+id;s.dataset.id=id;s.dataset.e=c.e;
     s.dataset.k=c.k;s.dataset.no=label(id);s.dataset.n=pad(n)+" / "+total;
     s.innerHTML=`<img alt="${c.e}, frame ${label(id)}" data-src="img/full/${id}.jpg">`;
     reel.appendChild(s);
@@ -190,43 +257,101 @@ const load=new IntersectionObserver(es=>es.forEach(e=>{if(!e.isIntersecting)retu
 reel.querySelectorAll(".frame").forEach(f=>load.observe(f));
 
 /* Caption follows the screen in view */
+let curId="";
 const nowK=document.getElementById("nowK"),nowNo=document.getElementById("nowNo"),nowN=document.getElementById("nowN");
 const seen=new IntersectionObserver(es=>es.forEach(e=>{if(e.intersectionRatio<.6)return;const d=e.target.dataset;
-  nowK.textContent=d.k;nowNo.textContent=e.target.classList.contains("frame")?d.no:"";nowN.textContent=d.n}),{root:reel,threshold:.6});
+  nowK.textContent=d.k;nowNo.textContent=e.target.classList.contains("frame")?d.no:"";nowN.textContent=d.n;curId=d.id||"";syncAdd()}),{root:reel,threshold:.6});
 reel.querySelectorAll("section").forEach(s=>seen.observe(s));
 
 /* Keyboard: arrows and space step one screen */
 const screens=()=>[...reel.children];
 function step(d){const h=reel.clientHeight;reel.scrollTo({top:Math.round(reel.scrollTop/h+d)*h,behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth"})}
 addEventListener("keydown",e=>{
-  if(!idx.hidden||!info.hidden){if(e.key==="Escape")closeAll();return}
+  if(!idx.hidden||!info.hidden||!prints.hidden){if(e.key==="Escape")closeAll();return}
+  if(e.key==="p"||e.key==="P"){if(curId)toggle(curId);return}
   if(["ArrowDown","ArrowRight","PageDown"," "].includes(e.key)){e.preventDefault();step(1)}
   if(["ArrowUp","ArrowLeft","PageUp"].includes(e.key)){e.preventDefault();step(-1)}
   if(e.key==="i"||e.key==="I")open(idx);
 });
 
 /* Chrome fades after 2.5 s without movement */
-let t;function wake(){document.body.classList.remove("still");clearTimeout(t);t=setTimeout(()=>{if(idx.hidden&&info.hidden)document.body.classList.add("still")},2500)}
+let t;function wake(){document.body.classList.remove("still");clearTimeout(t);t=setTimeout(()=>{if(idx.hidden&&info.hidden&&prints.hidden)document.body.classList.add("still")},2500)}
 /* Swipes and scrolling leave it hidden; a tap, a mouse move or keyboard focus brings it back */
 addEventListener("pointermove",e=>{if(e.pointerType==="mouse")wake()},{passive:true});
 let tx=0,ty=0,tt=0;
 addEventListener("touchstart",e=>{const p=e.touches[0];tx=p.clientX;ty=p.clientY;tt=Date.now()},{passive:true,capture:true});
 addEventListener("touchend",e=>{const p=e.changedTouches[0];if(Math.hypot(p.clientX-tx,p.clientY-ty)<10&&Date.now()-tt<400)wake()},{passive:true,capture:true});
 addEventListener("focusin",wake);
+/* A tap on hidden labels only reveals them; it never presses a button underneath */
+let wasStill=false;
+addEventListener("pointerdown",()=>{wasStill=document.body.classList.contains("still")},{capture:true,passive:true});
+document.querySelectorAll(".chrome").forEach(ch=>ch.addEventListener("click",e=>{if(wasStill){e.preventDefault();e.stopPropagation();wasStill=false}},{capture:true}));
 wake();
 
 /* Overlays */
-const idx=document.getElementById("idx"),info=document.getElementById("info");
-function open(o){closeAll();o.hidden=false;o.querySelector(".close").focus();wake()}
-function closeAll(){idx.hidden=true;info.hidden=true}
+const idx=document.getElementById("idx"),info=document.getElementById("info"),prints=document.getElementById("prints");
+function open(o){if(o===prints)renderList();closeAll();o.hidden=false;o.querySelector(".close").focus();wake()}
+function closeAll(){idx.hidden=true;info.hidden=true;prints.hidden=true}
 document.getElementById("openIdx").onclick=()=>open(idx);
 document.getElementById("openInfo").onclick=()=>open(info);
 document.querySelectorAll("[data-close]").forEach(b=>b.onclick=closeAll);
 list.addEventListener("click",e=>{const a=e.target.closest("[data-jump]");if(!a)return;e.preventDefault();closeAll();document.getElementById(a.dataset.jump).scrollIntoView()});
 document.getElementById("toStart").onclick=e=>{e.preventDefault();closeAll();reel.scrollTo({top:0})};
+/* Print list: kept in this browser only */
+const SIZES=["Not sure yet","A4","A3","A2","A1"];
+const KEY="yosokuro-prints";
+let plist=[];try{plist=JSON.parse(localStorage.getItem(KEY)||"[]").filter(x=>x&&R[x.id])}catch{plist=[]}
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(plist))}catch{}};
+const has=id=>plist.some(x=>x.id===id);
+const chapterOf=id=>CH.find(c=>c.f.includes(id));
+const addBtn=document.getElementById("addBtn"),pCount=document.getElementById("pCount");
+function syncAdd(){addBtn.hidden=!curId;const on=has(curId);addBtn.setAttribute("aria-pressed",on);addBtn.textContent=on?"In print list":"＋ Print";
+  pCount.textContent=plist.length?" ("+plist.length+")":""}
+function toggle(id){plist=has(id)?plist.filter(x=>x.id!==id):[...plist,{id,size:"Not sure yet"}];save();syncAdd();wake()}
+addBtn.onclick=e=>{e.stopPropagation();if(curId)toggle(curId)};
+document.getElementById("openPrints").onclick=()=>open(prints);
+const pList=document.getElementById("pList"),cf=document.getElementById("cf");
+function renderList(){
+  pList.textContent="";
+  plist.forEach((x,i)=>{const c=chapterOf(x.id);const li=document.createElement("li");
+    li.innerHTML=`<img src="img/thumb/${x.id}.jpg" alt="${c.e}, frame ${label(x.id)}" width="72" height="72" loading="lazy"><span class="who"><b>${c.k}</b><a href="#f-${x.id}" data-go="${x.id}">${label(x.id)} · ${c.e}</a></span><select aria-label="Size for ${label(x.id)}">${SIZES.map(z=>`<option${z===x.size?" selected":""}>${z}</option>`).join("")}</select><button type="button" class="rm" aria-label="Remove ${label(x.id)}">✕</button>`;
+    li.querySelector("select").onchange=e=>{x.size=e.target.value;save()};
+    li.querySelector(".rm").onclick=()=>{plist=plist.filter(y=>y.id!==x.id);save();syncAdd();renderList()};
+    li.querySelector("[data-go]").onclick=e=>{e.preventDefault();closeAll();document.getElementById("f-"+x.id).scrollIntoView()};
+    pList.appendChild(li)});
+  document.getElementById("pEmpty").hidden=plist.length>0;cf.hidden=plist.length===0;
+}
+const cfMsg=document.getElementById("cfMsg"),cfSend=document.getElementById("cfSend");
+const say=t=>{cfMsg.textContent=t};
+const ERR={missing:"Please add your name.",email:"Please check your email address.",spam:"The spam check didn’t pass. Please try again.",
+  send:"The request couldn’t be sent just now. Please try again, or email yosotattoo@gmail.com."};
+cf.addEventListener("submit",async e=>{
+  e.preventDefault();
+  const F=cf.elements,name=F["name"].value.trim(),email=F["email"].value.trim();
+  if(!plist.length)return;
+  if(!name){say(ERR.missing);F["name"].focus();return}
+  if(!F["email"].checkValidity()||!email){say(ERR.email);F["email"].focus();return}
+  const lines=plist.map((x,i)=>{const c=chapterOf(x.id);return `${i+1}. ${label(x.id)} (${c.k} ${c.e}) · ${x.size} · https://kuro.yoso.one/#f-${x.id}`});
+  const notes=document.getElementById("cfNotes").value.trim();
+  F["message"].value=`Print list (${plist.length}):\n${lines.join("\n")}`+(notes?`\n\nNotes:\n${notes}`:"");
+  document.getElementById("cfPhoto").value=plist.length===1?plist[0].id:"";
+  cfSend.disabled=true;say("Sending…");
+  try{
+    const r=await fetch(cf.action,{method:"POST",body:new FormData(cf)});
+    const j=await r.json().catch(()=>({}));
+    if(r.ok&&j.ok){const sub=F["subscribe"].checked;cf.reset();plist=[];save();syncAdd();renderList();cf.hidden=false;
+      document.getElementById("pEmpty").textContent="Thank you. Your print list is on its way, and Yoso will reply by email."+(sub?" Buttondown will email you to confirm the mailing list.":"");document.getElementById("pEmpty").hidden=false;cf.hidden=true}
+    else say(ERR[j.error]||ERR.send);
+  }catch{say(ERR.send)}
+  cfSend.disabled=false;
+  if(window.turnstile)try{turnstile.reset("#cfTs")}catch{}
+});
+syncAdd();
+
 if(location.hash){const el=document.getElementById(location.hash.slice(1));el&&el.scrollIntoView()}
 </script>
 <script src="assets/list-choice.js" defer></script>
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 <script src="assets/stats.js" defer></script>
 </body>
 </html>
