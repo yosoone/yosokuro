@@ -46,7 +46,12 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;paddin
 .title .e{font:400 11px/1 var(--f-mono);letter-spacing:.3em;text-transform:uppercase;color:var(--ash)}
 .cover .k{font-size:clamp(64px,13vmin,150px);letter-spacing:.02em}
 .cover .line{max-width:34ch;text-align:center;font:500 15px/1.6 var(--f-kanji);color:var(--ash);padding-inline:var(--edge)}
-.cover .hint{position:absolute;bottom:calc(env(safe-area-inset-bottom,0px) + 28px);font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:var(--ash)}
+.cover .hint{position:absolute;bottom:calc(env(safe-area-inset-bottom,0px) + 22px);display:flex;flex-direction:column;align-items:center;gap:10px;
+  font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:var(--ash);animation:hint 2.4s ease-in-out infinite}
+.cover .hint svg{display:block;width:30px;height:30px;animation:drop 2.4s ease-in-out infinite}
+@keyframes hint{0%,100%{opacity:.45}50%{opacity:1}}
+@keyframes drop{0%,100%{transform:translateY(0)}50%{transform:translateY(6px)}}
+@media (prefers-reduced-motion:reduce){.cover .hint,.cover .hint svg{animation:none;opacity:1}}
 
 /* Quiet chrome: shows on movement, fades when still */
 .chrome{position:fixed;left:0;right:0;z-index:5;display:flex;justify-content:space-between;align-items:center;
@@ -172,7 +177,7 @@ body.still .chrome>*{pointer-events:none}
 <main id="reel" aria-label="Yosokuro photographs"></main>
 
 <div class="chrome top">
-  <span class="brand"><a class="name" href="#" id="toStart">Yosokuro</a><span class="beta"><span class="version" data-version>Beta 0.31</span></span></span>
+  <span class="brand"><a class="name" href="#" id="toStart">Yosokuro</a><span class="beta"><span class="version" data-version>Beta 0.32</span></span></span>
   <nav><button type="button" id="openIdx">Index</button><button type="button" id="openPrints">Prints<span id="pCount"></span></button><button type="button" id="openInfo">Info</button></nav>
 </div>
 <div class="chrome bot"><span><span class="k" id="nowK"></span><span id="nowNo"></span><button type="button" class="add" id="addBtn" aria-pressed="false" hidden>＋ Print</button></span><span id="nowN"></span></div>
@@ -239,7 +244,7 @@ body.still .chrome>*{pointer-events:none}
     </form>
 
     <footer>
-      <span>© <a class="hub-link" href="https://hub.yoso.one">Yoso</a> · kuro.yoso.one/full · <span class="version" data-version>Beta 0.31</span></span>
+      <span>© <a class="hub-link" href="https://hub.yoso.one">Yoso</a> · kuro.yoso.one/full · <span class="version" data-version>Beta 0.32</span></span>
       <span><a href="./">Current site</a></span>
     </footer>
   </div>
@@ -254,7 +259,7 @@ const total=Object.keys(R).length;
 const pad=n=>String(n).padStart(3,"0");
 
 /* Cover screen */
-reel.insertAdjacentHTML("beforeend",`<section class="title cover" data-k="" data-no="" data-n=""><a class="family-mark" href="https://hub.yoso.one"><img src="images/yoso-mark.png" alt="Yoso" width="48" height="48"></a><div class="k">黒</div><p class="line">Yosokuro. Black-and-white photographs of Japan by Yoso.</p><div class="hint">Scroll</div></section>`);
+reel.insertAdjacentHTML("beforeend",`<section class="title cover" data-k="" data-no="" data-n=""><a class="family-mark" href="https://hub.yoso.one"><img src="images/yoso-mark.png" alt="Yoso" width="48" height="48"></a><div class="k">黒</div><p class="line">Yosokuro. Black-and-white photographs of Japan by Yoso.</p><div class="hint" aria-hidden="true">Scroll<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 5l6 6 6-6"/><path d="M6 12l6 6 6-6"/></svg></div></section>`);
 
 /* Chapters: one kanji screen, then each frame full screen */
 let n=0;const list=document.getElementById("chList"),sheet=document.getElementById("sheet");
