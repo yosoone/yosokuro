@@ -123,9 +123,12 @@ body.still{cursor:none}
 @media (prefers-reduced-motion:reduce){.frame img,.chrome{transition:none}}
 
 /* Print list */
-.chrome .add{margin-left:14px;padding:6px 0;letter-spacing:.18em}
-.chrome .add[aria-pressed="true"]::before{content:"✓ "}
-.chrome .add[hidden]{display:none}
+/* ＋ stays on screen over every photograph, even when the menu hides */
+.add{position:fixed;z-index:6;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 8px);transform:translateX(-50%);
+  min-width:48px;min-height:48px;display:flex;align-items:center;justify-content:center;
+  font:300 30px/1 var(--f-mono);color:#fff;mix-blend-mode:difference}
+.add[aria-pressed="true"]{font-size:24px}
+.add[hidden]{display:none}
 body.still .chrome>*{pointer-events:none}
 .plist{list-style:none;margin:0 0 36px;padding:0;max-width:640px}
 .plist li{display:grid;grid-template-columns:72px minmax(0,1fr) auto auto;gap:14px;align-items:center;padding-block:12px;border-top:1px solid var(--line)}
@@ -195,10 +198,11 @@ body.still .chrome>*{pointer-events:none}
 <main id="reel" aria-label="Yosokuro photographs"></main>
 
 <div class="chrome top">
-  <span class="brand"><a class="name" href="#" id="toStart">Yosokuro</a><span class="beta"><span class="version" data-version>Beta 0.35</span></span></span>
+  <span class="brand"><a class="name" href="#" id="toStart">Yosokuro</a><span class="beta"><span class="version" data-version>Beta 0.36</span></span></span>
   <nav><button type="button" id="openIdx">Index</button><button type="button" id="openPrints">Prints<span id="pCount"></span></button><button type="button" id="openInfo">Info</button></nav>
 </div>
-<div class="chrome bot"><span><span class="k" id="nowK"></span><span id="nowNo"></span><button type="button" class="add" id="addBtn" aria-pressed="false" hidden>＋ Print</button></span><span id="nowN"></span></div>
+<button type="button" class="add" id="addBtn" aria-pressed="false" aria-label="Add to print list" hidden>＋</button>
+<div class="chrome bot"><span><span class="k" id="nowK"></span><span id="nowNo"></span></span><span id="nowN"></span></div>
 
 <section class="ov" id="idx" hidden aria-label="Contact sheet">
   <button type="button" class="close" data-close>Close ✕</button>
@@ -209,8 +213,8 @@ body.still .chrome>*{pointer-events:none}
   <button type="button" class="close" data-close>Close ✕</button>
   <div class="inner">
     <h2>Prints</h2>
-    <p class="lede">Prints of every photograph are available on request. Add frames with ＋ Print, choose a size for each, and send the list. Yoso will reply by email with prices and details.</p>
-    <p class="empty" id="pEmpty">Your print list is empty. Tap a photograph to show ＋ Print, then add it here.</p>
+    <p class="lede">Prints of every photograph are available on request. Add frames with ＋, choose a size for each, and send the list. Yoso will reply by email with prices and details.</p>
+    <p class="empty" id="pEmpty">Your print list is empty. Tap ＋ under any photograph to add it here.</p>
     <ol class="plist" id="pList"></ol>
     <form class="cf" id="cf" action="https://forms.yoso.one/contact" method="post" novalidate hidden>
       <input type="hidden" name="topic" value="print">
@@ -236,7 +240,7 @@ body.still .chrome>*{pointer-events:none}
     <p>A lifelong black-and-white photography project documenting Japan’s urban reality and the spirit of the Kami.</p>
     <p>Photographs by Yoso, a tattoo artist and multimedia practitioner based in Miyazaki, Japan.</p>
     <dl>
-      <dt>Prints</dt><dd>Available on request · add frames with ＋ Print · <a href="mailto:yosotattoo@gmail.com?subject=Yosokuro%20print">yosotattoo@gmail.com</a></dd>
+      <dt>Prints</dt><dd>Available on request · add frames with ＋ · <a href="mailto:yosotattoo@gmail.com?subject=Yosokuro%20print">yosotattoo@gmail.com</a></dd>
       <dt>Feedback</dt><dd>On this test version: <a href="mailto:yosotattoo@gmail.com?subject=Yosokuro%20full-screen%20test">yosotattoo@gmail.com</a></dd>
       <dt>Cameras</dt><dd>Ricoh GR II · Ricoh GR III</dd>
       <dt>Follow</dt><dd><a href="feed.xml">RSS</a></dd>
@@ -262,7 +266,7 @@ body.still .chrome>*{pointer-events:none}
     </form>
 
     <footer>
-      <span>© <a class="hub-link" href="https://hub.yoso.one">Yoso</a> · kuro.yoso.one/full · <span class="version" data-version>Beta 0.35</span></span>
+      <span>© <a class="hub-link" href="https://hub.yoso.one">Yoso</a> · kuro.yoso.one/full · <span class="version" data-version>Beta 0.36</span></span>
       <span><a href="./">Current site</a></span>
     </footer>
   </div>
@@ -383,7 +387,7 @@ const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(plist))}catch{}};
 const has=id=>plist.some(x=>x.id===id);
 const chapterOf=id=>CH.find(c=>c.f.includes(id));
 const addBtn=document.getElementById("addBtn"),pCount=document.getElementById("pCount");
-function syncAdd(){addBtn.hidden=!curId;const on=has(curId);addBtn.setAttribute("aria-pressed",on);addBtn.textContent=on?"In print list":"＋ Print";
+function syncAdd(){addBtn.hidden=!curId;const on=has(curId);addBtn.setAttribute("aria-pressed",on);addBtn.textContent=on?"✓":"＋";addBtn.setAttribute("aria-label",on?"In print list: remove":"Add to print list");addBtn.title=on?"In print list":"Add to print list";
   pCount.textContent=plist.length?" ("+plist.length+")":""}
 function toggle(id){plist=has(id)?plist.filter(x=>x.id!==id):[...plist,{id,size:"Not sure yet"}];save();syncAdd();wake()}
 addBtn.onclick=e=>{e.stopPropagation();if(curId)toggle(curId)};
