@@ -80,8 +80,9 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;paddin
 .chrome .name{font:800 15px/1 var(--f-kanji);letter-spacing:.04em;text-transform:none;text-decoration:none}
 .chrome nav{display:flex;gap:22px}
 .chrome .k{font:800 14px/1 var(--f-kanji);letter-spacing:.05em;margin-right:12px}
-body.still .chrome.top,body.still #nowK,body.still #nowNo,body.still #nowN{opacity:0}
-#nowK,#nowNo,#nowN{transition:opacity .5s ease}
+body.still .chrome.top,body.still #nowK,body.still #nowNo,body.still #nowN,body.still #addBtn{opacity:0}
+#nowK,#nowNo,#nowN,#addBtn{transition:opacity .5s ease}
+body.still #addBtn{pointer-events:none}
 body.still{cursor:none}
 
 /* Overlays */
@@ -124,7 +125,7 @@ body.still{cursor:none}
 @media (prefers-reduced-motion:reduce){.frame img,.chrome{transition:none}}
 
 /* Print list */
-/* ＋ Print sits beside the frame number and stays on screen when the rest of the menu fades */
+/* ＋ Print sits beside the frame number and shows and hides with the menu */
 .chrome .add{display:inline-flex;align-items:center;gap:8px;margin-left:14px;min-height:44px;letter-spacing:.18em;pointer-events:auto}
 .chrome .add .plus{font:300 26px/1 var(--f-mono);letter-spacing:0;transform:translateY(-1px)}
 .chrome .add[hidden]{display:none}
@@ -197,7 +198,7 @@ body.still .chrome.top>*{pointer-events:none}
 <main id="reel" aria-label="Yosokuro photographs"></main>
 
 <div class="chrome top">
-  <span class="brand"><a class="name" href="#" id="toStart">Yosokuro</a><span class="beta"><span class="version" data-version>Beta 0.37</span></span></span>
+  <span class="brand"><a class="name" href="#" id="toStart">Yosokuro</a><span class="beta"><span class="version" data-version>Beta 0.38</span></span></span>
   <nav><button type="button" id="openIdx">Index</button><button type="button" id="openPrints">Prints<span id="pCount"></span></button><button type="button" id="openInfo">Info</button></nav>
 </div>
 <div class="chrome bot"><span><span class="k" id="nowK"></span><span id="nowNo"></span><button type="button" class="add" id="addBtn" aria-pressed="false" hidden><span class="plus">＋</span><span class="lbl">Print</span></button></span><span id="nowN"></span></div>
@@ -264,7 +265,7 @@ body.still .chrome.top>*{pointer-events:none}
     </form>
 
     <footer>
-      <span>© <a class="hub-link" href="https://hub.yoso.one">Yoso</a> · kuro.yoso.one/full · <span class="version" data-version>Beta 0.37</span></span>
+      <span>© <a class="hub-link" href="https://hub.yoso.one">Yoso</a> · kuro.yoso.one/full · <span class="version" data-version>Beta 0.38</span></span>
       <span><a href="./">Current site</a></span>
     </footer>
   </div>
@@ -355,7 +356,7 @@ reel.addEventListener("touchmove",e=>{if(!pinch0||e.touches.length!==2)return;
 /* A tap on hidden labels only reveals them; it never presses a button underneath */
 let wasStill=false;
 addEventListener("pointerdown",()=>{wasStill=document.body.classList.contains("still")},{capture:true,passive:true});
-document.querySelectorAll(".chrome").forEach(ch=>ch.addEventListener("click",e=>{if(wasStill&&!e.target.closest("#addBtn")){e.preventDefault();e.stopPropagation();wasStill=false}},{capture:true}));
+document.querySelectorAll(".chrome").forEach(ch=>ch.addEventListener("click",e=>{if(wasStill){e.preventDefault();e.stopPropagation();wasStill=false}},{capture:true}));
 wake();
 
 /* Overlays */
