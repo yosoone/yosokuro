@@ -70,7 +70,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;paddin
 /* Quiet chrome: shows on movement, fades when still */
 .chrome{position:fixed;left:0;right:0;z-index:5;display:flex;justify-content:space-between;align-items:center;
   padding-inline:var(--edge) max(16px,env(safe-area-inset-right,0px));font-size:11px;letter-spacing:.18em;text-transform:uppercase;
-  transition:opacity .5s ease;pointer-events:none;color:#fff;background:rgba(0,0,0,.5)}
+  transition:opacity .5s ease;pointer-events:none;color:#fff;background:rgba(0,0,0,.8)}
 .chrome>*{pointer-events:auto}
 .chrome.top{top:0;padding-top:calc(env(safe-area-inset-top,0px) + 10px);padding-bottom:10px}
 .chrome.bot{bottom:0;min-height:calc(env(safe-area-inset-bottom,0px) + 64px);padding-bottom:env(safe-area-inset-bottom,0px);font-variant-numeric:tabular-nums}
@@ -247,7 +247,7 @@ body.still #zooms .zb{pointer-events:none}
 <main id="reel" aria-label="Yosokuro photographs"></main>
 
 <div class="chrome top">
-  <span class="brand"><a class="name" href="#" id="toStart">Yosokuro</a><span class="beta"><span class="version" data-version>Beta 0.53</span></span></span>
+  <span class="brand"><a class="name" href="#" id="toStart">Yosokuro</a><span class="beta"><span class="version" data-version>Beta 0.54</span></span></span>
   <nav><button type="button" id="openIdx">Index</button><button type="button" id="openPrints">Prints<span id="pCount"></span></button><button type="button" id="openInfo">Info</button></nav>
 </div>
 <div class="zooms" id="zooms" hidden><button type="button" class="zb" id="viewBtn" aria-label="Zoom in to detail" title="Zoom in: detail and print preview"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21"/><path d="M7.5 10.5h6M10.5 7.5v6"/></svg></button><button type="button" class="zb" id="zoomOutBtn" aria-label="Zoom out to all photographs" title="Zoom out: all photographs"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21"/><path d="M7.5 10.5h6"/></svg></button></div>
@@ -331,7 +331,7 @@ body.still #zooms .zb{pointer-events:none}
     </form>
 
     <footer>
-      <span>© <a class="hub-link" href="https://hub.yoso.one">Yoso</a> · kuro.yoso.one/full · <span class="version" data-version>Beta 0.53</span></span>
+      <span>© <a class="hub-link" href="https://hub.yoso.one">Yoso</a> · kuro.yoso.one/full · <span class="version" data-version>Beta 0.54</span></span>
       <span><a href="./">Current site</a></span>
     </footer>
   </div>
