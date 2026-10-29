@@ -170,6 +170,39 @@ body.still .chrome.top>*{pointer-events:none}
 .cf .note{margin:0;font:400 11px/1.6 var(--f-mono);letter-spacing:.06em;color:var(--dust)}
 @media (max-width:520px){.cf{grid-template-columns:minmax(0,1fr)}}
 
+/* View: Detail (the full-size file, dragged around) and Print preview (on white paper) */
+.chrome .view{margin-left:18px;min-height:44px;letter-spacing:.18em;pointer-events:auto}
+.chrome .view[hidden]{display:none}
+body.still #viewBtn{opacity:0;pointer-events:none}
+#viewBtn{transition:opacity .5s ease}
+#look{position:fixed;inset:0;z-index:11;background:var(--night);display:grid;grid-template-rows:auto minmax(0,1fr) auto}
+#look[hidden]{display:none}
+#look [hidden]{display:none!important}
+#look .lbar{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:6px 18px;
+  padding:calc(env(safe-area-inset-top,0px) + 8px) max(16px,env(safe-area-inset-right,0px)) 8px var(--edge);font-size:11px;letter-spacing:.18em;text-transform:uppercase}
+#look .modes{display:flex;flex-wrap:wrap;align-items:center;gap:2px}
+#look .modes .sl{color:var(--ash);margin:0 6px 0 14px}
+#look .modes button,#look .lclose{min-height:44px;min-width:44px;padding:0 10px;color:var(--ash)}
+#look .modes button[aria-pressed="true"]{color:var(--bone);text-decoration:underline;text-underline-offset:6px}
+#look .lclose{color:var(--bone)}
+@media (max-width:600px){#look .modes{order:3;width:100%;justify-content:space-between}#look .modes .sl{margin-left:8px}}
+#look .lstage{position:relative;overflow:hidden;min-height:0}
+/* Detail */
+#look .zoom{position:absolute;inset:0;overflow:auto;cursor:grab;touch-action:pan-x pan-y;scrollbar-width:none;overscroll-behavior:contain}
+#look .zoom::-webkit-scrollbar{display:none}
+#look .zoom.drag{cursor:grabbing}
+#look .zoom img{display:block;max-width:none;user-select:none;-webkit-user-drag:none}
+#look .zoom .pad{display:inline-block;padding:0}
+/* Print preview */
+#look .wall{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:#2a2a28}
+#look .sheetp{box-sizing:border-box;background:#fff;box-shadow:0 3px 30px rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center}
+#look .sheetp img{display:block;width:100%;height:100%;object-fit:contain}
+#look .lfoot{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px 20px;
+  padding:8px max(16px,env(safe-area-inset-right,0px)) calc(env(safe-area-inset-bottom,0px) + 10px) var(--edge);font-size:11px;letter-spacing:.12em;color:var(--ash)}
+#look .lfoot .info{text-transform:none;letter-spacing:.04em;font-variant-numeric:tabular-nums}
+#look .ladd{min-height:44px;padding:0 18px;background:var(--bone);color:var(--night);font-size:11px;letter-spacing:.16em;text-transform:uppercase}
+#look .ladd[hidden]{display:none}
+
 /* Family mark on the cover */
 .family-mark{position:absolute;top:calc(env(safe-area-inset-top,0px) + 20px);left:50%;transform:translateX(-50%);display:block;width:48px;line-height:0}
 .family-mark img{display:block;width:48px;height:48px}
@@ -199,14 +232,34 @@ body.still .chrome.top>*{pointer-events:none}
 <main id="reel" aria-label="Yosokuro photographs"></main>
 
 <div class="chrome top">
-  <span class="brand"><a class="name" href="#" id="toStart">Yosokuro</a><span class="beta"><span class="version" data-version>Beta 0.44</span></span></span>
+  <span class="brand"><a class="name" href="#" id="toStart">Yosokuro</a><span class="beta"><span class="version" data-version>Beta 0.45</span></span></span>
   <nav><button type="button" id="openIdx">Index</button><button type="button" id="openPrints">Prints<span id="pCount"></span></button><button type="button" id="openInfo">Info</button></nav>
 </div>
-<div class="chrome bot"><span><span class="k" id="nowK" hidden></span><span id="nowNo"></span><button type="button" class="add" id="addBtn" aria-pressed="false" hidden><span class="plus">＋</span><span class="lbl">Print</span></button></span><span id="nowN"></span></div>
+<div class="chrome bot"><span><span class="k" id="nowK" hidden></span><span id="nowNo"></span><button type="button" class="add" id="addBtn" aria-pressed="false" hidden><span class="plus">＋</span><span class="lbl">Print</span></button><button type="button" class="view" id="viewBtn" hidden>⤢ View</button></span><span id="nowN"></span></div>
 
 <section class="ov" id="idx" hidden aria-label="Contact sheet">
   <button type="button" class="close" data-close>Close ✕</button>
   <div class="inner"><div class="sheet" id="sheet"></div></div>
+</section>
+
+<section id="look" hidden aria-label="Photograph detail and print preview">
+  <div class="lbar">
+    <span id="lookNo"></span>
+    <span class="modes" role="group" aria-label="View">
+      <button type="button" data-mode="detail" aria-pressed="true">Detail</button>
+      <span class="sl">Print</span>
+      <button type="button" data-mode="A4" aria-pressed="false">A4</button>
+      <button type="button" data-mode="A3" aria-pressed="false">A3</button>
+      <button type="button" data-mode="A2" aria-pressed="false">A2</button>
+      <button type="button" data-mode="A1" aria-pressed="false">A1</button>
+    </span>
+    <button type="button" class="lclose" id="lookClose">Close ✕</button>
+  </div>
+  <div class="lstage" id="lookStage">
+    <div class="zoom" id="zoom"><span class="pad" id="zoomPad"><img id="zoomImg" alt="" draggable="false"></span></div>
+    <div class="wall" id="wall" hidden><div class="sheetp" id="sheetp"><img id="sheetImg" alt=""></div></div>
+  </div>
+  <div class="lfoot"><span class="info" id="lookInfo"></span><button type="button" class="ladd" id="lookAdd" hidden></button></div>
 </section>
 
 <section class="ov prints" id="prints" hidden aria-label="Print list">
@@ -266,7 +319,7 @@ body.still .chrome.top>*{pointer-events:none}
     </form>
 
     <footer>
-      <span>© <a class="hub-link" href="https://hub.yoso.one">Yoso</a> · kuro.yoso.one/full · <span class="version" data-version>Beta 0.44</span></span>
+      <span>© <a class="hub-link" href="https://hub.yoso.one">Yoso</a> · kuro.yoso.one/full · <span class="version" data-version>Beta 0.45</span></span>
       <span><a href="./">Current site</a></span>
     </footer>
   </div>
@@ -329,7 +382,9 @@ reel.querySelectorAll("section").forEach(s=>seen.observe(s));
 const screens=()=>[...reel.children];
 function step(d){const h=reel.clientHeight;reel.scrollTo({top:Math.round(reel.scrollTop/h+d)*h,behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth"})}
 addEventListener("keydown",e=>{
+  if(!look.hidden){if(e.key==="Escape")closeLook();return}
   if(!idx.hidden||!info.hidden||!prints.hidden){if(e.key==="Escape")closeAll();return}
+  if(e.key==="v"||e.key==="V"){if(curId)openLook(curId,"detail");return}
   if(e.key==="p"||e.key==="P"){if(curId)toggle(curId);return}
   if(["ArrowDown","ArrowRight","PageDown"," "].includes(e.key)){e.preventDefault();step(1)}
   if(["ArrowUp","ArrowLeft","PageUp"].includes(e.key)){e.preventDefault();step(-1)}
@@ -337,7 +392,7 @@ addEventListener("keydown",e=>{
 });
 
 /* Chrome fades after 2.5 s without movement */
-let t;function wake(){document.body.classList.remove("still");clearTimeout(t);t=setTimeout(()=>{if(idx.hidden&&info.hidden&&prints.hidden)document.body.classList.add("still")},2500)}
+let t;function wake(){document.body.classList.remove("still");clearTimeout(t);t=setTimeout(()=>{if(idx.hidden&&info.hidden&&prints.hidden&&look.hidden)document.body.classList.add("still")},2500)}
 /* Swipes and scrolling leave it hidden; a tap, a mouse move or keyboard focus brings it back */
 /* Only a real mouse movement counts: browsers also send "moves" while the page scrolls under a still mouse */
 let mx=null,my=null;
@@ -395,7 +450,7 @@ let plist=[];try{plist=JSON.parse(localStorage.getItem(KEY)||"[]").filter(x=>x&&
 const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(plist))}catch{}};
 const has=id=>plist.some(x=>x.id===id);
 const addBtn=document.getElementById("addBtn"),pCount=document.getElementById("pCount");
-function syncAdd(){addBtn.hidden=!curId;const on=has(curId);addBtn.setAttribute("aria-pressed",on);addBtn.querySelector(".plus").textContent=on?"✓":"＋";addBtn.setAttribute("aria-label",on?"Print: in your list, tap to remove":"Print: add to your list");
+function syncAdd(){addBtn.hidden=!curId;document.getElementById("viewBtn").hidden=!curId;const on=has(curId);addBtn.setAttribute("aria-pressed",on);addBtn.querySelector(".plus").textContent=on?"✓":"＋";addBtn.setAttribute("aria-label",on?"Print: in your list, tap to remove":"Print: add to your list");
   pCount.textContent=plist.length?" ("+plist.length+")":""}
 function toggle(id){plist=has(id)?plist.filter(x=>x.id!==id):[...plist,{id,size:"Not sure yet"}];save();syncAdd();wake()}
 addBtn.onclick=e=>{e.stopPropagation();if(curId)toggle(curId)};
@@ -437,6 +492,56 @@ cf.addEventListener("submit",async e=>{
   if(window.turnstile)try{turnstile.reset("#cfTs")}catch{}
 });
 syncAdd();
+
+/* View: Detail and Print preview */
+const look=document.getElementById("look"),zoom=document.getElementById("zoom"),zoomImg=document.getElementById("zoomImg"),zoomPad=document.getElementById("zoomPad");
+const wall=document.getElementById("wall"),sheetp=document.getElementById("sheetp"),sheetImg=document.getElementById("sheetImg");
+const lookInfo=document.getElementById("lookInfo"),lookAdd=document.getElementById("lookAdd"),viewBtn=document.getElementById("viewBtn");
+/* Paper long side, short side and white border on every side, in mm (same as the current site) */
+const PAPER={A4:[297,210,18],A3:[420,297,25.5],A2:[594,420,36],A1:[841,594,50]};
+const mm=x=>String(Math.round(x*100)/100);
+let lookId="",mode="detail";
+function openLook(id,m){
+  if(!id)return;lookId=id;mode=m||mode;
+  document.getElementById("lookNo").textContent=label(id);
+  zoomImg.src=sheetImg.src=`img/full/${id}.jpg`;zoomImg.alt=sheetImg.alt=`Frame ${label(id)}`;
+  closeAll();look.hidden=false;wake();setMode(mode);document.getElementById("lookClose").focus();
+}
+function closeLook(){look.hidden=true;wake()}
+function setMode(m){mode=m;
+  look.querySelectorAll("[data-mode]").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.mode===m)));
+  const det=m==="detail";zoom.hidden=!det;wall.hidden=det;lookAdd.hidden=det;
+  if(det)layoutZoom();else layoutPaper();
+}
+function layoutZoom(){
+  const go=()=>{const W=zoomImg.naturalWidth,H=zoomImg.naturalHeight;if(!W)return;
+    /* Show the file at full size; pad so even its edges can be brought to the centre */
+    const vw=zoom.clientWidth,vh=zoom.clientHeight,px=Math.max(0,(vw-W)/2),py=Math.max(0,(vh-H)/2);
+    zoomPad.style.padding=`${py}px ${px}px`;zoomImg.style.width=W+"px";zoomImg.style.height=H+"px";
+    zoom.scrollLeft=(W+2*px-vw)/2;zoom.scrollTop=(H+2*py-vh)/2;
+    lookInfo.textContent=`Detail · the full file, ${W} × ${H} px · drag to look around`;};
+  if(zoomImg.complete&&zoomImg.naturalWidth)go();else zoomImg.onload=go;
+}
+function layoutPaper(){
+  const [L,S,b]=PAPER[mode],r=R[lookId]||1.5,W=r>=1?L:S,H=r>=1?S:L;
+  const st=document.getElementById("lookStage"),k=Math.min((st.clientWidth-32)/W,(st.clientHeight-32)/H);
+  sheetp.style.width=W*k+"px";sheetp.style.height=H*k+"px";sheetp.style.padding=b*k+"px";
+  const iw=W-2*b,ih=H-2*b,pw=iw/ih>r?ih*r:iw,ph=iw/ih>r?ih:iw/r;
+  lookInfo.textContent=`${mode} paper ${W} × ${H} mm · photograph ${mm(pw)} × ${mm(ph)} mm · white border ${b} mm or more`;
+  const inList=plist.find(x=>x.id===lookId);
+  lookAdd.textContent=inList&&inList.size===mode?`✓ ${mode} in print list`:`＋ Add ${mode} print`;
+}
+look.querySelectorAll("[data-mode]").forEach(b=>b.onclick=()=>setMode(b.dataset.mode));
+document.getElementById("lookClose").onclick=closeLook;
+lookAdd.onclick=()=>{const x=plist.find(y=>y.id===lookId);if(x)x.size=mode;else plist.push({id:lookId,size:mode});save();syncAdd();layoutPaper()};
+viewBtn.onclick=e=>{e.stopPropagation();openLook(curId,"detail")};
+addEventListener("resize",()=>{if(!look.hidden){mode==="detail"?layoutZoom():layoutPaper()}});
+/* Drag to look around in Detail (mouse); touch scrolls natively */
+let dragging=null;
+zoom.addEventListener("pointerdown",e=>{if(e.pointerType!=="mouse")return;dragging={x:e.clientX,y:e.clientY,l:zoom.scrollLeft,t:zoom.scrollTop};zoom.classList.add("drag");zoom.setPointerCapture(e.pointerId)});
+zoom.addEventListener("pointermove",e=>{if(!dragging)return;zoom.scrollLeft=dragging.l-(e.clientX-dragging.x);zoom.scrollTop=dragging.t-(e.clientY-dragging.y)});
+const endDrag=()=>{dragging=null;zoom.classList.remove("drag")};
+zoom.addEventListener("pointerup",endDrag);zoom.addEventListener("pointercancel",endDrag);
 
 if(location.hash){const el=document.getElementById(location.hash.slice(1));el&&el.scrollIntoView()}
 </script>
