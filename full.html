@@ -46,7 +46,6 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;paddin
 #reel{height:100%;overflow-y:auto;touch-action:pan-y;scroll-snap-type:y mandatory;overscroll-behavior:contain;scrollbar-width:none}
 #reel::-webkit-scrollbar{display:none}
 .frame,.title{height:100%;scroll-snap-align:start;scroll-snap-stop:always;position:relative;display:flex;align-items:center;justify-content:center}
-.frame{cursor:zoom-out}
 .frame img{display:block;width:100%;height:100%;object-fit:contain;opacity:0;transition:opacity .6s ease}
 .frame img.ok{opacity:1}
 .title{flex-direction:column;gap:18px}
@@ -245,7 +244,7 @@ body.still #zooms .zb{pointer-events:none}
 <main id="reel" aria-label="Yosokuro photographs"></main>
 
 <div class="chrome top">
-  <span class="brand"><a class="name" href="#" id="toStart">Yosokuro</a><span class="beta"><span class="version" data-version>Beta 0.49</span></span></span>
+  <span class="brand"><a class="name" href="#" id="toStart">Yosokuro</a><span class="beta"><span class="version" data-version>Beta 0.50</span></span></span>
   <nav><button type="button" id="openIdx">Index</button><button type="button" id="openPrints">Prints<span id="pCount"></span></button><button type="button" id="openInfo">Info</button></nav>
 </div>
 <div class="zooms" id="zooms" hidden><button type="button" class="zb" id="viewBtn" aria-label="Zoom in to detail" title="Zoom in: detail and print preview"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21"/><path d="M7.5 10.5h6M10.5 7.5v6"/></svg></button><button type="button" class="zb" id="zoomOutBtn" aria-label="Zoom out to all photographs" title="Zoom out: all photographs"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21"/><path d="M7.5 10.5h6"/></svg></button></div>
@@ -333,7 +332,7 @@ body.still #zooms .zb{pointer-events:none}
     </form>
 
     <footer>
-      <span>© <a class="hub-link" href="https://hub.yoso.one">Yoso</a> · kuro.yoso.one/full · <span class="version" data-version>Beta 0.49</span></span>
+      <span>© <a class="hub-link" href="https://hub.yoso.one">Yoso</a> · kuro.yoso.one/full · <span class="version" data-version>Beta 0.50</span></span>
       <span><a href="./">Current site</a></span>
     </footer>
   </div>
@@ -418,15 +417,8 @@ let tx=0,ty=0,tt=0;
 addEventListener("touchstart",e=>{const p=e.touches[0];tx=p.clientX;ty=p.clientY;tt=Date.now()},{passive:true,capture:true});
 addEventListener("touchend",e=>{const p=e.changedTouches[0];if(Math.hypot(p.clientX-tx,p.clientY-ty)<10&&Date.now()-tt<400)wake()},{passive:true,capture:true});
 addEventListener("focusin",wake);
-/* Click or tap on the photograph itself: zoom out to the contact sheet.
-   A tap on the black around it only shows the menu. */
-reel.addEventListener("click",e=>{
-  const f=e.target.closest(".frame");if(!f){wake();return}
-  const im=f.querySelector("img"),r=im.getBoundingClientRect(),ratio=R[f.dataset.id];
-  let w=r.width,h=w/ratio;if(h>r.height){h=r.height;w=h*ratio}
-  const x0=r.left+(r.width-w)/2,y0=r.top+(r.height-h)/2;
-  if(e.clientX>=x0&&e.clientX<=x0+w&&e.clientY>=y0&&e.clientY<=y0+h)openSheet();else wake();
-});
+/* Click or tap anywhere on the photographs: just bring the menu back (the zoom icons do the zooming) */
+reel.addEventListener("click",()=>wake());
 /* Pinch inwards on a photograph: zoom out to the contact sheet */
 let pinch0=0;
 reel.addEventListener("touchstart",e=>{pinch0=e.touches.length===2?Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY):0},{passive:true});
