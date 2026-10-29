@@ -60,7 +60,13 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;paddin
 .cover .k,.cover .line,.cover .hint{text-shadow:0 0 18px rgba(0,0,0,.9),0 0 4px rgba(0,0,0,.8)}
 .cover .line,.cover .hint{color:var(--bone)}
 .cover .k{font-size:clamp(64px,13vmin,150px);letter-spacing:.02em}
-.cover .line{max-width:34ch;text-align:center;font:500 15px/1.6 var(--f-kanji);color:var(--ash);padding-inline:var(--edge)}
+.cover .line{max-width:30ch;text-align:center;font:500 clamp(17px,2.2vw,21px)/1.55 var(--f-kanji);color:#fff;padding-inline:var(--edge)}
+/* Darken the photograph a little more round the words and towards the arrow, so both read clearly */
+.cover::after{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;
+  background:radial-gradient(ellipse 60% 45% at 50% 50%,rgba(0,0,0,.45),transparent 70%),linear-gradient(to top,rgba(0,0,0,.7),transparent 32%)}
+.title.cover .hint{bottom:calc(env(safe-area-inset-bottom,0px) + 84px);font-size:12px;letter-spacing:.32em;color:#fff;animation-name:hintc}
+.title.cover .hint svg{width:42px;height:42px;stroke-width:2}
+@keyframes hintc{0%,100%{opacity:.75}50%{opacity:1}}
 .title .hint{position:absolute;bottom:calc(env(safe-area-inset-bottom,0px) + 22px);display:flex;flex-direction:column;align-items:center;gap:10px;
   font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:var(--ash);animation:hint 2.4s ease-in-out infinite}
 .title .hint svg{display:block;width:30px;height:30px;animation:drop 2.4s ease-in-out infinite}
@@ -248,7 +254,7 @@ body.still #zooms .zb{pointer-events:none}
 <main id="reel" aria-label="Yosokuro photographs"></main>
 
 <div class="chrome top">
-  <span class="brand"><a class="name" href="#" id="toStart">Yosokuro</a><span class="beta"><span class="version" data-version>Beta 0.55</span></span></span>
+  <span class="brand"><a class="name" href="#" id="toStart">Yosokuro</a><span class="beta"><span class="version" data-version>Beta 0.56</span></span></span>
   <nav><button type="button" id="openIdx">Index</button><button type="button" id="openPrints">Prints<span id="pCount"></span></button><button type="button" id="openInfo">Info</button></nav>
 </div>
 <div class="zooms" id="zooms" hidden><button type="button" class="zb" id="viewBtn" aria-label="Zoom in to detail" title="Zoom in: detail and print preview"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21"/><path d="M7.5 10.5h6M10.5 7.5v6"/></svg></button><button type="button" class="zb" id="zoomOutBtn" aria-label="Zoom out to all photographs" title="Zoom out: all photographs"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21"/><path d="M7.5 10.5h6"/></svg></button></div>
@@ -332,7 +338,7 @@ body.still #zooms .zb{pointer-events:none}
     </form>
 
     <footer>
-      <span>© <a class="hub-link" href="https://hub.yoso.one">Yoso</a> · kuro.yoso.one/full · <span class="version" data-version>Beta 0.55</span></span>
+      <span>© <a class="hub-link" href="https://hub.yoso.one">Yoso</a> · kuro.yoso.one/full · <span class="version" data-version>Beta 0.56</span></span>
       <span><a href="./">Current site</a></span>
     </footer>
   </div>
