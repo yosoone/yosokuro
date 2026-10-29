@@ -21,17 +21,18 @@
 /* Layout: one photograph per screen, edge to edge on black, snapping as you scroll.
    Chapters open with a single kanji. Everything else hides until the visitor moves. */
 :root{
-  --night:#1c1c1b;         /* dark grey ground behind every frame, so black edges still read */
+  --night:#000;            /* black ground behind every frame */
+  --keyline:#3a3a38;       /* fine line round each photograph, so dark edges still read on black */
   --bone:#e9e7e2;          /* text */
   --ash:#8b8984;           /* secondary text */
   --line:#3a3a38;          /* hairlines in overlays */
-  --veil:rgba(28,28,27,.97);
+  --veil:rgba(0,0,0,.94);
   --gold:#e3bb4a;          /* the family mark's gold: marks the frame you were watching */  /* index and info overlays */
   --f-kanji:"Shippori Mincho B1","Hiragino Mincho ProN","Yu Mincho",serif;
   --f-mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
   --edge:max(16px,env(safe-area-inset-left,0px));
   /* names the shared sign-up form styles expect */
-  --ink:#1c1c1b;--paper:#e9e7e2;--dust:#8b8984;--rule:#3a3a38;
+  --ink:#000;--paper:#e9e7e2;--dust:#8b8984;--rule:#3a3a38;
   --f-text:"IBM Plex Sans","Helvetica Neue",Arial,sans-serif;
   color-scheme:dark;
 }
@@ -46,7 +47,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;paddin
 #reel{height:100%;overflow-y:auto;touch-action:pan-y;scroll-snap-type:y mandatory;overscroll-behavior:contain;scrollbar-width:none}
 #reel::-webkit-scrollbar{display:none}
 .frame,.title{height:100%;scroll-snap-align:start;scroll-snap-stop:always;position:relative;display:flex;align-items:center;justify-content:center}
-.frame img{display:block;width:100%;height:100%;object-fit:contain;opacity:0;transition:opacity .6s ease}
+.frame img{display:block;width:auto;height:auto;max-width:100%;max-height:100%;outline:1px solid var(--keyline);outline-offset:-1px;opacity:0;transition:opacity .6s ease}
 .frame img.ok{opacity:1}
 .title{flex-direction:column;gap:18px}
 .title .k{font:800 clamp(96px,22vmin,260px)/1 var(--f-kanji);letter-spacing:.04em}
@@ -247,7 +248,7 @@ body.still #zooms .zb{pointer-events:none}
 <main id="reel" aria-label="Yosokuro photographs"></main>
 
 <div class="chrome top">
-  <span class="brand"><a class="name" href="#" id="toStart">Yosokuro</a><span class="beta"><span class="version" data-version>Beta 0.54</span></span></span>
+  <span class="brand"><a class="name" href="#" id="toStart">Yosokuro</a><span class="beta"><span class="version" data-version>Beta 0.55</span></span></span>
   <nav><button type="button" id="openIdx">Index</button><button type="button" id="openPrints">Prints<span id="pCount"></span></button><button type="button" id="openInfo">Info</button></nav>
 </div>
 <div class="zooms" id="zooms" hidden><button type="button" class="zb" id="viewBtn" aria-label="Zoom in to detail" title="Zoom in: detail and print preview"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21"/><path d="M7.5 10.5h6M10.5 7.5v6"/></svg></button><button type="button" class="zb" id="zoomOutBtn" aria-label="Zoom out to all photographs" title="Zoom out: all photographs"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21"/><path d="M7.5 10.5h6"/></svg></button></div>
@@ -331,7 +332,7 @@ body.still #zooms .zb{pointer-events:none}
     </form>
 
     <footer>
-      <span>© <a class="hub-link" href="https://hub.yoso.one">Yoso</a> · kuro.yoso.one/full · <span class="version" data-version>Beta 0.54</span></span>
+      <span>© <a class="hub-link" href="https://hub.yoso.one">Yoso</a> · kuro.yoso.one/full · <span class="version" data-version>Beta 0.55</span></span>
       <span><a href="./">Current site</a></span>
     </footer>
   </div>
