@@ -21,17 +21,17 @@
 /* Layout: one photograph per screen, edge to edge on black, snapping as you scroll.
    Chapters open with a single kanji. Everything else hides until the visitor moves. */
 :root{
-  --night:#000;            /* ground behind every frame */
+  --night:#1c1c1b;         /* dark grey ground behind every frame, so black edges still read */
   --bone:#e9e7e2;          /* text */
   --ash:#8b8984;           /* secondary text */
-  --line:#262624;          /* hairlines in overlays */
-  --veil:rgba(0,0,0,.94);
+  --line:#3a3a38;          /* hairlines in overlays */
+  --veil:rgba(28,28,27,.97);
   --gold:#e3bb4a;          /* the family mark's gold: marks the frame you were watching */  /* index and info overlays */
   --f-kanji:"Shippori Mincho B1","Hiragino Mincho ProN","Yu Mincho",serif;
   --f-mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
   --edge:max(16px,env(safe-area-inset-left,0px));
   /* names the shared sign-up form styles expect */
-  --ink:#000;--paper:#e9e7e2;--dust:#8b8984;--rule:#262624;
+  --ink:#1c1c1b;--paper:#e9e7e2;--dust:#8b8984;--rule:#3a3a38;
   --f-text:"IBM Plex Sans","Helvetica Neue",Arial,sans-serif;
   color-scheme:dark;
 }
@@ -103,7 +103,7 @@ body.still{cursor:none}
 .sheet h3 span{font:400 10px/1 var(--f-mono);letter-spacing:.2em;text-transform:uppercase;color:var(--ash)}
 .rows{display:flex;flex-wrap:wrap;gap:var(--mgap)}
 .rows::after{content:"";flex-grow:999999}
-.m{position:relative;display:block;flex-grow:calc(var(--r)*100);width:calc(var(--r)*var(--mrow));background:#111;overflow:hidden}
+.m{position:relative;display:block;flex-grow:calc(var(--r)*100);width:calc(var(--r)*var(--mrow));background:#2a2a29;overflow:hidden}
 .m i{display:block;padding-bottom:calc(100%/var(--r))}
 .m img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;opacity:.82;transition:opacity .2s}
 .m:hover img,.m:focus-visible img{opacity:1}
@@ -133,12 +133,12 @@ body.still .chrome.top>*{pointer-events:none}
 .plist li{display:grid;grid-template-columns:240px minmax(0,1fr) auto auto;gap:20px;align-items:center;padding-block:16px;border-top:1px solid var(--line)}
 /* Each frame shown whole, in its own shape, up to 240 × 200 */
 .plist .ph{display:flex;align-items:center;justify-content:center;width:240px;height:200px}
-.plist img{display:block;max-width:100%;max-height:100%;width:auto;height:auto;background:#111}
+.plist img{display:block;max-width:100%;max-height:100%;width:auto;height:auto;background:#2a2a29}
 .plist .who{display:grid;gap:4px;min-width:0}
 .plist .who b{font:800 18px/1 var(--f-kanji)}
 .plist .who a{font-size:13px;letter-spacing:.12em;color:var(--bone);text-decoration:none}
 .plist select{background:transparent;color:var(--bone);border:1px solid var(--line);font:inherit;font-size:12px;padding:10px 8px;min-height:44px}
-.plist select option{background:#000}
+.plist select option{background:var(--night)}
 .plist .rm{border:1px solid var(--line);min-width:44px;min-height:44px;font-size:12px;color:var(--ash)}
 .plist .rm:hover{color:var(--bone);border-color:var(--bone)}
 .empty{margin:0 0 28px;color:var(--ash);font:500 16px/1.7 var(--f-kanji);max-width:46ch}
@@ -199,7 +199,7 @@ body.still .chrome.top>*{pointer-events:none}
 <main id="reel" aria-label="Yosokuro photographs"></main>
 
 <div class="chrome top">
-  <span class="brand"><a class="name" href="#" id="toStart">Yosokuro</a><span class="beta"><span class="version" data-version>Beta 0.42</span></span></span>
+  <span class="brand"><a class="name" href="#" id="toStart">Yosokuro</a><span class="beta"><span class="version" data-version>Beta 0.43</span></span></span>
   <nav><button type="button" id="openIdx">Index</button><button type="button" id="openPrints">Prints<span id="pCount"></span></button><button type="button" id="openInfo">Info</button></nav>
 </div>
 <div class="chrome bot"><span><span class="k" id="nowK" hidden></span><span id="nowNo"></span><button type="button" class="add" id="addBtn" aria-pressed="false" hidden><span class="plus">＋</span><span class="lbl">Print</span></button></span><span id="nowN"></span></div>
@@ -266,7 +266,7 @@ body.still .chrome.top>*{pointer-events:none}
     </form>
 
     <footer>
-      <span>© <a class="hub-link" href="https://hub.yoso.one">Yoso</a> · kuro.yoso.one/full · <span class="version" data-version>Beta 0.42</span></span>
+      <span>© <a class="hub-link" href="https://hub.yoso.one">Yoso</a> · kuro.yoso.one/full · <span class="version" data-version>Beta 0.43</span></span>
       <span><a href="./">Current site</a></span>
     </footer>
   </div>
