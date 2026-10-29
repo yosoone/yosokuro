@@ -64,7 +64,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;paddin
 /* Darken the photograph a little more round the words and towards the arrow, so both read clearly */
 .cover::after{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;
   background:radial-gradient(ellipse 60% 45% at 50% 50%,rgba(0,0,0,.45),transparent 70%),linear-gradient(to top,rgba(0,0,0,.7),transparent 32%)}
-.title.cover .hint{bottom:calc(env(safe-area-inset-bottom,0px) + 84px);font-size:12px;letter-spacing:.32em;color:#fff;animation-name:hintc}
+.title.cover .hint{bottom:calc(env(safe-area-inset-bottom,0px) + 112px);font-size:12px;letter-spacing:.32em;color:#fff;animation-name:hintc}
 .title.cover .hint svg{width:42px;height:42px;stroke-width:2}
 @keyframes hintc{0%,100%{opacity:.75}50%{opacity:1}}
 .title .hint{position:absolute;bottom:calc(env(safe-area-inset-bottom,0px) + 22px);display:flex;flex-direction:column;align-items:center;gap:10px;
@@ -80,7 +80,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;paddin
   transition:opacity .5s ease;pointer-events:none;color:#fff;background:rgba(0,0,0,.8)}
 .chrome>*{pointer-events:auto}
 .chrome.top{top:0;padding-top:calc(env(safe-area-inset-top,0px) + 10px);padding-bottom:10px}
-.chrome.bot{bottom:0;min-height:calc(env(safe-area-inset-bottom,0px) + 64px);padding-bottom:env(safe-area-inset-bottom,0px);font-variant-numeric:tabular-nums}
+.chrome.bot{bottom:0;min-height:calc(env(safe-area-inset-bottom,0px) + 92px);padding-bottom:env(safe-area-inset-bottom,0px);font-variant-numeric:tabular-nums}
 .chrome .brand{display:flex;align-items:baseline;gap:12px}
 .chrome .beta{font-size:10px;letter-spacing:.18em;opacity:.7}
 .chrome .name{font:800 15px/1 var(--f-kanji);letter-spacing:.04em;text-transform:none;text-decoration:none}
@@ -132,8 +132,12 @@ body.still{cursor:none}
 /* Print list */
 /* ＋ Print sits beside the frame number and shows and hides with the menu */
 /* ＋ Print, centred in the bottom bar */
-.chrome .add{position:absolute;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 8px);transform:translateX(-50%);
+.chrome .add{position:absolute;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 40px);transform:translateX(-50%);
   display:inline-flex;align-items:center;gap:10px;min-height:48px;padding:0 6px;font-size:13px;letter-spacing:.2em;pointer-events:auto}
+.chrome .pvbtn{position:absolute;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 4px);transform:translateX(-50%);
+  min-height:40px;padding:0 14px;font-size:11px;letter-spacing:.22em;color:rgba(255,255,255,.8);text-decoration:underline;text-underline-offset:5px;pointer-events:auto;transition:opacity .5s ease}
+.chrome .pvbtn[hidden]{display:none}
+body.still #pvBtn{opacity:0}
 /* Frame number and count a step quieter than ＋ Print */
 #nowNo,#nowN{opacity:.55}
 .chrome .add .plus{font:300 32px/1 var(--f-mono);letter-spacing:0;transform:translateY(-1px)}
@@ -254,11 +258,11 @@ body.still #zooms .zb{pointer-events:none}
 <main id="reel" aria-label="Yosokuro photographs"></main>
 
 <div class="chrome top">
-  <span class="brand"><a class="name" href="#" id="toStart">Yosokuro</a><span class="beta"><span class="version" data-version>Beta 0.56</span></span></span>
+  <span class="brand"><a class="name" href="#" id="toStart">Yosokuro</a><span class="beta"><span class="version" data-version>Beta 0.57</span></span></span>
   <nav><button type="button" id="openIdx">Index</button><button type="button" id="openPrints">Prints<span id="pCount"></span></button><button type="button" id="openInfo">Info</button></nav>
 </div>
 <div class="zooms" id="zooms" hidden><button type="button" class="zb" id="viewBtn" aria-label="Zoom in to detail" title="Zoom in: detail and print preview"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21"/><path d="M7.5 10.5h6M10.5 7.5v6"/></svg></button><button type="button" class="zb" id="zoomOutBtn" aria-label="Zoom out to all photographs" title="Zoom out: all photographs"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21"/><path d="M7.5 10.5h6"/></svg></button></div>
-<div class="chrome bot"><span><span class="k" id="nowK" hidden></span><span id="nowNo"></span><button type="button" class="add" id="addBtn" aria-pressed="false" hidden><span class="plus">＋</span><span class="lbl">Print</span></button></span><span id="nowN"></span></div>
+<div class="chrome bot"><span><span class="k" id="nowK" hidden></span><span id="nowNo"></span><button type="button" class="add" id="addBtn" aria-pressed="false" hidden><span class="plus">＋</span><span class="lbl">Print</span></button><button type="button" class="pvbtn" id="pvBtn" hidden>Preview</button></span><span id="nowN"></span></div>
 
 <section class="ov" id="idx" hidden aria-label="Contact sheet">
   <button type="button" class="close" data-close>Close ✕</button>
@@ -338,7 +342,7 @@ body.still #zooms .zb{pointer-events:none}
     </form>
 
     <footer>
-      <span>© <a class="hub-link" href="https://hub.yoso.one">Yoso</a> · kuro.yoso.one/full · <span class="version" data-version>Beta 0.56</span></span>
+      <span>© <a class="hub-link" href="https://hub.yoso.one">Yoso</a> · kuro.yoso.one/full · <span class="version" data-version>Beta 0.57</span></span>
       <span><a href="./">Current site</a></span>
     </footer>
   </div>
@@ -401,7 +405,7 @@ reel.querySelectorAll("section").forEach(s=>seen.observe(s));
 const screens=()=>[...reel.children];
 function step(d){const h=reel.clientHeight;reel.scrollTo({top:Math.round(reel.scrollTop/h+d)*h,behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth"})}
 addEventListener("keydown",e=>{
-  if(!look.hidden){if(e.key==="Escape")closeLook();return}
+  if(!look.hidden){if(e.key==="Escape")closeLook();else if(mode==="print"&&["ArrowDown","ArrowRight","PageDown"," "].includes(e.key)){e.preventDefault();lookStep(1)}else if(mode==="print"&&["ArrowUp","ArrowLeft","PageUp"].includes(e.key)){e.preventDefault();lookStep(-1)}return}
   if(!idx.hidden||!info.hidden||!prints.hidden){if(e.key==="Escape")closeAll();return}
   if(e.key==="v"||e.key==="V"){if(curId)openLook(curId,"detail");return}
   if(e.key==="p"||e.key==="P"){if(curId)toggle(curId);return}
@@ -462,7 +466,7 @@ let plist=[];try{plist=JSON.parse(localStorage.getItem(KEY)||"[]").filter(x=>x&&
 const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(plist))}catch{}};
 const has=id=>plist.some(x=>x.id===id);
 const addBtn=document.getElementById("addBtn"),pCount=document.getElementById("pCount");
-function syncAdd(){addBtn.hidden=!curId;document.getElementById("zooms").hidden=!curId;const on=has(curId);addBtn.setAttribute("aria-pressed",on);addBtn.querySelector(".plus").textContent=on?"✓":"＋";addBtn.setAttribute("aria-label",on?"Print: in your list, tap to remove":"Print: add to your list");
+function syncAdd(){addBtn.hidden=!curId;document.getElementById("pvBtn").hidden=!curId;document.getElementById("zooms").hidden=!curId;const on=has(curId);addBtn.setAttribute("aria-pressed",on);addBtn.querySelector(".plus").textContent=on?"✓":"＋";addBtn.setAttribute("aria-label",on?"Print: in your list, tap to remove":"Print: add to your list");
   pCount.textContent=plist.length?" ("+plist.length+")":""}
 function toggle(id){plist=has(id)?plist.filter(x=>x.id!==id):[...plist,{id,size:"Not sure yet"}];save();syncAdd();wake()}
 addBtn.onclick=e=>{e.stopPropagation();if(curId)toggle(curId)};
@@ -540,7 +544,7 @@ function layoutPaper(){
   const st=document.getElementById("lookStage"),k=Math.min((st.clientWidth-32)/W,(st.clientHeight-32)/H);
   sheetp.style.width=W*k+"px";sheetp.style.height=H*k+"px";sheetp.style.padding=b*k+"px";
   const iw=W-2*b,ih=H-2*b,pw=iw/ih>r?ih*r:iw,ph=iw/ih>r?ih:iw/r;
-  lookInfo.textContent=`Print preview · on white paper with a white border · choose the size in Prints`;
+  lookInfo.textContent=`Print preview · on white paper with a white border · swipe for the next photograph`;
   const inList=plist.find(x=>x.id===lookId);
   lookAdd.textContent=inList?`✓ In print list`:`＋ Print`;
 }
@@ -548,6 +552,21 @@ look.querySelectorAll("[data-mode]").forEach(b=>b.onclick=()=>setMode(b.dataset.
 document.getElementById("lookClose").onclick=closeLook;
 lookAdd.onclick=()=>{toggle(lookId);layoutPaper()};
 viewBtn.onclick=e=>{e.stopPropagation();if(look.hidden)openLook(curId,"detail")};
+document.getElementById("pvBtn").onclick=e=>{e.stopPropagation();openLook(curId,"print")};
+/* In print preview, swipe (or the arrow keys) to the next or previous photograph */
+function lookStep(d){
+  const i=ORDER.indexOf(lookId)+d;if(i<0||i>=ORDER.length)return;
+  const id=ORDER[i];lookId=id;
+  document.getElementById("lookNo").textContent=label(id);
+  zoomImg.src=sheetImg.src=`img/full/${id}.jpg`;zoomImg.alt=sheetImg.alt=`Frame ${label(id)}`;
+  const f=document.getElementById("f-"+id);if(f){curSec=f;reel.scrollTop=f.offsetTop}
+  mode==="detail"?layoutZoom():layoutPaper();
+}
+let lsx=null,lsy=null;
+look.addEventListener("touchstart",e=>{if(mode!=="print"){lsx=null;return}lsx=e.touches[0].clientX;lsy=e.touches[0].clientY},{passive:true});
+look.addEventListener("touchend",e=>{if(lsx===null||mode!=="print")return;const dx=e.changedTouches[0].clientX-lsx,dy=e.changedTouches[0].clientY-lsy;lsx=null;
+  if(Math.max(Math.abs(dx),Math.abs(dy))<50)return;lookStep((Math.abs(dy)>Math.abs(dx)?dy:dx)<0?1:-1)},{passive:true});
+look.addEventListener("wheel",e=>{if(mode!=="print")return;if(Math.abs(e.deltaY)<30||wall._wt)return;wall._wt=setTimeout(()=>wall._wt=0,500);lookStep(e.deltaY>0?1:-1)},{passive:true});
 document.getElementById("zoomOutBtn").onclick=e=>{e.stopPropagation();if(!look.hidden)closeLook();else openSheet()};
 addEventListener("resize",()=>{if(!look.hidden){mode==="detail"?layoutZoom():layoutPaper()}});
 /* Drag to look around in Detail (mouse); touch scrolls natively */
