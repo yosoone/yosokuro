@@ -174,13 +174,16 @@ body.still .chrome.top>*{pointer-events:none}
 .chrome.bot>span:first-child{display:inline-flex;align-items:center}
 /* Zoom icons: a small column, centred on the right edge of the screen */
 .zooms{position:fixed;z-index:5;top:50%;right:max(8px,env(safe-area-inset-right,0px));transform:translateY(-50%);
-  display:flex;flex-direction:column;gap:6px;color:#fff;mix-blend-mode:difference}
+  display:flex;flex-direction:column;gap:6px;color:#fff}
 .zooms[hidden]{display:none}
 /* In Detail (the closest zoom) the icons stay: − steps back to the photograph, + is at its limit */
 body.looking .zooms{z-index:12;opacity:1!important}
 body.looking .zooms .zb{pointer-events:auto!important}
-body.looking #viewBtn{opacity:.3;pointer-events:none!important}
-.zb{display:flex;align-items:center;justify-content:center;min-width:44px;min-height:44px;pointer-events:auto}
+body.looking #viewBtn{pointer-events:none!important;cursor:default}
+body.looking #viewBtn svg{opacity:.3}
+.zb{display:flex;align-items:center;justify-content:center;width:44px;height:44px;background:#000;color:#fff;pointer-events:auto}
+.zb:hover{background:#111}
+.zb:focus-visible{outline:1px solid #fff;outline-offset:2px}
 .zb svg{width:22px;height:22px;display:block}
 body.still #zooms{opacity:0}
 body.still #zooms .zb{pointer-events:none}
@@ -242,7 +245,7 @@ body.still #zooms .zb{pointer-events:none}
 <main id="reel" aria-label="Yosokuro photographs"></main>
 
 <div class="chrome top">
-  <span class="brand"><a class="name" href="#" id="toStart">Yosokuro</a><span class="beta"><span class="version" data-version>Beta 0.48</span></span></span>
+  <span class="brand"><a class="name" href="#" id="toStart">Yosokuro</a><span class="beta"><span class="version" data-version>Beta 0.49</span></span></span>
   <nav><button type="button" id="openIdx">Index</button><button type="button" id="openPrints">Prints<span id="pCount"></span></button><button type="button" id="openInfo">Info</button></nav>
 </div>
 <div class="zooms" id="zooms" hidden><button type="button" class="zb" id="viewBtn" aria-label="Zoom in to detail" title="Zoom in: detail and print preview"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21"/><path d="M7.5 10.5h6M10.5 7.5v6"/></svg></button><button type="button" class="zb" id="zoomOutBtn" aria-label="Zoom out to all photographs" title="Zoom out: all photographs"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21"/><path d="M7.5 10.5h6"/></svg></button></div>
@@ -330,7 +333,7 @@ body.still #zooms .zb{pointer-events:none}
     </form>
 
     <footer>
-      <span>© <a class="hub-link" href="https://hub.yoso.one">Yoso</a> · kuro.yoso.one/full · <span class="version" data-version>Beta 0.48</span></span>
+      <span>© <a class="hub-link" href="https://hub.yoso.one">Yoso</a> · kuro.yoso.one/full · <span class="version" data-version>Beta 0.49</span></span>
       <span><a href="./">Current site</a></span>
     </footer>
   </div>
