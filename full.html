@@ -171,10 +171,14 @@ body.still .chrome.top>*{pointer-events:none}
 @media (max-width:520px){.cf{grid-template-columns:minmax(0,1fr)}}
 
 /* View: Detail (the full-size file, dragged around) and Print preview (on white paper) */
-.chrome .view{margin-left:18px;min-height:44px;letter-spacing:.18em;pointer-events:auto}
-.chrome .view[hidden]{display:none}
-body.still #viewBtn{opacity:0;pointer-events:none}
-#viewBtn{transition:opacity .5s ease}
+.chrome.bot>span:first-child{display:inline-flex;align-items:center}
+.chrome .zooms{display:inline-flex;margin-left:12px}
+.chrome .zooms[hidden]{display:none}
+.chrome .zb{display:flex;align-items:center;justify-content:center;min-width:44px;min-height:44px;pointer-events:auto}
+.chrome .zb svg{width:22px;height:22px;display:block}
+body.still #zooms{opacity:0}
+body.still #zooms .zb{pointer-events:none}
+#zooms{transition:opacity .5s ease}
 #look{position:fixed;inset:0;z-index:11;background:var(--night);display:grid;grid-template-rows:auto minmax(0,1fr) auto}
 #look[hidden]{display:none}
 #look [hidden]{display:none!important}
@@ -232,10 +236,10 @@ body.still #viewBtn{opacity:0;pointer-events:none}
 <main id="reel" aria-label="Yosokuro photographs"></main>
 
 <div class="chrome top">
-  <span class="brand"><a class="name" href="#" id="toStart">Yosokuro</a><span class="beta"><span class="version" data-version>Beta 0.45</span></span></span>
+  <span class="brand"><a class="name" href="#" id="toStart">Yosokuro</a><span class="beta"><span class="version" data-version>Beta 0.46</span></span></span>
   <nav><button type="button" id="openIdx">Index</button><button type="button" id="openPrints">Prints<span id="pCount"></span></button><button type="button" id="openInfo">Info</button></nav>
 </div>
-<div class="chrome bot"><span><span class="k" id="nowK" hidden></span><span id="nowNo"></span><button type="button" class="add" id="addBtn" aria-pressed="false" hidden><span class="plus">＋</span><span class="lbl">Print</span></button><button type="button" class="view" id="viewBtn" hidden>⤢ View</button></span><span id="nowN"></span></div>
+<div class="chrome bot"><span><span class="k" id="nowK" hidden></span><span id="nowNo"></span><button type="button" class="add" id="addBtn" aria-pressed="false" hidden><span class="plus">＋</span><span class="lbl">Print</span></button><span class="zooms" id="zooms" hidden><button type="button" class="zb" id="zoomOutBtn" aria-label="Zoom out to all photographs" title="Zoom out: all photographs"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21"/><path d="M7.5 10.5h6"/></svg></button><button type="button" class="zb" id="viewBtn" aria-label="Zoom in to detail" title="Zoom in: detail and print preview"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21"/><path d="M7.5 10.5h6M10.5 7.5v6"/></svg></button></span></span><span id="nowN"></span></div>
 
 <section class="ov" id="idx" hidden aria-label="Contact sheet">
   <button type="button" class="close" data-close>Close ✕</button>
@@ -319,7 +323,7 @@ body.still #viewBtn{opacity:0;pointer-events:none}
     </form>
 
     <footer>
-      <span>© <a class="hub-link" href="https://hub.yoso.one">Yoso</a> · kuro.yoso.one/full · <span class="version" data-version>Beta 0.45</span></span>
+      <span>© <a class="hub-link" href="https://hub.yoso.one">Yoso</a> · kuro.yoso.one/full · <span class="version" data-version>Beta 0.46</span></span>
       <span><a href="./">Current site</a></span>
     </footer>
   </div>
@@ -450,7 +454,7 @@ let plist=[];try{plist=JSON.parse(localStorage.getItem(KEY)||"[]").filter(x=>x&&
 const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(plist))}catch{}};
 const has=id=>plist.some(x=>x.id===id);
 const addBtn=document.getElementById("addBtn"),pCount=document.getElementById("pCount");
-function syncAdd(){addBtn.hidden=!curId;document.getElementById("viewBtn").hidden=!curId;const on=has(curId);addBtn.setAttribute("aria-pressed",on);addBtn.querySelector(".plus").textContent=on?"✓":"＋";addBtn.setAttribute("aria-label",on?"Print: in your list, tap to remove":"Print: add to your list");
+function syncAdd(){addBtn.hidden=!curId;document.getElementById("zooms").hidden=!curId;const on=has(curId);addBtn.setAttribute("aria-pressed",on);addBtn.querySelector(".plus").textContent=on?"✓":"＋";addBtn.setAttribute("aria-label",on?"Print: in your list, tap to remove":"Print: add to your list");
   pCount.textContent=plist.length?" ("+plist.length+")":""}
 function toggle(id){plist=has(id)?plist.filter(x=>x.id!==id):[...plist,{id,size:"Not sure yet"}];save();syncAdd();wake()}
 addBtn.onclick=e=>{e.stopPropagation();if(curId)toggle(curId)};
@@ -535,6 +539,7 @@ look.querySelectorAll("[data-mode]").forEach(b=>b.onclick=()=>setMode(b.dataset.
 document.getElementById("lookClose").onclick=closeLook;
 lookAdd.onclick=()=>{const x=plist.find(y=>y.id===lookId);if(x)x.size=mode;else plist.push({id:lookId,size:mode});save();syncAdd();layoutPaper()};
 viewBtn.onclick=e=>{e.stopPropagation();openLook(curId,"detail")};
+document.getElementById("zoomOutBtn").onclick=e=>{e.stopPropagation();openSheet()};
 addEventListener("resize",()=>{if(!look.hidden){mode==="detail"?layoutZoom():layoutPaper()}});
 /* Drag to look around in Detail (mouse); touch scrolls natively */
 let dragging=null;
