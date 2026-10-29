@@ -149,6 +149,10 @@ body.still .chrome>*{pointer-events:none}
 /* Each frame shown whole, in its own shape, up to 240 × 200 */
 .plist .ph{display:flex;align-items:center;justify-content:center;width:240px;height:200px}
 .plist img{display:block;max-width:100%;max-height:100%;width:auto;height:auto;background:#2a2a29}
+/* Each frame shown as its print: A-shaped white paper, with the white border or trimmed to fill */
+.plist .mp{box-sizing:border-box;background:#fff;box-shadow:0 2px 14px rgba(0,0,0,.5);flex:none}
+.plist .mp img{width:100%;height:100%;max-width:none;max-height:none;object-fit:contain;background:none}
+.plist .mp.none img{object-fit:cover}
 .plist .who{display:grid;gap:4px;min-width:0}
 .plist .who b{font:800 18px/1 var(--f-kanji)}
 .plist .who a{font-size:13px;letter-spacing:.12em;color:var(--bone);text-decoration:none}
@@ -160,7 +164,7 @@ body.still .chrome>*{pointer-events:none}
 .prints h2{margin:0 0 10px;font:800 clamp(40px,7vw,72px)/1 var(--f-kanji)}
 .prints .lede{margin:0 0 32px;color:var(--ash);max-width:58ch;font:500 15px/1.7 var(--f-kanji)}
 .prints .cf{max-width:640px}
-@media (max-width:520px){.plist li{grid-template-columns:minmax(0,1fr) auto;gap:12px}.plist .ph{grid-column:1/-1;width:100%;height:auto;max-height:50vh;justify-content:flex-start}.plist .ph img{max-height:50vh}.plist .opts{grid-column:1/2;justify-self:start}.plist .rm{grid-column:2/3;grid-row:2/4}}
+@media (max-width:520px){.plist li{grid-template-columns:minmax(0,1fr) auto;gap:12px}.plist .ph{grid-column:1/-1;width:100%;height:auto;justify-content:flex-start}.plist .ph img{max-height:50vh}.plist .opts{grid-column:1/2;justify-self:start}.plist .rm{grid-column:2/3;grid-row:2/4}}
 /* Contact form (same look as the main page) */
 .cf{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px 20px}
 .cf .full{grid-column:1/-1}
@@ -264,7 +268,7 @@ body.still #zooms .zb{pointer-events:none}
 <main id="reel" aria-label="Yosokuro photographs"></main>
 
 <div class="chrome top">
-  <span class="brand"><a class="name" href="#" id="toStart">Yosokuro</a><span class="beta"><span class="version" data-version>Beta 0.58</span></span></span>
+  <span class="brand"><a class="name" href="#" id="toStart">Yosokuro</a><span class="beta"><span class="version" data-version>Beta 0.59</span></span></span>
   <nav><button type="button" id="openIdx">Index</button><button type="button" id="openPrints">Prints<span id="pCount"></span></button><button type="button" id="openInfo">Info</button></nav>
 </div>
 <div class="zooms" id="zooms" hidden><button type="button" class="zb" id="viewBtn" aria-label="Zoom in to detail" title="Zoom in: detail and print preview"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21"/><path d="M7.5 10.5h6M10.5 7.5v6"/></svg></button><button type="button" class="zb" id="zoomOutBtn" aria-label="Zoom out to all photographs" title="Zoom out: all photographs"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21"/><path d="M7.5 10.5h6"/></svg></button></div>
@@ -348,7 +352,7 @@ body.still #zooms .zb{pointer-events:none}
     </form>
 
     <footer>
-      <span>© <a class="hub-link" href="https://hub.yoso.one">Yoso</a> · kuro.yoso.one/full · <span class="version" data-version>Beta 0.58</span></span>
+      <span>© <a class="hub-link" href="https://hub.yoso.one">Yoso</a> · kuro.yoso.one/full · <span class="version" data-version>Beta 0.59</span></span>
       <span><a href="./">Current site</a></span>
     </footer>
   </div>
@@ -449,7 +453,7 @@ wake();
 
 /* Overlays */
 const idx=document.getElementById("idx"),info=document.getElementById("info"),prints=document.getElementById("prints");
-function open(o){if(o===prints)renderList();closeAll();o.hidden=false;o.querySelector(".close").focus();wake()}
+function open(o){closeAll();o.hidden=false;if(o===prints)renderList();o.querySelector(".close").focus();wake()}
 function closeAll(){idx.hidden=true;info.hidden=true;prints.hidden=true}
 document.getElementById("openIdx").onclick=openSheet;
 document.getElementById("openInfo").onclick=()=>open(info);
@@ -478,15 +482,24 @@ function toggle(id){plist=has(id)?plist.filter(x=>x.id!==id):[...plist,{id,size:
 addBtn.onclick=e=>{e.stopPropagation();if(curId)toggle(curId)};
 document.getElementById("openPrints").onclick=()=>open(prints);
 const pList=document.getElementById("pList"),cf=document.getElementById("cf");
+/* Size the paper to fit its box, then add the A3-proportion border (or none) */
+function paperThumb(li,x){
+  const ph=li.querySelector(".ph"),mp=li.querySelector(".mp"),r=R[x.id]||1.5,land=r>=1;
+  const [L,S,b]=PAPER.A3,W=land?L:S,H=land?S:L;
+  const phone=innerWidth<=520,bw=ph.clientWidth||240,bh=phone?Math.min(420,innerHeight*.5):(ph.clientHeight||200),k=Math.min(bw/W,bh/H);
+  mp.style.width=W*k+"px";mp.style.height=H*k+"px";
+  const none=(x.border||"White border")==="No border";
+  mp.classList.toggle("none",none);mp.style.padding=none?"0":b*k+"px";
+}
 function renderList(){
   pList.textContent="";
   plist.forEach((x,i)=>{const li=document.createElement("li");
-    li.innerHTML=`<span class="ph"><img src="img/thumb/${x.id}.jpg" alt="Frame ${label(x.id)}" loading="lazy"></span><span class="who"><a href="#f-${x.id}" data-go="${x.id}">${label(x.id)}</a></span><span class="opts"><select class="sz" aria-label="Size for ${label(x.id)}">${SIZES.map(z=>`<option${z===x.size?" selected":""}>${z}</option>`).join("")}</select><select class="bd" aria-label="Border for ${label(x.id)}">${BORDERS.map(z=>`<option${z===(x.border||"White border")?" selected":""}>${z}</option>`).join("")}</select></span><button type="button" class="rm" aria-label="Remove ${label(x.id)}">✕</button>`;
+    li.innerHTML=`<span class="ph"><span class="mp"><img src="img/thumb/${x.id}.jpg" alt="Frame ${label(x.id)}" loading="lazy"></span></span><span class="who"><a href="#f-${x.id}" data-go="${x.id}">${label(x.id)}</a></span><span class="opts"><select class="sz" aria-label="Size for ${label(x.id)}">${SIZES.map(z=>`<option${z===x.size?" selected":""}>${z}</option>`).join("")}</select><select class="bd" aria-label="Border for ${label(x.id)}">${BORDERS.map(z=>`<option${z===(x.border||"White border")?" selected":""}>${z}</option>`).join("")}</select></span><button type="button" class="rm" aria-label="Remove ${label(x.id)}">✕</button>`;
     li.querySelector(".sz").onchange=e=>{x.size=e.target.value;save()};
-    li.querySelector(".bd").onchange=e=>{x.border=e.target.value;save()};
+    li.querySelector(".bd").onchange=e=>{x.border=e.target.value;save();paperThumb(li,x)};
     li.querySelector(".rm").onclick=()=>{plist=plist.filter(y=>y.id!==x.id);save();syncAdd();renderList()};
     li.querySelector("[data-go]").onclick=e=>{e.preventDefault();closeAll();document.getElementById("f-"+x.id).scrollIntoView()};
-    pList.appendChild(li)});
+    pList.appendChild(li);paperThumb(li,x)});
   document.getElementById("pEmpty").hidden=plist.length>0;cf.hidden=plist.length===0;
 }
 const cfMsg=document.getElementById("cfMsg"),cfSend=document.getElementById("cfSend");
@@ -585,7 +598,7 @@ look.addEventListener("touchend",e=>{if(lsx===null||mode!=="print")return;const 
   if(Math.max(Math.abs(dx),Math.abs(dy))<50)return;lookStep((Math.abs(dy)>Math.abs(dx)?dy:dx)<0?1:-1)},{passive:true});
 look.addEventListener("wheel",e=>{if(mode!=="print")return;if(Math.abs(e.deltaY)<30||wall._wt)return;wall._wt=setTimeout(()=>wall._wt=0,500);lookStep(e.deltaY>0?1:-1)},{passive:true});
 document.getElementById("zoomOutBtn").onclick=e=>{e.stopPropagation();if(!look.hidden)closeLook();else openSheet()};
-addEventListener("resize",()=>{if(!look.hidden){mode==="detail"?layoutZoom():layoutPaper()}});
+addEventListener("resize",()=>{if(!look.hidden){mode==="detail"?layoutZoom():layoutPaper()}if(!prints.hidden)renderList()});
 /* Drag to look around in Detail (mouse); touch scrolls natively */
 let dragging=null;
 zoom.addEventListener("pointerdown",e=>{if(e.pointerType!=="mouse")return;dragging={x:e.clientX,y:e.clientY,l:zoom.scrollLeft,t:zoom.scrollTop};zoom.classList.add("drag");zoom.setPointerCapture(e.pointerId)});
