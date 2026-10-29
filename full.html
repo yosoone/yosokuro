@@ -96,7 +96,7 @@ body.still{cursor:none}
 .chapters .n{font-size:10px;color:var(--ash);font-variant-numeric:tabular-nums}
 .chapters a:hover .k{color:#fff}
 /* Contact sheet: every frame small, in justified rows that keep each frame's shape */
-#idx{background:var(--night)}
+#idx,#prints{background:var(--night)}
 #idx .inner{max-width:1400px}
 .sheet{--mrow:104px;--mgap:6px}
 .sheet h3{display:flex;align-items:baseline;gap:12px;margin:0 0 12px;font:800 26px/1 var(--f-kanji)}
@@ -129,9 +129,11 @@ body.still{cursor:none}
 .chrome .add .plus{font:300 26px/1 var(--f-mono);letter-spacing:0;transform:translateY(-1px)}
 .chrome .add[hidden]{display:none}
 body.still .chrome.top>*{pointer-events:none}
-.plist{list-style:none;margin:0 0 36px;padding:0;max-width:640px}
-.plist li{display:grid;grid-template-columns:72px minmax(0,1fr) auto auto;gap:14px;align-items:center;padding-block:12px;border-top:1px solid var(--line)}
-.plist img{width:72px;height:72px;object-fit:cover;display:block;background:#111}
+.plist{list-style:none;margin:0 0 36px;padding:0;max-width:760px}
+.plist li{display:grid;grid-template-columns:240px minmax(0,1fr) auto auto;gap:20px;align-items:center;padding-block:16px;border-top:1px solid var(--line)}
+/* Each frame shown whole, in its own shape, up to 240 × 200 */
+.plist .ph{display:flex;align-items:center;justify-content:center;width:240px;height:200px}
+.plist img{display:block;max-width:100%;max-height:100%;width:auto;height:auto;background:#111}
 .plist .who{display:grid;gap:4px;min-width:0}
 .plist .who b{font:800 18px/1 var(--f-kanji)}
 .plist .who a{font-size:13px;letter-spacing:.12em;color:var(--bone);text-decoration:none}
@@ -143,7 +145,7 @@ body.still .chrome.top>*{pointer-events:none}
 .prints h2{margin:0 0 10px;font:800 clamp(40px,7vw,72px)/1 var(--f-kanji)}
 .prints .lede{margin:0 0 32px;color:var(--ash);max-width:58ch;font:500 15px/1.7 var(--f-kanji)}
 .prints .cf{max-width:640px}
-@media (max-width:520px){.plist li{grid-template-columns:56px minmax(0,1fr) auto;row-gap:10px}.plist img{width:56px;height:56px}.plist select{grid-column:2/3}.plist .rm{grid-column:3/4;grid-row:1/3}}
+@media (max-width:520px){.plist li{grid-template-columns:minmax(0,1fr) auto;gap:12px}.plist .ph{grid-column:1/-1;width:100%;height:auto;max-height:50vh;justify-content:flex-start}.plist .ph img{max-height:50vh}.plist select{grid-column:1/2;justify-self:start}.plist .rm{grid-column:2/3;grid-row:2/4}}
 /* Contact form (same look as the main page) */
 .cf{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px 20px}
 .cf .full{grid-column:1/-1}
@@ -197,7 +199,7 @@ body.still .chrome.top>*{pointer-events:none}
 <main id="reel" aria-label="Yosokuro photographs"></main>
 
 <div class="chrome top">
-  <span class="brand"><a class="name" href="#" id="toStart">Yosokuro</a><span class="beta"><span class="version" data-version>Beta 0.41</span></span></span>
+  <span class="brand"><a class="name" href="#" id="toStart">Yosokuro</a><span class="beta"><span class="version" data-version>Beta 0.42</span></span></span>
   <nav><button type="button" id="openIdx">Index</button><button type="button" id="openPrints">Prints<span id="pCount"></span></button><button type="button" id="openInfo">Info</button></nav>
 </div>
 <div class="chrome bot"><span><span class="k" id="nowK" hidden></span><span id="nowNo"></span><button type="button" class="add" id="addBtn" aria-pressed="false" hidden><span class="plus">＋</span><span class="lbl">Print</span></button></span><span id="nowN"></span></div>
@@ -264,7 +266,7 @@ body.still .chrome.top>*{pointer-events:none}
     </form>
 
     <footer>
-      <span>© <a class="hub-link" href="https://hub.yoso.one">Yoso</a> · kuro.yoso.one/full · <span class="version" data-version>Beta 0.41</span></span>
+      <span>© <a class="hub-link" href="https://hub.yoso.one">Yoso</a> · kuro.yoso.one/full · <span class="version" data-version>Beta 0.42</span></span>
       <span><a href="./">Current site</a></span>
     </footer>
   </div>
@@ -402,7 +404,7 @@ const pList=document.getElementById("pList"),cf=document.getElementById("cf");
 function renderList(){
   pList.textContent="";
   plist.forEach((x,i)=>{const li=document.createElement("li");
-    li.innerHTML=`<img src="img/thumb/${x.id}.jpg" alt="Frame ${label(x.id)}" width="72" height="72" loading="lazy"><span class="who"><a href="#f-${x.id}" data-go="${x.id}">${label(x.id)}</a></span><select aria-label="Size for ${label(x.id)}">${SIZES.map(z=>`<option${z===x.size?" selected":""}>${z}</option>`).join("")}</select><button type="button" class="rm" aria-label="Remove ${label(x.id)}">✕</button>`;
+    li.innerHTML=`<span class="ph"><img src="img/thumb/${x.id}.jpg" alt="Frame ${label(x.id)}" loading="lazy"></span><span class="who"><a href="#f-${x.id}" data-go="${x.id}">${label(x.id)}</a></span><select aria-label="Size for ${label(x.id)}">${SIZES.map(z=>`<option${z===x.size?" selected":""}>${z}</option>`).join("")}</select><button type="button" class="rm" aria-label="Remove ${label(x.id)}">✕</button>`;
     li.querySelector("select").onchange=e=>{x.size=e.target.value;save()};
     li.querySelector(".rm").onclick=()=>{plist=plist.filter(y=>y.id!==x.id);save();syncAdd();renderList()};
     li.querySelector("[data-go]").onclick=e=>{e.preventDefault();closeAll();document.getElementById("f-"+x.id).scrollIntoView()};
