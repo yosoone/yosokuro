@@ -144,6 +144,7 @@ body.still #pvBtn{opacity:0}
 .chrome .add[hidden]{display:none}
 body.still .chrome>*{pointer-events:none}
 .plist{list-style:none;margin:0 0 36px;padding:0;max-width:760px}
+.plist .opts{display:grid;gap:8px}
 .plist li{display:grid;grid-template-columns:240px minmax(0,1fr) auto auto;gap:20px;align-items:center;padding-block:16px;border-top:1px solid var(--line)}
 /* Each frame shown whole, in its own shape, up to 240 × 200 */
 .plist .ph{display:flex;align-items:center;justify-content:center;width:240px;height:200px}
@@ -159,7 +160,7 @@ body.still .chrome>*{pointer-events:none}
 .prints h2{margin:0 0 10px;font:800 clamp(40px,7vw,72px)/1 var(--f-kanji)}
 .prints .lede{margin:0 0 32px;color:var(--ash);max-width:58ch;font:500 15px/1.7 var(--f-kanji)}
 .prints .cf{max-width:640px}
-@media (max-width:520px){.plist li{grid-template-columns:minmax(0,1fr) auto;gap:12px}.plist .ph{grid-column:1/-1;width:100%;height:auto;max-height:50vh;justify-content:flex-start}.plist .ph img{max-height:50vh}.plist select{grid-column:1/2;justify-self:start}.plist .rm{grid-column:2/3;grid-row:2/4}}
+@media (max-width:520px){.plist li{grid-template-columns:minmax(0,1fr) auto;gap:12px}.plist .ph{grid-column:1/-1;width:100%;height:auto;max-height:50vh;justify-content:flex-start}.plist .ph img{max-height:50vh}.plist .opts{grid-column:1/2;justify-self:start}.plist .rm{grid-column:2/3;grid-row:2/4}}
 /* Contact form (same look as the main page) */
 .cf{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px 20px}
 .cf .full{grid-column:1/-1}
@@ -223,6 +224,11 @@ body.still #zooms .zb{pointer-events:none}
 #look .wall{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:#2a2a28}
 #look .sheetp{box-sizing:border-box;background:#fff;box-shadow:0 3px 30px rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center}
 #look .sheetp img{display:block;width:100%;height:100%;object-fit:contain}
+#look .sheetp.full img{object-fit:cover}
+#look .bord{display:flex;gap:4px}
+#look .bord[hidden]{display:none}
+#look .bord button{min-height:44px;padding:0 10px;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ash)}
+#look .bord button[aria-pressed="true"]{color:var(--bone);text-decoration:underline;text-underline-offset:6px}
 #look .lfoot{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px 20px;
   padding:8px max(16px,env(safe-area-inset-right,0px)) calc(env(safe-area-inset-bottom,0px) + 10px) var(--edge);font-size:11px;letter-spacing:.12em;color:var(--ash)}
 #look .lfoot .info{text-transform:none;letter-spacing:.04em;font-variant-numeric:tabular-nums}
@@ -258,7 +264,7 @@ body.still #zooms .zb{pointer-events:none}
 <main id="reel" aria-label="Yosokuro photographs"></main>
 
 <div class="chrome top">
-  <span class="brand"><a class="name" href="#" id="toStart">Yosokuro</a><span class="beta"><span class="version" data-version>Beta 0.57</span></span></span>
+  <span class="brand"><a class="name" href="#" id="toStart">Yosokuro</a><span class="beta"><span class="version" data-version>Beta 0.58</span></span></span>
   <nav><button type="button" id="openIdx">Index</button><button type="button" id="openPrints">Prints<span id="pCount"></span></button><button type="button" id="openInfo">Info</button></nav>
 </div>
 <div class="zooms" id="zooms" hidden><button type="button" class="zb" id="viewBtn" aria-label="Zoom in to detail" title="Zoom in: detail and print preview"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21"/><path d="M7.5 10.5h6M10.5 7.5v6"/></svg></button><button type="button" class="zb" id="zoomOutBtn" aria-label="Zoom out to all photographs" title="Zoom out: all photographs"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21"/><path d="M7.5 10.5h6"/></svg></button></div>
@@ -282,7 +288,7 @@ body.still #zooms .zb{pointer-events:none}
     <div class="zoom" id="zoom"><span class="pad" id="zoomPad"><img id="zoomImg" alt="" draggable="false"></span></div>
     <div class="wall" id="wall" hidden><div class="sheetp" id="sheetp"><img id="sheetImg" alt=""></div></div>
   </div>
-  <div class="lfoot"><span class="info" id="lookInfo"></span><button type="button" class="ladd" id="lookAdd" hidden></button></div>
+  <div class="lfoot"><span class="bord" id="bord" role="group" aria-label="Border"><button type="button" data-b="White border" aria-pressed="true">White border</button><button type="button" data-b="No border" aria-pressed="false">No border</button></span><span class="info" id="lookInfo"></span><button type="button" class="ladd" id="lookAdd" hidden></button></div>
 </section>
 
 <section class="ov prints" id="prints" hidden aria-label="Print list">
@@ -342,7 +348,7 @@ body.still #zooms .zb{pointer-events:none}
     </form>
 
     <footer>
-      <span>© <a class="hub-link" href="https://hub.yoso.one">Yoso</a> · kuro.yoso.one/full · <span class="version" data-version>Beta 0.57</span></span>
+      <span>© <a class="hub-link" href="https://hub.yoso.one">Yoso</a> · kuro.yoso.one/full · <span class="version" data-version>Beta 0.58</span></span>
       <span><a href="./">Current site</a></span>
     </footer>
   </div>
@@ -460,7 +466,7 @@ function openSheet(){
 }
 document.getElementById("toStart").onclick=e=>{e.preventDefault();closeAll();reel.scrollTo({top:0})};
 /* Print list: kept in this browser only */
-const SIZES=["Not sure yet","A4","A3","A2","A1"];
+const SIZES=["Not sure yet","A4","A3","A2","A1"],BORDERS=["White border","No border"];
 const KEY="yosokuro-prints";
 let plist=[];try{plist=JSON.parse(localStorage.getItem(KEY)||"[]").filter(x=>x&&R[x.id])}catch{plist=[]}
 const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(plist))}catch{}};
@@ -475,8 +481,9 @@ const pList=document.getElementById("pList"),cf=document.getElementById("cf");
 function renderList(){
   pList.textContent="";
   plist.forEach((x,i)=>{const li=document.createElement("li");
-    li.innerHTML=`<span class="ph"><img src="img/thumb/${x.id}.jpg" alt="Frame ${label(x.id)}" loading="lazy"></span><span class="who"><a href="#f-${x.id}" data-go="${x.id}">${label(x.id)}</a></span><select aria-label="Size for ${label(x.id)}">${SIZES.map(z=>`<option${z===x.size?" selected":""}>${z}</option>`).join("")}</select><button type="button" class="rm" aria-label="Remove ${label(x.id)}">✕</button>`;
-    li.querySelector("select").onchange=e=>{x.size=e.target.value;save()};
+    li.innerHTML=`<span class="ph"><img src="img/thumb/${x.id}.jpg" alt="Frame ${label(x.id)}" loading="lazy"></span><span class="who"><a href="#f-${x.id}" data-go="${x.id}">${label(x.id)}</a></span><span class="opts"><select class="sz" aria-label="Size for ${label(x.id)}">${SIZES.map(z=>`<option${z===x.size?" selected":""}>${z}</option>`).join("")}</select><select class="bd" aria-label="Border for ${label(x.id)}">${BORDERS.map(z=>`<option${z===(x.border||"White border")?" selected":""}>${z}</option>`).join("")}</select></span><button type="button" class="rm" aria-label="Remove ${label(x.id)}">✕</button>`;
+    li.querySelector(".sz").onchange=e=>{x.size=e.target.value;save()};
+    li.querySelector(".bd").onchange=e=>{x.border=e.target.value;save()};
     li.querySelector(".rm").onclick=()=>{plist=plist.filter(y=>y.id!==x.id);save();syncAdd();renderList()};
     li.querySelector("[data-go]").onclick=e=>{e.preventDefault();closeAll();document.getElementById("f-"+x.id).scrollIntoView()};
     pList.appendChild(li)});
@@ -492,7 +499,7 @@ cf.addEventListener("submit",async e=>{
   if(!plist.length)return;
   if(!name){say(ERR.missing);F["name"].focus();return}
   if(!F["email"].checkValidity()||!email){say(ERR.email);F["email"].focus();return}
-  const lines=plist.map((x,i)=>`${i+1}. ${label(x.id)} · ${x.size} · https://kuro.yoso.one/full.html#f-${x.id}`);
+  const lines=plist.map((x,i)=>`${i+1}. ${label(x.id)} · ${x.size} · ${x.border||"White border"} · https://kuro.yoso.one/full.html#f-${x.id}`);
   const notes=document.getElementById("cfNotes").value.trim();
   F["message"].value=`Print list (${plist.length}):\n${lines.join("\n")}`+(notes?`\n\nNotes:\n${notes}`:"");
   document.getElementById("cfPhoto").value=plist.length===1?plist[0].id:"";
@@ -526,7 +533,7 @@ function openLook(id,m){
 function closeLook(){look.hidden=true;document.body.classList.remove("looking");document.getElementById("viewBtn").removeAttribute("aria-disabled");wake()}
 function setMode(m){mode=m;
   look.querySelectorAll("[data-mode]").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.mode===m)));
-  const det=m==="detail";zoom.hidden=!det;wall.hidden=det;lookAdd.hidden=det;
+  const det=m==="detail";zoom.hidden=!det;wall.hidden=det;lookAdd.hidden=det;document.getElementById("bord").hidden=det;
   if(det)layoutZoom();else layoutPaper();
 }
 function layoutZoom(){
@@ -538,19 +545,29 @@ function layoutZoom(){
     lookInfo.textContent=`Detail · the full file, ${W} × ${H} px · drag to look around`;};
   if(zoomImg.complete&&zoomImg.naturalWidth)go();else zoomImg.onload=go;
 }
+let border="White border";
 function layoutPaper(){
-  /* One preview for every size: A-paper proportions with the print border (A3 figures; the other sizes scale alike) */
-  const [L,S,b]=PAPER.A3,r=R[lookId]||1.5,W=r>=1?L:S,H=r>=1?S:L;
+  /* One preview for every size: A-paper proportions (A3 figures; the other sizes scale alike).
+     White border: the whole photograph inside the print border.
+     No border: the photograph fills the paper, trimmed slightly to the A shape. */
+  const [L,S,b]=PAPER.A3,r=R[lookId]||1.5,W=r>=1?L:S,H=r>=1?S:L,none=border==="No border";
   const st=document.getElementById("lookStage"),k=Math.min((st.clientWidth-32)/W,(st.clientHeight-32)/H);
-  sheetp.style.width=W*k+"px";sheetp.style.height=H*k+"px";sheetp.style.padding=b*k+"px";
-  const iw=W-2*b,ih=H-2*b,pw=iw/ih>r?ih*r:iw,ph=iw/ih>r?ih:iw/r;
-  lookInfo.textContent=`Print preview · on white paper with a white border · swipe for the next photograph`;
+  sheetp.style.width=W*k+"px";sheetp.style.height=H*k+"px";sheetp.style.padding=none?"0":b*k+"px";sheetp.classList.toggle("full",none);
+  const pr=W/H,cut=r>pr?(1-pr/r):(1-r/pr),edges=r>pr?"left and right":"top and bottom";
+  lookInfo.textContent=none
+    ?(cut<0.0005?`No border · the photograph fills the paper`:`No border · fills the paper, trimmed ${mm(cut*100)}% across ${edges}`)
+    :`White border · the whole photograph on white paper`;
+  document.querySelectorAll("#bord button").forEach(x=>x.setAttribute("aria-pressed",String(x.dataset.b===border)));
   const inList=plist.find(x=>x.id===lookId);
-  lookAdd.textContent=inList?`✓ In print list`:`＋ Print`;
+  lookAdd.textContent=inList&&(inList.border||"White border")===border?`✓ In print list`:inList?`＋ Change to ${border.toLowerCase()}`:`＋ Print`;
 }
 look.querySelectorAll("[data-mode]").forEach(b=>b.onclick=()=>setMode(b.dataset.mode));
 document.getElementById("lookClose").onclick=closeLook;
-lookAdd.onclick=()=>{toggle(lookId);layoutPaper()};
+lookAdd.onclick=()=>{const x=plist.find(y=>y.id===lookId);
+  if(x&&(x.border||"White border")===border)plist=plist.filter(y=>y.id!==lookId);
+  else if(x)x.border=border;else plist.push({id:lookId,size:"Not sure yet",border});
+  save();syncAdd();layoutPaper()};
+document.querySelectorAll("#bord button").forEach(x=>x.onclick=()=>{border=x.dataset.b;layoutPaper()});
 viewBtn.onclick=e=>{e.stopPropagation();if(look.hidden)openLook(curId,"detail")};
 document.getElementById("pvBtn").onclick=e=>{e.stopPropagation();openLook(curId,"print")};
 /* In print preview, swipe (or the arrow keys) to the next or previous photograph */
