@@ -176,6 +176,10 @@ body.still .chrome.top>*{pointer-events:none}
 .zooms{position:fixed;z-index:5;top:50%;right:max(8px,env(safe-area-inset-right,0px));transform:translateY(-50%);
   display:flex;flex-direction:column;gap:6px;color:#fff;mix-blend-mode:difference}
 .zooms[hidden]{display:none}
+/* In Detail (the closest zoom) the icons stay: − steps back to the photograph, + is at its limit */
+body.looking .zooms{z-index:12;opacity:1!important}
+body.looking .zooms .zb{pointer-events:auto!important}
+body.looking #viewBtn{opacity:.3;pointer-events:none!important}
 .zb{display:flex;align-items:center;justify-content:center;min-width:44px;min-height:44px;pointer-events:auto}
 .zb svg{width:22px;height:22px;display:block}
 body.still #zooms{opacity:0}
@@ -238,7 +242,7 @@ body.still #zooms .zb{pointer-events:none}
 <main id="reel" aria-label="Yosokuro photographs"></main>
 
 <div class="chrome top">
-  <span class="brand"><a class="name" href="#" id="toStart">Yosokuro</a><span class="beta"><span class="version" data-version>Beta 0.47</span></span></span>
+  <span class="brand"><a class="name" href="#" id="toStart">Yosokuro</a><span class="beta"><span class="version" data-version>Beta 0.48</span></span></span>
   <nav><button type="button" id="openIdx">Index</button><button type="button" id="openPrints">Prints<span id="pCount"></span></button><button type="button" id="openInfo">Info</button></nav>
 </div>
 <div class="zooms" id="zooms" hidden><button type="button" class="zb" id="viewBtn" aria-label="Zoom in to detail" title="Zoom in: detail and print preview"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21"/><path d="M7.5 10.5h6M10.5 7.5v6"/></svg></button><button type="button" class="zb" id="zoomOutBtn" aria-label="Zoom out to all photographs" title="Zoom out: all photographs"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21"/><path d="M7.5 10.5h6"/></svg></button></div>
@@ -326,7 +330,7 @@ body.still #zooms .zb{pointer-events:none}
     </form>
 
     <footer>
-      <span>© <a class="hub-link" href="https://hub.yoso.one">Yoso</a> · kuro.yoso.one/full · <span class="version" data-version>Beta 0.47</span></span>
+      <span>© <a class="hub-link" href="https://hub.yoso.one">Yoso</a> · kuro.yoso.one/full · <span class="version" data-version>Beta 0.48</span></span>
       <span><a href="./">Current site</a></span>
     </footer>
   </div>
@@ -512,9 +516,9 @@ function openLook(id,m){
   if(!id)return;lookId=id;mode=m||mode;
   document.getElementById("lookNo").textContent=label(id);
   zoomImg.src=sheetImg.src=`img/full/${id}.jpg`;zoomImg.alt=sheetImg.alt=`Frame ${label(id)}`;
-  closeAll();look.hidden=false;wake();setMode(mode);document.getElementById("lookClose").focus();
+  closeAll();look.hidden=false;document.body.classList.add("looking");document.getElementById("viewBtn").setAttribute("aria-disabled","true");wake();setMode(mode);document.getElementById("lookClose").focus();
 }
-function closeLook(){look.hidden=true;wake()}
+function closeLook(){look.hidden=true;document.body.classList.remove("looking");document.getElementById("viewBtn").removeAttribute("aria-disabled");wake()}
 function setMode(m){mode=m;
   look.querySelectorAll("[data-mode]").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.mode===m)));
   const det=m==="detail";zoom.hidden=!det;wall.hidden=det;lookAdd.hidden=det;
@@ -541,8 +545,8 @@ function layoutPaper(){
 look.querySelectorAll("[data-mode]").forEach(b=>b.onclick=()=>setMode(b.dataset.mode));
 document.getElementById("lookClose").onclick=closeLook;
 lookAdd.onclick=()=>{const x=plist.find(y=>y.id===lookId);if(x)x.size=mode;else plist.push({id:lookId,size:mode});save();syncAdd();layoutPaper()};
-viewBtn.onclick=e=>{e.stopPropagation();openLook(curId,"detail")};
-document.getElementById("zoomOutBtn").onclick=e=>{e.stopPropagation();openSheet()};
+viewBtn.onclick=e=>{e.stopPropagation();if(look.hidden)openLook(curId,"detail")};
+document.getElementById("zoomOutBtn").onclick=e=>{e.stopPropagation();if(!look.hidden)closeLook();else openSheet()};
 addEventListener("resize",()=>{if(!look.hidden){mode==="detail"?layoutZoom():layoutPaper()}});
 /* Drag to look around in Detail (mouse); touch scrolls natively */
 let dragging=null;
