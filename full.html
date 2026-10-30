@@ -3,9 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Yosokuro · full-screen test</title>
+<title>Yosokuro</title>
 <meta name="robots" content="noindex">
-<meta name="description" content="Test version of Yosokuro: black-and-white photographs of Japan by Yoso, one per screen.">
+<meta name="description" content="Yosokuro: black-and-white photography of Japan by Yoso.">
 <link rel="canonical" href="https://kuro.yoso.one/">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Yosokuro">
@@ -303,8 +303,6 @@ body.still #zooms .zb{pointer-events:none}
 .family-mark{position:absolute;top:calc(env(safe-area-inset-top,0px) + 20px);left:50%;transform:translateX(-50%);display:block;width:48px;line-height:0}
 .family-mark img{display:block;width:48px;height:48px}
 @media (max-width:560px){.family-mark{top:calc(env(safe-area-inset-top,0px) + 64px)}}
-/* Test notice */
-.test{display:inline-block;margin:0 0 28px;padding:6px 10px;border:1px solid var(--line);font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--ash)}
 .info .epi{margin:0 0 32px;padding-left:14px;border-left:2px solid var(--gold)}
 .info .epi p{margin:0 0 6px;font:500 italic 20px/1.5 var(--f-kanji)}
 .info .epi .by{margin:0;font:400 11px/1.6 var(--f-mono);letter-spacing:.16em;text-transform:uppercase;color:var(--ash)}
@@ -332,7 +330,7 @@ body.still #zooms .zb{pointer-events:none}
 <body>
 <main id="reel" aria-label="Yosokuro photographs"></main>
 
-<div class="beta-tag"><span class="version" data-version>Beta 0.77</span></div>
+<div class="beta-tag"><span class="version" data-version>Beta 0.78</span></div>
 <div class="chrome top">
   <span class="brand"><a class="name" href="#" id="toStart">Yosokuro</a></span>
   <nav><button type="button" id="openIdx">Index</button><button type="button" id="openPrints">Prints<span id="pCount"></span></button><button type="button" id="openInfo">Info</button></nav>
@@ -407,7 +405,7 @@ body.still #zooms .zb{pointer-events:none}
     <p>Black-and-white photographs of Japan by Yoso. Miyazaki, Japan.</p>
     <dl>
       <dt>Prints</dt><dd>Order with ＋ Print and pay through Stripe · photographs join and leave the collection without notice · <a href="#terms" data-terms>Shop terms</a> · <a href="#contact" data-contact>Contact</a></dd>
-      <dt>Feedback</dt><dd>On this test version: <a href="#contact" data-contact>contact form</a></dd>
+      <dt>Contact</dt><dd><a href="#contact" data-contact>Contact form</a></dd>
       <dt>Follow</dt><dd><a href="feed.xml">RSS</a></dd>
     </dl>
 
@@ -444,8 +442,7 @@ body.still #zooms .zb{pointer-events:none}
     </form>
 
     <footer>
-      <span>© <a class="hub-link" href="https://hub.yoso.one">Yoso</a> · kuro.yoso.one/full · <span class="version" data-version>Beta 0.77</span></span>
-      <span><a href="./">Current site</a></span>
+      <span>© <a class="hub-link" href="https://hub.yoso.one">Yoso</a> · kuro.yoso.one · <span class="version" data-version>Beta 0.78</span></span>
     </footer>
   </div>
 </section>
@@ -641,7 +638,7 @@ function totals(){
   if(sh)document.getElementById("oDays").textContent=`${sh.days[0]}–${sh.days[1]} working days`;
 }
 const OERR={retired:"One of these photographs has just been retired and can no longer be ordered. It has been removed from your list.",
-  closed:"This is a demo: payment isn’t connected yet, so nothing has been ordered.",
+  closed:"Ordering isn’t open yet, so nothing has been ordered. Please try again soon.",
   fail:"Checkout couldn’t start just now. Please try again in a moment."};
 oPay.onclick=async()=>{
   if(!plist.length)return;
@@ -696,7 +693,7 @@ document.querySelectorAll("[data-terms]").forEach(a=>a.onclick=openTerms);
 const look=document.getElementById("look"),zoom=document.getElementById("zoom"),zoomImg=document.getElementById("zoomImg"),zoomPad=document.getElementById("zoomPad");
 const wall=document.getElementById("wall"),sheetp=document.getElementById("sheetp"),sheetImg=document.getElementById("sheetImg");
 const lookInfo=document.getElementById("lookInfo"),lookAdd=document.getElementById("lookAdd"),viewBtn=document.getElementById("viewBtn");
-/* Paper long side, short side and white border on every side, in mm (same as the current site) */
+/* Paper long side, short side and white border on every side, in mm (same as index.html) */
 const PAPER={A4:[297,210,18],A3:[420,297,25.5],A2:[594,420,36],A1:[841,594,50]};
 const mm=x=>String(Math.round(x*100)/100);
 let lookId="",mode="detail";

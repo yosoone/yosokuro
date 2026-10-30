@@ -10,7 +10,7 @@
 - `index.html` — the whole site (photographs and profile)
 - `img/full/` — 2400 px images for the full-screen viewer
 - `img/thumb/` — 960 px images for the grid
-- `img/mini/` — 400 px images for the contact sheet on the full-screen test version (`full.html`)
+- `img/mini/` — 400 px images for the contact sheet on the full-screen version (`full.html`)
 - `assets/works.js` — the one list of photographs: each frame's shape and which chapter it sits in, in order
 
 ## Adding photographs
