@@ -329,7 +329,7 @@ body.still #zooms .zb{pointer-events:none}
 <body>
 <main id="reel" aria-label="Yosokuro photographs"></main>
 
-<div class="beta-tag"><span class="version" data-version>Beta 0.75</span></div>
+<div class="beta-tag"><span class="version" data-version>Beta 0.76</span></div>
 <div class="chrome top">
   <span class="brand"><a class="name" href="#" id="toStart">Yosokuro</a></span>
   <nav><button type="button" id="openIdx">Index</button><button type="button" id="openPrints">Prints<span id="pCount"></span></button><button type="button" id="openInfo">Info</button></nav>
@@ -441,7 +441,7 @@ body.still #zooms .zb{pointer-events:none}
     </form>
 
     <footer>
-      <span>© <a class="hub-link" href="https://hub.yoso.one">Yoso</a> · kuro.yoso.one/full · <span class="version" data-version>Beta 0.75</span></span>
+      <span>© <a class="hub-link" href="https://hub.yoso.one">Yoso</a> · kuro.yoso.one/full · <span class="version" data-version>Beta 0.76</span></span>
       <span><a href="./">Current site</a></span>
     </footer>
   </div>
@@ -699,6 +699,7 @@ const mm=x=>String(Math.round(x*100)/100);
 let lookId="",mode="detail";
 function openLook(id,m){
   if(!id)return;lookId=id;mode=m||mode;
+  {const x=plist.find(y=>y.id===id);if(x)border=x.border||"White border"}
   document.getElementById("lookNo").textContent=label(id);
   zoomImg.src=sheetImg.src=`img/full/${id}.jpg`;zoomImg.alt=sheetImg.alt=`Frame ${label(id)}`;
   closeAll();look.hidden=false;document.body.classList.add("looking");document.getElementById("viewBtn").setAttribute("aria-disabled","true");wake();setMode(mode);document.getElementById("lookClose").focus();
@@ -729,15 +730,17 @@ function layoutPaper(){
   lookInfo.textContent="";
   document.querySelectorAll("#bord button").forEach(x=>x.setAttribute("aria-pressed",String(x.dataset.b===border)));
   const inList=plist.find(x=>x.id===lookId);
-  lookAdd.textContent=inList&&(inList.border||"White border")===border?`✓ In print list`:inList?`＋ Change to ${border.toLowerCase()}`:`＋ Print`;
+  lookAdd.textContent=inList?`✓ In print list`:`＋ Add to print list`;
 }
 look.querySelectorAll("[data-mode]").forEach(b=>b.onclick=()=>setMode(b.dataset.mode));
 document.getElementById("lookClose").onclick=closeLook;
+/* In the list: tap to take it out. Not in the list: tap to add it with the border shown. */
 lookAdd.onclick=()=>{const x=plist.find(y=>y.id===lookId);
-  if(x&&(x.border||"White border")===border)plist=plist.filter(y=>y.id!==lookId);
-  else if(x)x.border=border;else plist.push({id:lookId,size:"A3",paper:"standard",qty:1,border});
+  if(x)plist=plist.filter(y=>y.id!==lookId);else plist.push({id:lookId,size:"A3",paper:"standard",qty:1,border});
   save();syncAdd();layoutPaper()};
-document.querySelectorAll("#bord button").forEach(x=>x.onclick=()=>{border=x.dataset.b;layoutPaper()});
+/* The border switch also sets the border of this print in the list, if it is there */
+document.querySelectorAll("#bord button").forEach(x=>x.onclick=()=>{border=x.dataset.b;
+  const it=plist.find(y=>y.id===lookId);if(it){it.border=border;save()}layoutPaper()});
 viewBtn.onclick=e=>{e.stopPropagation();if(look.hidden)openLook(curId,"detail")};
 document.getElementById("pvBtn").onclick=e=>{e.stopPropagation();openLook(curId,"print")};
 /* In print preview, swipe (or the arrow keys) to the next or previous photograph */
