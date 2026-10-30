@@ -169,7 +169,9 @@ body.still .chrome>*{pointer-events:none}
 .plist .rm:hover{color:var(--bone);border-color:var(--bone)}
 .empty{margin:0 0 28px;color:var(--ash);font:500 16px/1.7 var(--f-kanji);max-width:46ch}
 .prints h2{margin:0 0 10px;font:800 clamp(40px,7vw,72px)/1 var(--f-kanji)}
-.prints .lede{margin:0 0 32px;color:var(--ash);max-width:58ch;font:500 15px/1.7 var(--f-kanji)}
+.prints .lede{margin:0 0 20px;color:var(--ash);max-width:58ch;font:500 15px/1.7 var(--f-kanji)}
+/* The changing-collection notice: a gold rule beside it, set apart from the lede */
+.prints .notice{margin:0 0 32px;padding-left:14px;border-left:2px solid var(--gold);max-width:52ch;color:var(--bone);font:500 15px/1.7 var(--f-kanji)}
 .prints .cf{max-width:640px}
 @media (max-width:520px){.plist li{grid-template-columns:minmax(0,1fr) auto;gap:12px}.plist .ph{grid-column:1/-1;width:100%;height:auto;justify-content:flex-start}.plist .ph img{max-height:50vh}.plist .opts{grid-column:1/2;justify-self:start}.plist .rm{grid-column:2/3;grid-row:2/4}}
 /* Contact form (same look as the main page) */
@@ -276,7 +278,7 @@ body.still #zooms .zb{pointer-events:none}
 <main id="reel" aria-label="Yosokuro photographs"></main>
 
 <div class="chrome top">
-  <span class="brand"><a class="name" href="#" id="toStart">Yosokuro</a><span class="beta"><span class="version" data-version>Beta 0.63</span></span></span>
+  <span class="brand"><a class="name" href="#" id="toStart">Yosokuro</a><span class="beta"><span class="version" data-version>Beta 0.64</span></span></span>
   <nav><button type="button" id="openIdx">Index</button><button type="button" id="openPrints">Prints<span id="pCount"></span></button><button type="button" id="openInfo">Info</button></nav>
 </div>
 <div class="zooms" id="zooms" hidden><button type="button" class="zb" id="viewBtn" aria-label="Zoom in to detail" title="Zoom in: detail and print preview"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21"/><path d="M7.5 10.5h6M10.5 7.5v6"/></svg></button><button type="button" class="zb" id="zoomOutBtn" aria-label="Zoom out to all photographs" title="Zoom out: all photographs"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21"/><path d="M7.5 10.5h6"/></svg></button></div>
@@ -308,6 +310,7 @@ body.still #zooms .zb{pointer-events:none}
   <div class="inner">
     <h2>Prints</h2>
     <p class="lede">Prints of every photograph are available on request. Add frames with ＋ Print, choose a size for each, and send the list. Yoso will reply by email with prices and details.</p>
+    <p class="notice">Photographs join and leave the collection without notice, and a retired photograph is never printed again. If one stays with you, add it to your list now.</p>
     <p class="empty" id="pEmpty">Your print list is empty. Tap ＋ Print beside any frame number to add it here.</p>
     <ol class="plist" id="pList"></ol>
     <form class="cf" id="cf" action="https://forms.yoso.one/contact" method="post" novalidate hidden>
@@ -334,7 +337,7 @@ body.still #zooms .zb{pointer-events:none}
     <p>A lifelong black-and-white photography project documenting Japan’s urban reality and the spirit of the Kami.</p>
     <p>Photographs by Yoso, a tattoo artist and multimedia practitioner based in Miyazaki, Japan.</p>
     <dl>
-      <dt>Prints</dt><dd>Available on request · add frames with ＋ Print · <a href="mailto:yosotattoo@gmail.com?subject=Yosokuro%20print">yosotattoo@gmail.com</a></dd>
+      <dt>Prints</dt><dd>Available on request · add frames with ＋ Print · photographs join and leave the collection without notice · <a href="mailto:yosotattoo@gmail.com?subject=Yosokuro%20print">yosotattoo@gmail.com</a></dd>
       <dt>Feedback</dt><dd>On this test version: <a href="mailto:yosotattoo@gmail.com?subject=Yosokuro%20full-screen%20test">yosotattoo@gmail.com</a></dd>
       <dt>Cameras</dt><dd>Ricoh GR II · Ricoh GR III</dd>
       <dt>Follow</dt><dd><a href="feed.xml">RSS</a></dd>
@@ -360,7 +363,7 @@ body.still #zooms .zb{pointer-events:none}
     </form>
 
     <footer>
-      <span>© <a class="hub-link" href="https://hub.yoso.one">Yoso</a> · kuro.yoso.one/full · <span class="version" data-version>Beta 0.63</span></span>
+      <span>© <a class="hub-link" href="https://hub.yoso.one">Yoso</a> · kuro.yoso.one/full · <span class="version" data-version>Beta 0.64</span></span>
       <span><a href="./">Current site</a></span>
     </footer>
   </div>
