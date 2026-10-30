@@ -97,7 +97,7 @@ export async function checkout(request, env, cors) {
   const s = SHOP.shipping[ship];
   (ship === "jp" ? ["JP"] : INTL).forEach((c, i) => p.set(`shipping_address_collection[allowed_countries][${i}]`, c));
   p.set("shipping_options[0][shipping_rate_data][type]", "fixed_amount");
-  p.set("shipping_options[0][shipping_rate_data][display_name]", `Tracked delivery · ${s.name}`);
+  p.set("shipping_options[0][shipping_rate_data][display_name]", `Shipping & handling · ${s.name}`);
   p.set("shipping_options[0][shipping_rate_data][fixed_amount][amount]", String(s.amount));
   p.set("shipping_options[0][shipping_rate_data][fixed_amount][currency]", SHOP.currency);
   p.set("shipping_options[0][shipping_rate_data][delivery_estimate][minimum][unit]", "business_day");
@@ -151,7 +151,7 @@ export async function webhook(request, env) {
     "Prints:",
     ...items.map(x => "  " + x),
     "",
-    `Total paid: ${yen(s.amount_total || 0)} (shipping ${yen((s.total_details && s.total_details.amount_shipping) || 0)})`,
+    `Total paid: ${yen(s.amount_total || 0)} (shipping & handling ${yen((s.total_details && s.total_details.amount_shipping) || 0)})`,
     "",
     "Ship to:",
     `  ${shipd.name || cust.name || ""}`,
