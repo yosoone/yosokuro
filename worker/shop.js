@@ -18,7 +18,8 @@ const BASE = {         // yen, per print, before handling and tax
   premium:  { A3: 18000, A2: 26000 },
 };
 const HANDLING = 1000; // yen, per print, built into the price
-const TAX = 0.10;      // consumption tax, built into the price
+const TAX = 0.10;      // consumption tax, built into the price. One price worldwide: overseas orders
+                       // pay the same price (exports are tax exempt, so there it is simply margin).
 const withTax = n => Math.round(n * (1 + TAX));
 const priced = Object.fromEntries(Object.entries(BASE).map(([paper, sizes]) =>
   [paper, Object.fromEntries(Object.entries(sizes).map(([size, b]) => [size, withTax(b + HANDLING)]))]));
@@ -161,8 +162,10 @@ export async function webhook(request, env) {
     "Prints:",
     ...items.map(x => "  " + x),
     "",
-    `Total paid: ${yen(s.amount_total || 0)} (shipping ${yen((s.total_details && s.total_details.amount_shipping) || 0)}; ` +
-      `includes 10% consumption tax of ${yen(Math.round((s.amount_total || 0) * TAX / (1 + TAX)))})`,
+    `Total paid: ${yen(s.amount_total || 0)} (shipping ${yen((s.total_details && s.total_details.amount_shipping) || 0)})`,
+    s.metadata.ship === "jp"
+      ? `Consumption tax included: ${yen(Math.round((s.amount_total || 0) * TAX / (1 + TAX)))} (10%)`
+      : "Export: consumption tax exempt (輸出免税). Keep the post office receipt (郵便物受領証) for your records.",
     "",
     "Ship to:",
     `  ${shipd.name || cust.name || ""}`,
