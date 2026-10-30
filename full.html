@@ -533,16 +533,22 @@ function openSheet(){
   if(here){here.scrollIntoView({block:"center"});here.focus({preventScroll:true});void here.offsetWidth;here.classList.add("glow")}else idx.scrollTop=0;
 }
 document.getElementById("toStart").onclick=e=>{e.preventDefault();closeAll();reel.scrollTo({top:0})};
-/* Print list: kept in this browser only */
-const SIZES=["A3","A2"],BORDERS=["White border","No border"];
+/* Print list = the cart: kept in this browser only. Prices come from the shop (forms.yoso.one/prices);
+   the Worker sets every amount itself at checkout, so what is shown here is for display only. */
+const SHOP_URL="https://forms.yoso.one";
+let SHOP={papers:{standard:{name:"Standard",desc:"Printed by PRIO"},premium:{name:"Premium",desc:"Archival, printed by Tokugawa"}},
+  sizes:{A3:"A3 · 297 × 420 mm",A2:"A2 · 420 × 594 mm"},borders:["White border","No border"],prices:null,shipping:null,maxQty:5};
+const SIZES=()=>Object.keys(SHOP.sizes),PAPERS=()=>Object.keys(SHOP.papers),BORDERS=["White border","No border"];
 const KEY="yosokuro-prints";
-let plist=[];try{plist=JSON.parse(localStorage.getItem(KEY)||"[]").filter(x=>x&&R[x.id]).map(x=>SIZES.includes(x.size)?x:{...x,size:"A3"})}catch{plist=[]}
+const tidy=x=>({id:x.id,size:SIZES().includes(x.size)?x.size:"A3",paper:PAPERS().includes(x.paper)?x.paper:"standard",
+  border:BORDERS.includes(x.border)?x.border:"White border",qty:Math.max(1,Math.min(SHOP.maxQty||5,parseInt(x.qty,10)||1))});
+let plist=[];try{plist=JSON.parse(localStorage.getItem(KEY)||"[]").filter(x=>x&&R[x.id]).map(tidy)}catch{plist=[]}
 const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(plist))}catch{}};
 const has=id=>plist.some(x=>x.id===id);
 const addBtn=document.getElementById("addBtn"),pCount=document.getElementById("pCount");
 function syncAdd(){addBtn.hidden=!curId;document.getElementById("pvBtn").hidden=!curId;document.getElementById("zooms").hidden=!curId;const on=has(curId);addBtn.setAttribute("aria-pressed",on);addBtn.querySelector(".plus").textContent=on?"✓":"＋";addBtn.setAttribute("aria-label",on?"Print: in your list, tap to remove":"Print: add to your list");
-  pCount.textContent=plist.length?" ("+plist.length+")":""}
-function toggle(id){plist=has(id)?plist.filter(x=>x.id!==id):[...plist,{id,size:"A3"}];save();syncAdd();wake()}
+  pCount.textContent=plist.length?" ("+plist.reduce((n,x)=>n+x.qty,0)+")":""}
+function toggle(id){plist=has(id)?plist.filter(x=>x.id!==id):[...plist,tidy({id})];save();syncAdd();wake()}
 addBtn.onclick=e=>{e.stopPropagation();if(curId)toggle(curId)};
 document.getElementById("openPrints").onclick=()=>open(prints);
 const pList=document.getElementById("pList"),order=document.getElementById("order");
@@ -670,7 +676,7 @@ look.querySelectorAll("[data-mode]").forEach(b=>b.onclick=()=>setMode(b.dataset.
 document.getElementById("lookClose").onclick=closeLook;
 lookAdd.onclick=()=>{const x=plist.find(y=>y.id===lookId);
   if(x&&(x.border||"White border")===border)plist=plist.filter(y=>y.id!==lookId);
-  else if(x)x.border=border;else plist.push({id:lookId,size:"A3",border});
+  else if(x)x.border=border;else plist.push({id:lookId,size:"A3",paper:"standard",qty:1,border});
   save();syncAdd();layoutPaper()};
 document.querySelectorAll("#bord button").forEach(x=>x.onclick=()=>{border=x.dataset.b;layoutPaper()});
 viewBtn.onclick=e=>{e.stopPropagation();if(look.hidden)openLook(curId,"detail")};
