@@ -90,6 +90,9 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;paddin
 .chrome.bot{bottom:0;min-height:calc(env(safe-area-inset-bottom,0px) + 92px);padding-bottom:env(safe-area-inset-bottom,0px);font-variant-numeric:tabular-nums}
 .chrome .brand{display:flex;align-items:baseline;gap:12px}
 .chrome .beta{font-size:10px;letter-spacing:.18em;opacity:.7}
+/* Beta number: small, bottom left, above the photographs and below the overlays */
+.beta-tag{position:fixed;z-index:6;left:max(12px,env(safe-area-inset-left,0px));bottom:calc(env(safe-area-inset-bottom,0px) + 8px);
+  font:400 9px/1 var(--f-mono);letter-spacing:.16em;text-transform:uppercase;color:#fff;opacity:.4;pointer-events:none}
 .chrome .name{font:800 15px/1 var(--f-kanji);letter-spacing:.04em;text-transform:none;text-decoration:none}
 .chrome nav{display:flex;gap:22px}
 .chrome .k{font:800 14px/1 var(--f-kanji);letter-spacing:.05em;margin-right:12px}
@@ -314,8 +317,9 @@ body.still #zooms .zb{pointer-events:none}
 <body>
 <main id="reel" aria-label="Yosokuro photographs"></main>
 
+<div class="beta-tag"><span class="version" data-version>Beta 0.68</span></div>
 <div class="chrome top">
-  <span class="brand"><a class="name" href="#" id="toStart">Yosokuro</a><span class="beta"><span class="version" data-version>Beta 0.67</span></span></span>
+  <span class="brand"><a class="name" href="#" id="toStart">Yosokuro</a></span>
   <nav><button type="button" id="openIdx">Index</button><button type="button" id="openPrints">Prints<span id="pCount"></span></button><button type="button" id="openInfo">Info</button></nav>
 </div>
 <div class="zooms" id="zooms" hidden><button type="button" class="zb" id="viewBtn" aria-label="Zoom in to detail" title="Zoom in: detail and print preview"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21"/><path d="M7.5 10.5h6M10.5 7.5v6"/></svg></button><button type="button" class="zb" id="zoomOutBtn" aria-label="Zoom out to all photographs" title="Zoom out: all photographs"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21"/><path d="M7.5 10.5h6"/></svg></button></div>
@@ -418,7 +422,7 @@ body.still #zooms .zb{pointer-events:none}
     </form>
 
     <footer>
-      <span>© <a class="hub-link" href="https://hub.yoso.one">Yoso</a> · kuro.yoso.one/full · <span class="version" data-version>Beta 0.67</span></span>
+      <span>© <a class="hub-link" href="https://hub.yoso.one">Yoso</a> · kuro.yoso.one/full · <span class="version" data-version>Beta 0.68</span></span>
       <span><a href="./">Current site</a></span>
     </footer>
   </div>
