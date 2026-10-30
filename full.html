@@ -305,6 +305,9 @@ body.still #zooms .zb{pointer-events:none}
 @media (max-width:560px){.family-mark{top:calc(env(safe-area-inset-top,0px) + 64px)}}
 /* Test notice */
 .test{display:inline-block;margin:0 0 28px;padding:6px 10px;border:1px solid var(--line);font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--ash)}
+.info .epi{margin:0 0 32px;padding-left:14px;border-left:2px solid var(--gold)}
+.info .epi p{margin:0 0 6px;font:500 italic 20px/1.5 var(--f-kanji)}
+.info .epi .by{margin:0;font:400 11px/1.6 var(--f-mono);letter-spacing:.16em;text-transform:uppercase;color:var(--ash)}
 .info h3{margin:48px 0 14px;font:800 24px/1.2 var(--f-kanji)}
 .info .sub-form{max-width:58ch}
 .info .cf{max-width:640px;margin-bottom:12px}
@@ -329,7 +332,7 @@ body.still #zooms .zb{pointer-events:none}
 <body>
 <main id="reel" aria-label="Yosokuro photographs"></main>
 
-<div class="beta-tag"><span class="version" data-version>Beta 0.76</span></div>
+<div class="beta-tag"><span class="version" data-version>Beta 0.77</span></div>
 <div class="chrome top">
   <span class="brand"><a class="name" href="#" id="toStart">Yosokuro</a></span>
   <nav><button type="button" id="openIdx">Index</button><button type="button" id="openPrints">Prints<span id="pCount"></span></button><button type="button" id="openInfo">Info</button></nav>
@@ -358,8 +361,8 @@ body.still #zooms .zb{pointer-events:none}
   <button type="button" class="close" data-close>Close ✕</button>
   <div class="inner">
     <h2>Prints</h2>
-    <p class="lede">Every photograph here can be ordered as a print. Add frames with ＋ Print, choose the size and paper for each, and pay securely through Stripe.</p>
-    <p class="notice">Photographs join and leave the collection without notice, and a retired photograph is never printed again. If you see one you like, add it to your list now.</p>
+    <p class="lede">Every frame you see today can be ordered as a print. Add frames with ＋ Print, choose the size and paper for each, and pay securely through Stripe.</p>
+    <p class="notice">Photographs join and leave the collection without notice, and a retired photograph will never be available again in this collection. If you see a photograph you like, order your print now.</p>
     <p class="thanks" id="pThanks" role="status" hidden>Thank you for your order. A receipt is on its way from Stripe, and Yoso will email you when your prints are on their way.</p>
     <p class="empty" id="pEmpty">Your print list is empty. Tap ＋ Print beside any frame number to add it here.</p>
     <ol class="plist" id="pList"></ol>
@@ -400,8 +403,8 @@ body.still #zooms .zb{pointer-events:none}
   <button type="button" class="close" data-close>Close ✕</button>
   <div class="inner">
     <h2>Yosokuro</h2>
-    <p>A lifelong black-and-white photography project documenting Japan’s urban reality and the spirit of the Kami.</p>
-    <p>Photographs by Yoso, a tattoo artist and multimedia practitioner based in Miyazaki, Japan.</p>
+    <blockquote class="epi"><p>“The Light reveals the shadow of the ego.”</p><p class="by">Yoso</p></blockquote>
+    <p>Black-and-white photographs of Japan by Yoso. Miyazaki, Japan.</p>
     <dl>
       <dt>Prints</dt><dd>Order with ＋ Print and pay through Stripe · photographs join and leave the collection without notice · <a href="#terms" data-terms>Shop terms</a> · <a href="#contact" data-contact>Contact</a></dd>
       <dt>Feedback</dt><dd>On this test version: <a href="#contact" data-contact>contact form</a></dd>
@@ -441,7 +444,7 @@ body.still #zooms .zb{pointer-events:none}
     </form>
 
     <footer>
-      <span>© <a class="hub-link" href="https://hub.yoso.one">Yoso</a> · kuro.yoso.one/full · <span class="version" data-version>Beta 0.76</span></span>
+      <span>© <a class="hub-link" href="https://hub.yoso.one">Yoso</a> · kuro.yoso.one/full · <span class="version" data-version>Beta 0.77</span></span>
       <span><a href="./">Current site</a></span>
     </footer>
   </div>
@@ -456,7 +459,7 @@ const total=Object.keys(R).length;
 const pad=n=>String(n).padStart(3,"0");
 
 /* Cover screen */
-reel.insertAdjacentHTML("beforeend",`<section class="title cover" data-k="" data-no="" data-n=""><img class="bg" src="img/full/r024804.jpg" alt="From above: the long shadow of a palm frond across pale paving stones." fetchpriority="high"><span class="family-mark"><img src="images/yoso-mark.png" alt="Yoso" width="48" height="48"></span><div class="k">黒</div><p class="line">Yosokuro. Black-and-white photographs of Japan by Yoso.</p><div class="hint" aria-hidden="true">Scroll<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 5l6 6 6-6"/><path d="M6 12l6 6 6-6"/></svg></div></section>`);
+reel.insertAdjacentHTML("beforeend",`<section class="title cover" data-k="" data-no="" data-n=""><img class="bg" src="img/full/r024804.jpg" alt="From above: the long shadow of a palm frond across pale paving stones." fetchpriority="high"><span class="family-mark"><img src="images/yoso-mark.png" alt="Yoso" width="48" height="48"></span><div class="k">黒</div><p class="line">Yosokuro. Black-and-white photography of Japan by Yoso.</p><div class="hint" aria-hidden="true">Scroll<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 5l6 6 6-6"/><path d="M6 12l6 6 6-6"/></svg></div></section>`);
 
 /* Chapters: one kanji screen, then each frame full screen */
 /* One continuous sequence: every frame in list order, no chapter screens or labels */
