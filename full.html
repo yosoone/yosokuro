@@ -152,6 +152,13 @@ body.still #pvBtn{opacity:0}
 #nowNo,#nowN{opacity:.55}
 .chrome .add .plus{font:300 32px/1 var(--f-mono);letter-spacing:0;transform:translateY(-1px)}
 .chrome .add[hidden]{display:none}
+/* With Index, Prints, Info or the shop terms open, the top bar (Yosokuro and the menu) stays on top
+   and always visible; there is no Close button: the menu switches or closes, Yosokuro goes home. */
+body.ov-open .chrome.top{z-index:15;opacity:1!important;background:var(--night)}
+body.ov-open .chrome.top>*{pointer-events:auto!important}
+.ov .close{display:none}
+.chrome nav button[aria-current="true"]{text-decoration:underline;text-underline-offset:6px;text-decoration-thickness:1px}
+.ov:focus{outline:none}
 body.still .chrome>*{pointer-events:none}
 .plist{list-style:none;margin:0 0 36px;padding:0;max-width:760px}
 .plist .opts{display:grid;gap:8px}
@@ -319,7 +326,7 @@ body.still #zooms .zb{pointer-events:none}
 <body>
 <main id="reel" aria-label="Yosokuro photographs"></main>
 
-<div class="beta-tag"><span class="version" data-version>Beta 0.72</span></div>
+<div class="beta-tag"><span class="version" data-version>Beta 0.73</span></div>
 <div class="chrome top">
   <span class="brand"><a class="name" href="#" id="toStart">Yosokuro</a></span>
   <nav><button type="button" id="openIdx">Index</button><button type="button" id="openPrints">Prints<span id="pCount"></span></button><button type="button" id="openInfo">Info</button></nav>
@@ -437,7 +444,7 @@ body.still #zooms .zb{pointer-events:none}
     </form>
 
     <footer>
-      <span>© <a class="hub-link" href="https://hub.yoso.one">Yoso</a> · kuro.yoso.one/full · <span class="version" data-version>Beta 0.72</span></span>
+      <span>© <a class="hub-link" href="https://hub.yoso.one">Yoso</a> · kuro.yoso.one/full · <span class="version" data-version>Beta 0.73</span></span>
       <span><a href="./">Current site</a></span>
     </footer>
   </div>
@@ -538,10 +545,16 @@ wake();
 
 /* Overlays */
 const idx=document.getElementById("idx"),info=document.getElementById("info"),prints=document.getElementById("prints"),terms=document.getElementById("terms");
-function open(o){closeAll();o.hidden=false;if(o===prints)renderList();o.querySelector(".close").focus();wake()}
-function closeAll(){idx.hidden=true;info.hidden=true;prints.hidden=true;terms.hidden=true}
-document.getElementById("openIdx").onclick=openSheet;
-document.getElementById("openInfo").onclick=()=>open(info);
+const NAV={idx:"openIdx",prints:"openPrints",info:"openInfo"};
+function open(o){closeAll();o.hidden=false;if(o===prints)renderList();
+  document.body.classList.add("ov-open");
+  Object.entries(NAV).forEach(([k,b])=>document.getElementById(b).setAttribute("aria-current",k===o.id?"true":"false"));
+  o.setAttribute("tabindex","-1");o.focus({preventScroll:true});wake()}
+function closeAll(){idx.hidden=true;info.hidden=true;prints.hidden=true;terms.hidden=true;
+  document.body.classList.remove("ov-open");Object.values(NAV).forEach(b=>document.getElementById(b).setAttribute("aria-current","false"))}
+/* Pressing the menu item of the panel that is open closes it */
+document.getElementById("openIdx").onclick=()=>idx.hidden?openSheet():closeAll();
+document.getElementById("openInfo").onclick=()=>info.hidden?open(info):closeAll();
 document.querySelectorAll("[data-close]").forEach(b=>b.onclick=closeAll);
 sheet.addEventListener("click",e=>{const a=e.target.closest("[data-go]");if(!a)return;e.preventDefault();closeAll();document.getElementById("f-"+a.dataset.go).scrollIntoView()});
 /* Opening the sheet: load the small images once, mark where you are and what's in the print list */
@@ -576,7 +589,7 @@ function syncAdd(){addBtn.hidden=!curId;document.getElementById("pvBtn").hidden=
   pCount.textContent=plist.length?" ("+plist.reduce((n,x)=>n+x.qty,0)+")":""}
 function toggle(id){plist=has(id)?plist.filter(x=>x.id!==id):[...plist,tidy({id})];save();syncAdd();wake()}
 addBtn.onclick=e=>{e.stopPropagation();if(curId)toggle(curId)};
-document.getElementById("openPrints").onclick=()=>open(prints);
+document.getElementById("openPrints").onclick=()=>prints.hidden?open(prints):closeAll();
 const pList=document.getElementById("pList"),order=document.getElementById("order");
 const yen=n=>"¥"+Number(n).toLocaleString("en-US");
 const usd=n=>SHOP.usdRate?"≈ US$"+(n/SHOP.usdRate).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2}):"";
