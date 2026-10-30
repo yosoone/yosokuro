@@ -297,6 +297,8 @@ body.still #zooms .zb{pointer-events:none}
 .test{display:inline-block;margin:0 0 28px;padding:6px 10px;border:1px solid var(--line);font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--ash)}
 .info h3{margin:48px 0 14px;font:800 24px/1.2 var(--f-kanji)}
 .info .sub-form{max-width:58ch}
+.info .cf{max-width:640px;margin-bottom:12px}
+.info .cf .note{max-width:none}
 .info footer{margin-top:48px;padding-top:16px;border-top:1px solid var(--line);display:flex;flex-wrap:wrap;gap:8px 24px;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--ash)}
 .info footer a{color:var(--bone)}
 /* Shared sign-up form (same as the main page) */
@@ -317,7 +319,7 @@ body.still #zooms .zb{pointer-events:none}
 <body>
 <main id="reel" aria-label="Yosokuro photographs"></main>
 
-<div class="beta-tag"><span class="version" data-version>Beta 0.69</span></div>
+<div class="beta-tag"><span class="version" data-version>Beta 0.70</span></div>
 <div class="chrome top">
   <span class="brand"><a class="name" href="#" id="toStart">Yosokuro</a></span>
   <nav><button type="button" id="openIdx">Index</button><button type="button" id="openPrints">Prints<span id="pCount"></span></button><button type="button" id="openInfo">Info</button></nav>
@@ -374,15 +376,15 @@ body.still #zooms .zb{pointer-events:none}
     <p class="ja">特定商取引法に基づく表記</p>
     <!-- Placeholders in gold [like this] are for Yoso to fill in; see README. Not legal advice. -->
     <dl>
-      <dt>Seller<span>販売業者</span></dt><dd>Yoso (Yosokuro). Legal name: Disclosed without delay on request to yosotattoo@gmail.com. ご請求があれば遅滞なく開示します。</dd>
-      <dt>Address<span>所在地</span></dt><dd>Disclosed without delay on request to yosotattoo@gmail.com. ご請求があれば遅滞なく開示します。</dd>
-      <dt>Phone<span>電話番号</span></dt><dd>Disclosed without delay on request to yosotattoo@gmail.com. ご請求があれば遅滞なく開示します。</dd>
-      <dt>Email<span>メールアドレス</span></dt><dd><a href="mailto:yosotattoo@gmail.com">yosotattoo@gmail.com</a></dd>
+      <dt>Seller<span>販売業者</span></dt><dd>Yoso (Yosokuro). Legal name: Disclosed without delay on request through the <a href="#contact" data-contact>contact form</a>. ご請求があれば遅滞なく開示します。</dd>
+      <dt>Address<span>所在地</span></dt><dd>Disclosed without delay on request through the <a href="#contact" data-contact>contact form</a>. ご請求があれば遅滞なく開示します。</dd>
+      <dt>Phone<span>電話番号</span></dt><dd>Disclosed without delay on request through the <a href="#contact" data-contact>contact form</a>. ご請求があれば遅滞なく開示します。</dd>
+      <dt>Contact<span>お問い合わせ</span></dt><dd>Through the <a href="#contact" data-contact>contact form</a>; replies by email. お問い合わせフォームよりご連絡ください（メールで返信します）。</dd>
       <dt>Prices<span>販売価格</span></dt><dd>Shown with each print in the print list, in yen, the same worldwide. For delivery in Japan, prices include 10% consumption tax. 各商品の価格はプリントリストに表示（国内配送は消費税10%込み）。</dd>
       <dt>Other charges<span>商品代金以外の必要料金</span></dt><dd>Shipping, shown before payment. Orders outside Japan may also pay import duties and taxes on arrival. 送料（購入前に表示）。海外への発送は関税等がかかる場合があります。</dd>
       <dt>Payment<span>支払方法</span></dt><dd>Card and other methods offered by Stripe, paid at checkout. Stripe決済（クレジットカード等）、注文時にお支払い。</dd>
       <dt>Delivery<span>引渡時期</span></dt><dd class="ph-mark">[Each print is made to order: posted within about 7 days of payment. 受注生産、お支払い後約7日以内に発送。]</dd>
-      <dt>Returns<span>返品・交換</span></dt><dd>Prints are made to order, so returns are not accepted for a change of mind. A print damaged in transit or with a printing fault is replaced free of charge: email yosotattoo@gmail.com within 7 days of delivery with photographs of the damaged parcel and of the print. 受注生産のため、お客様都合による返品はお受けできません。配送中の破損・印刷不良の場合は、到着後7日以内に破損した梱包とプリントの写真を添えてメールでご連絡ください。無償で交換いたします。</dd>
+      <dt>Returns<span>返品・交換</span></dt><dd>Prints are made to order, so returns are not accepted for a change of mind. A print damaged in transit or with a printing fault is replaced free of charge: write through the <a href="#contact" data-contact>contact form</a> within 7 days of delivery, then reply to Yoso’s email with photographs of the damaged parcel and of the print. 受注生産のため、お客様都合による返品はお受けできません。配送中の破損・印刷不良の場合は、到着後7日以内にお問い合わせフォームよりご連絡のうえ、返信メールに破損した梱包とプリントの写真を添付してください。無償で交換いたします。</dd>
       <dt>Cancellation<span>キャンセル</span></dt><dd class="ph-mark">[Orders can be cancelled by email until printing starts. 印刷開始前までメールでキャンセル可能。]</dd>
     </dl>
   </div>
@@ -396,12 +398,25 @@ body.still #zooms .zb{pointer-events:none}
     <p>A lifelong black-and-white photography project documenting Japan’s urban reality and the spirit of the Kami.</p>
     <p>Photographs by Yoso, a tattoo artist and multimedia practitioner based in Miyazaki, Japan.</p>
     <dl>
-      <dt>Prints</dt><dd>Order with ＋ Print and pay through Stripe · photographs join and leave the collection without notice · <a href="#terms" data-terms>Shop terms</a> · <a href="mailto:yosotattoo@gmail.com?subject=Yosokuro%20print">yosotattoo@gmail.com</a></dd>
-      <dt>Feedback</dt><dd>On this test version: <a href="mailto:yosotattoo@gmail.com?subject=Yosokuro%20full-screen%20test">yosotattoo@gmail.com</a></dd>
+      <dt>Prints</dt><dd>Order with ＋ Print and pay through Stripe · photographs join and leave the collection without notice · <a href="#terms" data-terms>Shop terms</a> · <a href="#contact" data-contact>Contact</a></dd>
+      <dt>Feedback</dt><dd>On this test version: <a href="#contact" data-contact>contact form</a></dd>
       <dt>Cameras</dt><dd>Ricoh GR II · Ricoh GR III</dd>
       <dt>Follow</dt><dd><a href="feed.xml">RSS</a></dd>
     </dl>
 
+    <h3 id="contact">Contact</h3>
+    <!-- Contact form: posts to the Yoso forms Worker (worker/ in this repo), which emails Yoso. -->
+    <form class="cf" id="cf" action="https://forms.yoso.one/contact" method="post" novalidate>
+      <div><label for="cfName">Name</label><input id="cfName" name="name" autocomplete="name" maxlength="120" required></div>
+      <div><label for="cfEmail">Email</label><input id="cfEmail" name="email" type="email" autocomplete="email" maxlength="254" required></div>
+      <div class="full"><label for="cfTopic">About</label><select id="cfTopic" name="topic"><option value="order">An order</option><option value="damage">A damaged print</option><option value="print">Prints in general</option><option value="general" selected>Something else</option></select></div>
+      <div class="hp" aria-hidden="true"><label for="cfWebsite">Leave this empty</label><input id="cfWebsite" name="website" tabindex="-1" autocomplete="off"></div>
+      <div class="full"><label for="cfMessage">Message</label><textarea id="cfMessage" name="message" maxlength="5000" required></textarea></div>
+      <p class="full note" id="cfDamage" hidden>Yoso will reply by email; please reply with photographs of the damaged parcel and of the print.</p>
+      <div class="full cf-turnstile" id="cfTs" data-sitekey="0x4AAAAAAFeWKK51BEJbKJSu" data-appearance="interaction-only"></div>
+      <div class="full send"><button type="submit" id="cfSend">Send</button><span id="cfMsg" role="status" aria-live="polite"></span></div>
+      <p class="full note">Your name, email and message go to Yoso by email and are used only to reply. Nothing is kept on this site. A spam check by Cloudflare runs in the background.</p>
+    </form>
     <h3 id="subHead">Mailing list</h3>
     <form class="sub-form" id="subForm" action="https://buttondown.com/api/emails/embed-subscribe/yoso" method="post" target="_blank">
       <input type="hidden" name="embed" value="1">
@@ -422,7 +437,7 @@ body.still #zooms .zb{pointer-events:none}
     </form>
 
     <footer>
-      <span>© <a class="hub-link" href="https://hub.yoso.one">Yoso</a> · kuro.yoso.one/full · <span class="version" data-version>Beta 0.69</span></span>
+      <span>© <a class="hub-link" href="https://hub.yoso.one">Yoso</a> · kuro.yoso.one/full · <span class="version" data-version>Beta 0.70</span></span>
       <span><a href="./">Current site</a></span>
     </footer>
   </div>
@@ -637,6 +652,29 @@ if(new URLSearchParams(location.search).get("order")==="paid"){
 }
 /* Back from Stripe without paying (or a link to #prints): open the print list */
 else if(location.hash==="#prints")setTimeout(()=>open(prints),0);
+/* Contact form (in Info): sends through the Yoso forms Worker, which emails Yoso */
+const cf=document.getElementById("cf"),cfMsg=document.getElementById("cfMsg"),cfSend=document.getElementById("cfSend");
+function openContact(e){if(e)e.preventDefault();open(info);setTimeout(()=>{document.getElementById("contact").scrollIntoView({block:"start"});document.getElementById("cfName").focus({preventScroll:true})},50)}
+document.querySelectorAll("[data-contact]").forEach(a=>a.onclick=openContact);
+document.getElementById("cfTopic").onchange=e=>{document.getElementById("cfDamage").hidden=e.target.value!=="damage"};
+const CERR={missing:"Please add your name and a message.",email:"Please check your email address.",spam:"The spam check didn’t pass. Please try again.",
+  send:"The message couldn’t be sent just now. Please try again in a moment."};
+cf.addEventListener("submit",async e=>{
+  e.preventDefault();
+  const F=cf.elements,name=F["name"].value.trim(),email=F["email"].value.trim(),msg=F["message"].value.trim();
+  if(!name||!msg){cfMsg.textContent=CERR.missing;(name?F["message"]:F["name"]).focus();return}
+  if(!email||!F["email"].checkValidity()){cfMsg.textContent=CERR.email;F["email"].focus();return}
+  cfSend.disabled=true;cfMsg.textContent="Sending…";
+  try{
+    const r=await fetch(cf.action,{method:"POST",body:new FormData(cf)});
+    const j=await r.json().catch(()=>({}));
+    if(r.ok&&j.ok){cf.reset();document.getElementById("cfDamage").hidden=true;cfMsg.textContent="Thank you. Your message is on its way, and Yoso will reply by email."}
+    else cfMsg.textContent=CERR[j.error]||CERR.send;
+  }catch{cfMsg.textContent=CERR.send}
+  cfSend.disabled=false;
+  if(window.turnstile)try{turnstile.reset("#cfTs")}catch{}
+});
+if(location.hash==="#contact")setTimeout(()=>openContact(),0);
 /* Shop terms */
 function openTerms(e){if(e)e.preventDefault();open(terms)}
 document.getElementById("toTerms").onclick=openTerms;
@@ -721,6 +759,7 @@ zoom.addEventListener("pointerup",endDrag);zoom.addEventListener("pointercancel"
 if(location.hash){const el=document.getElementById(location.hash.slice(1));el&&el.scrollIntoView()}
 </script>
 <script src="assets/list-choice.js" defer></script>
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 <script src="assets/stats.js" defer></script>
 </body>
 </html>

@@ -26,7 +26,7 @@ const ORIGINS = [
 // The newsletters readers can choose; each is a Buttondown tag. Same list as check.py on every site.
 const NEWSLETTERS = ["one", "yosokuro", "shinsei", "river", "on"];
 // Topics a contact form may offer (each site shows its own choice of these).
-const TOPICS = { print: "Print request", work: "About a work", note: "About a note", commission: "Commission",
+const TOPICS = { order: "About an order", damage: "Damaged print", print: "Print request", work: "About a work", note: "About a note", commission: "Commission",
                  exhibition: "Exhibition", general: "General", other: "Other" };
 const LIMIT = { name: 120, email: 254, photo: 40, work: 160, note: 160, message: 5000 };
 const EMAIL = /^[^\s@<>"]+@[^\s@<>"]+\.[^\s@<>"]+$/;
