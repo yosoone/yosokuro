@@ -326,7 +326,7 @@ body.still #zooms .zb{pointer-events:none}
 <body>
 <main id="reel" aria-label="Yosokuro photographs"></main>
 
-<div class="beta-tag"><span class="version" data-version>Beta 0.73</span></div>
+<div class="beta-tag"><span class="version" data-version>Beta 0.74</span></div>
 <div class="chrome top">
   <span class="brand"><a class="name" href="#" id="toStart">Yosokuro</a></span>
   <nav><button type="button" id="openIdx">Index</button><button type="button" id="openPrints">Prints<span id="pCount"></span></button><button type="button" id="openInfo">Info</button></nav>
@@ -352,7 +352,7 @@ body.still #zooms .zb{pointer-events:none}
     <div class="zoom" id="zoom"><span class="pad" id="zoomPad"><img id="zoomImg" alt="" draggable="false"></span></div>
     <div class="wall" id="wall" hidden><div class="sheetp" id="sheetp"><img id="sheetImg" alt=""></div></div>
   </div>
-  <div class="lfoot"><span class="bord" id="bord" role="group" aria-label="Border"><button type="button" data-b="White border" aria-pressed="true">White border</button><button type="button" data-b="No border" aria-pressed="false">No border</button></span><span class="info" id="lookInfo"></span><button type="button" class="ladd" id="lookAdd" hidden></button></div>
+  <div class="lfoot"><span class="bord" id="bord" role="group" aria-label="Border"><button type="button" data-b="White border" aria-pressed="true">White border</button><button type="button" data-b="No border" aria-pressed="false">No border</button></span><span class="info" id="lookInfo"></span></div>
 </section>
 
 <section class="ov prints" id="prints" hidden aria-label="Print list">
@@ -400,14 +400,12 @@ body.still #zooms .zb{pointer-events:none}
 <section class="ov info" id="info" hidden aria-label="About">
   <button type="button" class="close" data-close>Close ✕</button>
   <div class="inner">
-    <div class="test">Test version · <a href="./">Current site</a></div>
     <h2>Yosokuro</h2>
     <p>A lifelong black-and-white photography project documenting Japan’s urban reality and the spirit of the Kami.</p>
     <p>Photographs by Yoso, a tattoo artist and multimedia practitioner based in Miyazaki, Japan.</p>
     <dl>
       <dt>Prints</dt><dd>Order with ＋ Print and pay through Stripe · photographs join and leave the collection without notice · <a href="#terms" data-terms>Shop terms</a> · <a href="#contact" data-contact>Contact</a></dd>
       <dt>Feedback</dt><dd>On this test version: <a href="#contact" data-contact>contact form</a></dd>
-      <dt>Cameras</dt><dd>Ricoh GR II · Ricoh GR III</dd>
       <dt>Follow</dt><dd><a href="feed.xml">RSS</a></dd>
     </dl>
 
@@ -416,7 +414,7 @@ body.still #zooms .zb{pointer-events:none}
     <form class="cf" id="cf" action="https://forms.yoso.one/contact" method="post" novalidate>
       <div><label for="cfName">Name</label><input id="cfName" name="name" autocomplete="name" maxlength="120" required></div>
       <div><label for="cfEmail">Email</label><input id="cfEmail" name="email" type="email" autocomplete="email" maxlength="254" required></div>
-      <div class="full"><label for="cfTopic">About</label><select id="cfTopic" name="topic"><option value="order">An order</option><option value="damage">A damaged print</option><option value="print">Prints in general</option><option value="general" selected>Something else</option></select></div>
+      <div class="full"><label for="cfTopic">About</label><select id="cfTopic" name="topic"><option value="order">An order</option><option value="damage">A damaged print</option><option value="print" selected>Prints in general</option><option value="general">Something else</option></select></div>
       <div class="hp" aria-hidden="true"><label for="cfWebsite">Leave this empty</label><input id="cfWebsite" name="website" tabindex="-1" autocomplete="off"></div>
       <div class="full"><label for="cfMessage">Message</label><textarea id="cfMessage" name="message" maxlength="5000" required></textarea></div>
       <p class="full note" id="cfDamage" hidden>Yoso will reply by email; please reply with photographs of the damaged parcel and of the print.</p>
@@ -444,7 +442,7 @@ body.still #zooms .zb{pointer-events:none}
     </form>
 
     <footer>
-      <span>© <a class="hub-link" href="https://hub.yoso.one">Yoso</a> · kuro.yoso.one/full · <span class="version" data-version>Beta 0.73</span></span>
+      <span>© <a class="hub-link" href="https://hub.yoso.one">Yoso</a> · kuro.yoso.one/full · <span class="version" data-version>Beta 0.74</span></span>
       <span><a href="./">Current site</a></span>
     </footer>
   </div>
@@ -695,7 +693,7 @@ document.querySelectorAll("[data-terms]").forEach(a=>a.onclick=openTerms);
 /* View: Detail and Print preview */
 const look=document.getElementById("look"),zoom=document.getElementById("zoom"),zoomImg=document.getElementById("zoomImg"),zoomPad=document.getElementById("zoomPad");
 const wall=document.getElementById("wall"),sheetp=document.getElementById("sheetp"),sheetImg=document.getElementById("sheetImg");
-const lookInfo=document.getElementById("lookInfo"),lookAdd=document.getElementById("lookAdd"),viewBtn=document.getElementById("viewBtn");
+const lookInfo=document.getElementById("lookInfo"),viewBtn=document.getElementById("viewBtn");
 /* Paper long side, short side and white border on every side, in mm (same as the current site) */
 const PAPER={A4:[297,210,18],A3:[420,297,25.5],A2:[594,420,36],A1:[841,594,50]};
 const mm=x=>String(Math.round(x*100)/100);
@@ -709,7 +707,7 @@ function openLook(id,m){
 function closeLook(){look.hidden=true;document.body.classList.remove("looking");document.getElementById("viewBtn").removeAttribute("aria-disabled");wake()}
 function setMode(m){mode=m;
   look.querySelectorAll("[data-mode]").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.mode===m)));
-  const det=m==="detail";zoom.hidden=!det;wall.hidden=det;lookAdd.hidden=det;document.getElementById("bord").hidden=det;
+  const det=m==="detail";zoom.hidden=!det;wall.hidden=det;document.getElementById("bord").hidden=det;
   if(det)layoutZoom();else layoutPaper();
 }
 function layoutZoom(){
@@ -729,20 +727,11 @@ function layoutPaper(){
   const [L,S,b]=PAPER.A3,r=R[lookId]||1.5,W=r>=1?L:S,H=r>=1?S:L,none=border==="No border";
   const st=document.getElementById("lookStage"),k=Math.min((st.clientWidth-32)/W,(st.clientHeight-32)/H);
   sheetp.style.width=W*k+"px";sheetp.style.height=H*k+"px";sheetp.style.padding=none?"0":b*k+"px";sheetp.classList.toggle("full",none);
-  const pr=W/H,cut=r>pr?(1-pr/r):(1-r/pr),edges=r>pr?"left and right":"top and bottom";
-  lookInfo.textContent=none
-    ?(cut<0.0005?`No border · the photograph fills the paper`:`No border · fills the paper, trimmed ${mm(cut*100)}% across ${edges}`)
-    :`White border · the whole photograph on white paper`;
+  lookInfo.textContent="";
   document.querySelectorAll("#bord button").forEach(x=>x.setAttribute("aria-pressed",String(x.dataset.b===border)));
-  const inList=plist.find(x=>x.id===lookId);
-  lookAdd.textContent=inList&&(inList.border||"White border")===border?`✓ In print list`:inList?`＋ Change to ${border.toLowerCase()}`:`＋ Print`;
 }
 look.querySelectorAll("[data-mode]").forEach(b=>b.onclick=()=>setMode(b.dataset.mode));
 document.getElementById("lookClose").onclick=closeLook;
-lookAdd.onclick=()=>{const x=plist.find(y=>y.id===lookId);
-  if(x&&(x.border||"White border")===border)plist=plist.filter(y=>y.id!==lookId);
-  else if(x)x.border=border;else plist.push({id:lookId,size:"A3",paper:"standard",qty:1,border});
-  save();syncAdd();layoutPaper()};
 document.querySelectorAll("#bord button").forEach(x=>x.onclick=()=>{border=x.dataset.b;layoutPaper()});
 viewBtn.onclick=e=>{e.stopPropagation();if(look.hidden)openLook(curId,"detail")};
 document.getElementById("pvBtn").onclick=e=>{e.stopPropagation();openLook(curId,"print")};
