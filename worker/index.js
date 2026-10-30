@@ -4,11 +4,14 @@
      /subscribe  the mailing-list form on every Yoso site (assets/list-choice.js):
                  adds the reader to Buttondown with the newsletters they ticked
    Both check Cloudflare Turnstile (the mostly invisible spam check) first.
+     /prices, /checkout, /stripe-webhook   the Yosokuro print shop (Stripe); see shop.js
 
    Settings live in wrangler.toml. Two Worker secrets, never in this file:
      npx wrangler secret put TURNSTILE_SECRET   (Turnstile widget 'Yoso forms')
-     npx wrangler secret put BUTTONDOWN_KEY     (Buttondown API key) */
+     npx wrangler secret put BUTTONDOWN_KEY     (Buttondown API key)
+   and, for the shop, STRIPE_SECRET_KEY and STRIPE_WEBHOOK_SECRET (see shop.js). */
 import { EmailMessage } from "cloudflare:email";
+import { prices, checkout, webhook } from "./shop.js";
 
 // Yoso sites allowed to use these forms. A new site: add it here, add its hostname to the
 // Turnstile widget, and redeploy (npx wrangler deploy).
@@ -31,8 +34,13 @@ const EMAIL = /^[^\s@<>"]+@[^\s@<>"]+\.[^\s@<>"]+$/;
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
+    // Stripe calls this itself (no browser, no Origin); it is checked by Stripe's signature instead.
+    if (url.pathname === "/stripe-webhook") {
+      return request.method === "POST" ? webhook(request, env) : new Response("Not found", { status: 404 });
+    }
+    const shop = { "/prices": 1, "/checkout": 1 }[url.pathname];
     const route = { "/contact": contact, "/subscribe": subscribe }[url.pathname];
-    if (!route) return new Response("Not found", { status: 404 });
+    if (!route && !shop) return new Response("Not found", { status: 404 });
 
     const origin = request.headers.get("Origin") || "";
     const allowed = ORIGINS.includes(origin) || (env.DEV_ORIGIN && origin === env.DEV_ORIGIN);
@@ -40,11 +48,13 @@ export default {
 
     if (request.method === "OPTIONS") {
       return new Response(null, { status: 204, headers: { ...cors,
-        "Access-Control-Allow-Methods": "POST", "Access-Control-Allow-Headers": "Content-Type",
+        "Access-Control-Allow-Methods": "GET, POST", "Access-Control-Allow-Headers": "Content-Type",
         "Access-Control-Max-Age": "86400" } });
     }
+    if (url.pathname === "/prices") return request.method === "GET" ? prices(cors) : reply(cors, 405, "method");
     if (request.method !== "POST") return reply(cors, 405, "method");
     if (!allowed) return reply(cors, 403, "origin");
+    if (url.pathname === "/checkout") return checkout(request, env, cors);
 
     let form;
     try { form = await request.formData(); } catch { return reply(cors, 400, "form"); }

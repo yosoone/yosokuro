@@ -73,6 +73,16 @@ The Contact section posts to a small Cloudflare Worker at `https://forms.yoso.on
 - To change the Worker, edit `worker/`, then in that folder run `npx wrangler deploy`.
 - If the form ever fails, the email address beside it still works.
 
+## Print shop (full.html, Stripe)
+
+The print list on `full.html` is the cart. Buyers choose size (A3, A2), paper (Standard by PRIO, Premium archival by Tokugawa), border and quantity, pick 'Ship to', then **Checkout** opens Stripe's own payment page, which collects their name, address, phone and card. No form on this site.
+
+- **Prices, papers, sizes and shipping** are set in one place only: `SHOP` at the top of `worker/shop.js`. The site reads them from `https://forms.yoso.one/prices`. The Worker works out every amount itself at checkout, so prices can't be changed in a browser. After changing them: `npx wrangler deploy` in `worker/`.
+- **A retired photograph can't be bought:** the Worker checks each frame against `assets/works.js` on the live site. Remove a frame there and it leaves the shop too.
+- **Orders:** when a payment completes, Stripe tells the Worker (`/stripe-webhook`), which emails the order to yosotattoo@gmail.com with the frames, sizes, paper, border, quantities, address and a link to the payment in Stripe. Replying to that email writes to the buyer. Stripe emails the buyer's receipt.
+- **Secrets** (never in this repo), set in `worker/` with `npx wrangler secret put`: `STRIPE_SECRET_KEY` (sk_test_… for testing, sk_live_… to go live) and `STRIPE_WEBHOOK_SECRET` (whsec_… from the webhook endpoint in Stripe, listening for `checkout.session.completed` at `https://forms.yoso.one/stripe-webhook`). Test mode and live mode each have their own keys and their own webhook endpoint.
+- **Shop terms** (特定商取引法に基づく表記) are the `#terms` panel in `full.html`. Gold text in square brackets is a placeholder for Yoso to fill in.
+
 ## Mailing list
 
 The sign-up form asks for an email address first; pressing **Continue** shows a list of Yoso's newsletters (One, Yosokuro, Shinsei, River, On), with this site's own one already ticked. Each ticked box reaches Buttondown as a tag (`one`, `yosokuro`, `shinsei`, `river`, `on`), so to write to one newsletter's readers, send to that tag. The step is run by `assets/list-choice.js`, which is the same file on every site; without it the boxes simply show under the email field and the form still works. To add or rename a newsletter, change the boxes in every form, `NEWSLETTERS` in `check.py`, and this list, on every site.
