@@ -109,7 +109,7 @@ body.still{cursor:none}
 .chapters .n{font-size:10px;color:var(--ash);font-variant-numeric:tabular-nums}
 .chapters a:hover .k{color:#fff}
 /* Contact sheet: every frame small, in justified rows that keep each frame's shape */
-#idx,#prints{background:var(--night)}
+#idx,#prints,#terms{background:var(--night)}
 #idx .inner{max-width:1400px}
 .sheet{--mrow:104px;--mgap:6px}
 .sheet h3{display:flex;align-items:baseline;gap:12px;margin:0 0 12px;font:800 26px/1 var(--f-kanji)}
@@ -173,7 +173,42 @@ body.still .chrome>*{pointer-events:none}
 /* The changing-collection notice: a gold rule beside it, set apart from the lede */
 .prints .notice{margin:0 0 32px;padding-left:14px;border-left:2px solid var(--gold);max-width:52ch;color:var(--bone);font:500 15px/1.7 var(--f-kanji)}
 .prints .cf{max-width:640px}
-@media (max-width:520px){.plist li{grid-template-columns:minmax(0,1fr) auto;gap:12px}.plist .ph{grid-column:1/-1;width:100%;height:auto;justify-content:flex-start}.plist .ph img{max-height:50vh}.plist .opts{grid-column:1/2;justify-self:start}.plist .rm{grid-column:2/3;grid-row:2/4}}
+/* Shop: price per line, quantity, order summary and checkout */
+.plist .who .opts{grid-template-columns:repeat(2,minmax(0,1fr));margin-top:10px;max-width:380px}
+.plist .who .opts select{width:100%}
+.papers-note{max-width:760px;margin:-20px 0 28px;font:400 11px/1.7 var(--f-mono);letter-spacing:.06em;color:var(--ash)}
+.papers-note[hidden]{display:none}
+.plist .price{font:500 15px/1.3 var(--f-kanji);color:var(--bone);white-space:nowrap;justify-self:end}
+.plist .price small{display:block;font:400 10px/1.4 var(--f-mono);letter-spacing:.1em;color:var(--ash)}
+.order{max-width:760px;margin:0 0 28px;padding-top:20px;border-top:1px solid var(--line);display:grid;gap:14px}
+.order[hidden]{display:none}
+.order .row{display:flex;justify-content:space-between;align-items:center;gap:16px;font:500 15px/1.4 var(--f-kanji)}
+.order .row span:first-child{color:var(--ash)}
+.order .total{padding-top:12px;border-top:1px solid var(--line);font-size:20px}
+.order .total span:first-child{color:var(--bone)}
+.order select{background:transparent;color:var(--bone);border:1px solid var(--line);font:inherit;font-size:13px;padding:10px 8px;min-height:44px}
+.order select option{background:var(--night)}
+.order .go{display:flex;flex-wrap:wrap;align-items:center;gap:12px 20px;margin-top:6px}
+.order .go button{background:var(--bone);color:var(--night);border:0;cursor:pointer;padding:0 28px;min-height:48px;font:500 12px/1 var(--f-mono);letter-spacing:.18em;text-transform:uppercase}
+.order .go button:hover{background:#fff}
+.order .go button[disabled]{opacity:.5;cursor:wait}
+.order .go button:focus-visible{outline:2px solid var(--bone);outline-offset:3px}
+#oMsg{font:500 14px/1.5 var(--f-kanji);color:var(--bone)}
+.order .small{margin:0;font:400 11px/1.7 var(--f-mono);letter-spacing:.06em;color:var(--ash)}
+.order .small a,.prints .terms-link{color:var(--bone);text-underline-offset:3px}
+.thanks{max-width:58ch;margin:0 0 28px;padding:16px 18px;border:1px solid var(--gold);font:500 16px/1.7 var(--f-kanji);color:var(--bone)}
+.thanks[hidden]{display:none}
+/* Shop terms (特定商取引法に基づく表記) */
+.terms h2{margin:0 0 10px;font:800 clamp(36px,6vw,64px)/1.1 var(--f-kanji)}
+.terms .ja{margin:0 0 28px;color:var(--ash);font:500 15px/1.6 var(--f-kanji)}
+.terms dl{margin:0;display:grid;grid-template-columns:max-content minmax(0,1fr);max-width:72ch}
+.terms dt,.terms dd{margin:0;padding-block:12px;border-top:1px solid var(--line)}
+.terms dt{padding-right:28px;font-size:11px;letter-spacing:.12em;color:var(--ash)}
+.terms dt span{display:block;letter-spacing:0;font-size:12px;margin-top:2px}
+.terms dd{font:500 15px/1.7 var(--f-kanji);word-break:break-word}
+.terms .ph-mark{color:var(--gold)}
+@media (max-width:560px){.terms dl{grid-template-columns:minmax(0,1fr)}.terms dd{border-top:0;padding-top:0}}
+@media (max-width:520px){.plist li{grid-template-columns:minmax(0,1fr) auto;gap:12px}.plist .ph{grid-column:1/-1;width:100%;height:auto;justify-content:flex-start}.plist .ph img{max-height:50vh}.plist .who{grid-column:1/2}.plist .rm{grid-column:2/3;grid-row:2/3;align-self:start}.plist .price{grid-column:1/-1;justify-self:start}.plist .who .opts{max-width:none}}
 /* Contact form (same look as the main page) */
 .cf{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px 20px}
 .cf .full{grid-column:1/-1}
@@ -309,23 +344,41 @@ body.still #zooms .zb{pointer-events:none}
   <button type="button" class="close" data-close>Close ✕</button>
   <div class="inner">
     <h2>Prints</h2>
-    <p class="lede">Prints of every photograph are available on request. Add frames with ＋ Print, choose a size for each, and send the list. Yoso will reply by email with prices and details.</p>
+    <p class="lede">Every photograph here can be ordered as a print. Add frames with ＋ Print, choose the size and paper for each, and pay securely through Stripe.</p>
     <p class="notice">Photographs join and leave the collection without notice, and a retired photograph is never printed again. If you see one you like, add it to your list now.</p>
+    <p class="thanks" id="pThanks" role="status" hidden>Thank you for your order. A receipt is on its way from Stripe, and Yoso will email you when your prints are on their way.</p>
     <p class="empty" id="pEmpty">Your print list is empty. Tap ＋ Print beside any frame number to add it here.</p>
     <ol class="plist" id="pList"></ol>
-    <form class="cf" id="cf" action="https://forms.yoso.one/contact" method="post" novalidate hidden>
-      <input type="hidden" name="topic" value="print">
-      <input type="hidden" name="photo" id="cfPhoto">
-      <div><label for="cfName">Name</label><input id="cfName" name="name" autocomplete="name" maxlength="120" required></div>
-      <div><label for="cfEmail">Email</label><input id="cfEmail" name="email" type="email" autocomplete="email" maxlength="254" required></div>
-      <div class="hp" aria-hidden="true"><label for="cfWebsite">Leave this empty</label><input id="cfWebsite" name="website" tabindex="-1" autocomplete="off"></div>
-      <div class="full"><label for="cfNotes">Notes (optional)</label><textarea id="cfNotes" maxlength="3000" placeholder="Paper, framing, where to send it"></textarea></div>
-      <textarea name="message" id="cfMessage" hidden></textarea>
-      <div class="full"><label class="sub" for="cfSub"><input type="checkbox" id="cfSub" name="subscribe" value="yosokuro"><span>Also join the Yosokuro mailing list<small>New photographs now and then. Buttondown confirms by email.</small></span></label></div>
-      <div class="full cf-turnstile" id="cfTs" data-sitekey="0x4AAAAAAFeWKK51BEJbKJSu" data-appearance="interaction-only"></div>
-      <div class="full send"><button type="submit" id="cfSend">Send request</button><span id="cfMsg" role="status" aria-live="polite"></span></div>
-      <p class="full note">Your name, email and list go to Yoso by email and are used only to reply. Nothing is kept on this site. A spam check by Cloudflare runs in the background.</p>
-    </form>
+    <p class="papers-note" id="papersNote" hidden></p>
+    <div class="order" id="order" hidden>
+      <div class="row"><label for="oShip">Ship to</label><select id="oShip"><option value="jp">Japan</option><option value="intl">Outside Japan</option></select></div>
+      <div class="row"><span>Prints</span><span id="oSub">–</span></div>
+      <div class="row"><span>Tracked delivery</span><span id="oShipAmt">–</span></div>
+      <div class="row total"><span>Total</span><span id="oTotal">–</span></div>
+      <div class="go"><button type="button" id="oPay">Checkout</button><span id="oMsg" role="status" aria-live="polite"></span></div>
+      <p class="small">Prices in yen, tax included. Payment, your address and your receipt are handled by Stripe; card details never touch this site. Each print is made to order and posted in about <span id="oDays">a week</span>. <a href="#terms" id="toTerms">Shop terms · 特定商取引法に基づく表記</a></p>
+    </div>
+  </div>
+</section>
+
+<section class="ov terms" id="terms" hidden aria-label="Shop terms">
+  <button type="button" class="close" data-close>Close ✕</button>
+  <div class="inner">
+    <h2>Shop terms</h2>
+    <p class="ja">特定商取引法に基づく表記</p>
+    <!-- Placeholders in gold [like this] are for Yoso to fill in; see README. Not legal advice. -->
+    <dl>
+      <dt>Seller<span>販売業者</span></dt><dd class="ph-mark">[Legal name / 氏名]</dd>
+      <dt>Address<span>所在地</span></dt><dd class="ph-mark">[Address, or: Disclosed without delay on request / 請求があり次第遅滞なく開示します]</dd>
+      <dt>Phone<span>電話番号</span></dt><dd class="ph-mark">[Phone, or: Disclosed without delay on request / 請求があり次第遅滞なく開示します]</dd>
+      <dt>Email<span>メールアドレス</span></dt><dd><a href="mailto:yosotattoo@gmail.com">yosotattoo@gmail.com</a></dd>
+      <dt>Prices<span>販売価格</span></dt><dd>Shown with each print in the print list, in yen, tax included. 各商品の価格はプリントリストに表示（税込）。</dd>
+      <dt>Other charges<span>商品代金以外の必要料金</span></dt><dd>Tracked delivery, shown before payment. Orders outside Japan may also pay import duties and taxes on arrival. 送料（購入前に表示）。海外への発送は関税等がかかる場合があります。</dd>
+      <dt>Payment<span>支払方法</span></dt><dd>Card and other methods offered by Stripe, paid at checkout. Stripe決済（クレジットカード等）、注文時にお支払い。</dd>
+      <dt>Delivery<span>引渡時期</span></dt><dd class="ph-mark">[Each print is made to order: posted within about 7 days of payment. 受注生産、お支払い後約7日以内に発送。]</dd>
+      <dt>Returns<span>返品・交換</span></dt><dd class="ph-mark">[Prints are made to order, so returns are not accepted for a change of mind. A print damaged in transit or with a printing fault is replaced free of charge if Yoso is told within 7 days of delivery. 受注生産のためお客様都合の返品は不可。配送中の破損・不良品は到着後7日以内のご連絡で無償交換。]</dd>
+      <dt>Cancellation<span>キャンセル</span></dt><dd class="ph-mark">[Orders can be cancelled by email until printing starts. 印刷開始前までメールでキャンセル可能。]</dd>
+    </dl>
   </div>
 </section>
 
@@ -337,7 +390,7 @@ body.still #zooms .zb{pointer-events:none}
     <p>A lifelong black-and-white photography project documenting Japan’s urban reality and the spirit of the Kami.</p>
     <p>Photographs by Yoso, a tattoo artist and multimedia practitioner based in Miyazaki, Japan.</p>
     <dl>
-      <dt>Prints</dt><dd>Available on request · add frames with ＋ Print · photographs join and leave the collection without notice · <a href="mailto:yosotattoo@gmail.com?subject=Yosokuro%20print">yosotattoo@gmail.com</a></dd>
+      <dt>Prints</dt><dd>Order with ＋ Print and pay through Stripe · photographs join and leave the collection without notice · <a href="#terms" data-terms>Shop terms</a> · <a href="mailto:yosotattoo@gmail.com?subject=Yosokuro%20print">yosotattoo@gmail.com</a></dd>
       <dt>Feedback</dt><dd>On this test version: <a href="mailto:yosotattoo@gmail.com?subject=Yosokuro%20full-screen%20test">yosotattoo@gmail.com</a></dd>
       <dt>Cameras</dt><dd>Ricoh GR II · Ricoh GR III</dd>
       <dt>Follow</dt><dd><a href="feed.xml">RSS</a></dd>
@@ -427,7 +480,7 @@ const screens=()=>[...reel.children];
 function step(d){const h=reel.clientHeight;reel.scrollTo({top:Math.round(reel.scrollTop/h+d)*h,behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth"})}
 addEventListener("keydown",e=>{
   if(!look.hidden){if(e.key==="Escape")closeLook();else if(mode==="print"&&["ArrowDown","ArrowRight","PageDown"," "].includes(e.key)){e.preventDefault();lookStep(1)}else if(mode==="print"&&["ArrowUp","ArrowLeft","PageUp"].includes(e.key)){e.preventDefault();lookStep(-1)}return}
-  if(!idx.hidden||!info.hidden||!prints.hidden){if(e.key==="Escape")closeAll();return}
+  if(!idx.hidden||!info.hidden||!prints.hidden||!terms.hidden){if(e.key==="Escape")closeAll();return}
   if(e.key==="v"||e.key==="V"){if(curId)openLook(curId,"detail");return}
   if(e.key==="p"||e.key==="P"){if(curId)toggle(curId);return}
   if(["ArrowDown","ArrowRight","PageDown"," "].includes(e.key)){e.preventDefault();step(1)}
@@ -436,7 +489,7 @@ addEventListener("keydown",e=>{
 });
 
 /* Chrome fades after 2.5 s without movement */
-let t;function wake(){document.body.classList.remove("still");clearTimeout(t);t=setTimeout(()=>{if(idx.hidden&&info.hidden&&prints.hidden&&look.hidden)document.body.classList.add("still")},2500)}
+let t;function wake(){document.body.classList.remove("still");clearTimeout(t);t=setTimeout(()=>{if(idx.hidden&&info.hidden&&prints.hidden&&terms.hidden&&look.hidden)document.body.classList.add("still")},2500)}
 /* Swipes and scrolling leave it hidden; a tap, a mouse move or keyboard focus brings it back */
 /* Only a real mouse movement counts: browsers also send "moves" while the page scrolls under a still mouse */
 let mx=null,my=null;
@@ -463,9 +516,9 @@ document.querySelectorAll(".chrome").forEach(ch=>ch.addEventListener("click",e=>
 wake();
 
 /* Overlays */
-const idx=document.getElementById("idx"),info=document.getElementById("info"),prints=document.getElementById("prints");
+const idx=document.getElementById("idx"),info=document.getElementById("info"),prints=document.getElementById("prints"),terms=document.getElementById("terms");
 function open(o){closeAll();o.hidden=false;if(o===prints)renderList();o.querySelector(".close").focus();wake()}
-function closeAll(){idx.hidden=true;info.hidden=true;prints.hidden=true}
+function closeAll(){idx.hidden=true;info.hidden=true;prints.hidden=true;terms.hidden=true}
 document.getElementById("openIdx").onclick=openSheet;
 document.getElementById("openInfo").onclick=()=>open(info);
 document.querySelectorAll("[data-close]").forEach(b=>b.onclick=closeAll);
@@ -480,19 +533,28 @@ function openSheet(){
   if(here){here.scrollIntoView({block:"center"});here.focus({preventScroll:true});void here.offsetWidth;here.classList.add("glow")}else idx.scrollTop=0;
 }
 document.getElementById("toStart").onclick=e=>{e.preventDefault();closeAll();reel.scrollTo({top:0})};
-/* Print list: kept in this browser only */
-const SIZES=["Not sure yet","A4","A3","A2","A1"],BORDERS=["White border","No border"];
+/* Print list = the cart: kept in this browser only. Prices come from the shop (forms.yoso.one/prices);
+   the Worker sets every amount itself at checkout, so what is shown here is for display only. */
+const SHOP_URL="https://forms.yoso.one";
+let SHOP={papers:{standard:{name:"Standard",desc:"Printed by PRIO"},premium:{name:"Premium",desc:"Archival, printed by Tokugawa"}},
+  sizes:{A3:"A3 · 297 × 420 mm",A2:"A2 · 420 × 594 mm"},borders:["White border","No border"],prices:null,shipping:null,maxQty:5};
+const SIZES=()=>Object.keys(SHOP.sizes),PAPERS=()=>Object.keys(SHOP.papers),BORDERS=["White border","No border"];
 const KEY="yosokuro-prints";
-let plist=[];try{plist=JSON.parse(localStorage.getItem(KEY)||"[]").filter(x=>x&&R[x.id])}catch{plist=[]}
+const tidy=x=>({id:x.id,size:SIZES().includes(x.size)?x.size:"A3",paper:PAPERS().includes(x.paper)?x.paper:"standard",
+  border:BORDERS.includes(x.border)?x.border:"White border",qty:Math.max(1,Math.min(SHOP.maxQty||5,parseInt(x.qty,10)||1))});
+let plist=[];try{plist=JSON.parse(localStorage.getItem(KEY)||"[]").filter(x=>x&&R[x.id]).map(tidy)}catch{plist=[]}
 const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(plist))}catch{}};
 const has=id=>plist.some(x=>x.id===id);
 const addBtn=document.getElementById("addBtn"),pCount=document.getElementById("pCount");
 function syncAdd(){addBtn.hidden=!curId;document.getElementById("pvBtn").hidden=!curId;document.getElementById("zooms").hidden=!curId;const on=has(curId);addBtn.setAttribute("aria-pressed",on);addBtn.querySelector(".plus").textContent=on?"✓":"＋";addBtn.setAttribute("aria-label",on?"Print: in your list, tap to remove":"Print: add to your list");
-  pCount.textContent=plist.length?" ("+plist.length+")":""}
-function toggle(id){plist=has(id)?plist.filter(x=>x.id!==id):[...plist,{id,size:"Not sure yet"}];save();syncAdd();wake()}
+  pCount.textContent=plist.length?" ("+plist.reduce((n,x)=>n+x.qty,0)+")":""}
+function toggle(id){plist=has(id)?plist.filter(x=>x.id!==id):[...plist,tidy({id})];save();syncAdd();wake()}
 addBtn.onclick=e=>{e.stopPropagation();if(curId)toggle(curId)};
 document.getElementById("openPrints").onclick=()=>open(prints);
-const pList=document.getElementById("pList"),cf=document.getElementById("cf");
+const pList=document.getElementById("pList"),order=document.getElementById("order");
+const yen=n=>"¥"+Number(n).toLocaleString("en-US");
+const unit=x=>SHOP.prices&&SHOP.prices[x.paper]&&SHOP.prices[x.paper][x.size];
+fetch(SHOP_URL+"/prices").then(r=>r.json()).then(j=>{if(j&&j.shop){SHOP=j.shop;plist=plist.map(tidy);if(!prints.hidden)renderList()}}).catch(()=>{});
 /* Size the paper to fit its box, then add the A3-proportion border (or none) */
 function paperThumb(li,x){
   const ph=li.querySelector(".ph"),mp=li.querySelector(".mp"),r=R[x.id]||1.5,land=r>=1;
@@ -502,44 +564,69 @@ function paperThumb(li,x){
   const none=(x.border||"White border")==="No border";
   mp.classList.toggle("none",none);mp.style.padding=none?"0":b*k+"px";
 }
+function opt(list,cur,lab){return list.map(v=>`<option value="${v}"${v===cur?" selected":""}>${lab?lab(v):v}</option>`).join("")}
 function renderList(){
   pList.textContent="";
-  plist.forEach((x,i)=>{const li=document.createElement("li");
-    li.innerHTML=`<span class="ph"><span class="mp"><img src="img/thumb/${x.id}.jpg" alt="Frame ${label(x.id)}" loading="lazy"></span></span><span class="who"><a href="#f-${x.id}" data-go="${x.id}">${label(x.id)}</a></span><span class="opts"><select class="sz" aria-label="Size for ${label(x.id)}">${SIZES.map(z=>`<option${z===x.size?" selected":""}>${z}</option>`).join("")}</select><select class="bd" aria-label="Border for ${label(x.id)}">${BORDERS.map(z=>`<option${z===(x.border||"White border")?" selected":""}>${z}</option>`).join("")}</select></span><button type="button" class="rm" aria-label="Remove ${label(x.id)}">✕</button>`;
-    li.querySelector(".sz").onchange=e=>{x.size=e.target.value;save()};
+  plist.forEach(x=>{const li=document.createElement("li");
+    li.innerHTML=`<span class="ph"><span class="mp"><img src="img/thumb/${x.id}.jpg" alt="Frame ${label(x.id)}" loading="lazy"></span></span>`+
+      `<span class="who"><a href="#f-${x.id}" data-go="${x.id}">${label(x.id)}</a>`+
+      `<span class="opts"><select class="sz" aria-label="Size for ${label(x.id)}">${opt(SIZES(),x.size,v=>SHOP.sizes[v].replace(/ mm$/,""))}</select>`+
+      `<select class="pp" aria-label="Paper for ${label(x.id)}">${opt(PAPERS(),x.paper,v=>SHOP.papers[v].name)}</select>`+
+      `<select class="bd" aria-label="Border for ${label(x.id)}">${opt(BORDERS,x.border)}</select>`+
+      `<select class="qt" aria-label="Quantity for ${label(x.id)}">${opt([...Array(SHOP.maxQty||5)].map((_,i)=>String(i+1)),String(x.qty),v=>"× "+v)}</select></span></span>`+
+      `<span class="price"></span>`+
+      `<button type="button" class="rm" aria-label="Remove ${label(x.id)}">✕</button>`;
+    const pr=li.querySelector(".price");
+    const showPrice=()=>{const u=unit(x);pr.innerHTML=u?`${yen(u*x.qty)}${x.qty>1?`<small>${yen(u)} each</small>`:""}`:""};
+    li.querySelector(".sz").onchange=e=>{x.size=e.target.value;save();showPrice();totals()};
+    li.querySelector(".pp").onchange=e=>{x.paper=e.target.value;save();showPrice();totals()};
     li.querySelector(".bd").onchange=e=>{x.border=e.target.value;save();paperThumb(li,x)};
+    li.querySelector(".qt").onchange=e=>{x.qty=parseInt(e.target.value,10)||1;save();showPrice();totals();syncAdd()};
     li.querySelector(".rm").onclick=()=>{plist=plist.filter(y=>y.id!==x.id);save();syncAdd();renderList()};
     li.querySelector("[data-go]").onclick=e=>{e.preventDefault();closeAll();document.getElementById("f-"+x.id).scrollIntoView()};
-    pList.appendChild(li);paperThumb(li,x)});
-  document.getElementById("pEmpty").hidden=plist.length>0;cf.hidden=plist.length===0;
+    pList.appendChild(li);paperThumb(li,x);showPrice()});
+  document.getElementById("pEmpty").hidden=plist.length>0;order.hidden=plist.length===0;totals();
+  const pn=document.getElementById("papersNote");pn.hidden=plist.length===0;
+  pn.textContent=PAPERS().map(k=>`${SHOP.papers[k].name}: ${SHOP.papers[k].desc.charAt(0).toLowerCase()+SHOP.papers[k].desc.slice(1)}.`).join(" ")+" Sizes in mm.";
 }
-const cfMsg=document.getElementById("cfMsg"),cfSend=document.getElementById("cfSend");
-const say=t=>{cfMsg.textContent=t};
-const ERR={missing:"Please add your name.",email:"Please check your email address.",spam:"The spam check didn’t pass. Please try again.",
-  send:"The request couldn’t be sent just now. Please try again, or email yosotattoo@gmail.com."};
-cf.addEventListener("submit",async e=>{
-  e.preventDefault();
-  const F=cf.elements,name=F["name"].value.trim(),email=F["email"].value.trim();
+const oShip=document.getElementById("oShip"),oPay=document.getElementById("oPay"),oMsg=document.getElementById("oMsg");
+try{const c=localStorage.getItem("yosokuro-ship");if(c==="intl"||c==="jp")oShip.value=c}catch{}
+oShip.onchange=()=>{try{localStorage.setItem("yosokuro-ship",oShip.value)}catch{};totals()};
+function totals(){
+  const sub=plist.reduce((n,x)=>n+(unit(x)||0)*x.qty,0),sh=SHOP.shipping&&SHOP.shipping[oShip.value];
+  document.getElementById("oSub").textContent=SHOP.prices?yen(sub):"–";
+  document.getElementById("oShipAmt").textContent=sh?yen(sh.amount):"–";
+  document.getElementById("oTotal").textContent=SHOP.prices&&sh?yen(sub+sh.amount):"–";
+  if(sh)document.getElementById("oDays").textContent=`${sh.days[0]}–${sh.days[1]} working days`;
+}
+const OERR={retired:"One of these photographs has just been retired and can no longer be ordered. It has been removed from your list.",
+  closed:"The shop isn’t open just yet. Please check back soon.",
+  fail:"Checkout couldn’t start just now. Please try again in a moment."};
+oPay.onclick=async()=>{
   if(!plist.length)return;
-  if(!name){say(ERR.missing);F["name"].focus();return}
-  if(!F["email"].checkValidity()||!email){say(ERR.email);F["email"].focus();return}
-  const lines=plist.map((x,i)=>`${i+1}. ${label(x.id)} · ${x.size} · ${x.border||"White border"} · https://kuro.yoso.one/full.html#f-${x.id}`);
-  const notes=document.getElementById("cfNotes").value.trim();
-  F["message"].value=`Print list (${plist.length}):\n${lines.join("\n")}`+(notes?`\n\nNotes:\n${notes}`:"");
-  document.getElementById("cfPhoto").value=plist.length===1?plist[0].id:"";
-  cfSend.disabled=true;say("Sending…");
+  oPay.disabled=true;oMsg.textContent="Opening secure checkout…";
   try{
-    const r=await fetch(cf.action,{method:"POST",body:new FormData(cf)});
+    const r=await fetch(SHOP_URL+"/checkout",{method:"POST",headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({ship:oShip.value,items:plist.map(x=>({id:x.id,size:x.size,paper:x.paper,border:x.border,qty:x.qty}))})});
     const j=await r.json().catch(()=>({}));
-    if(r.ok&&j.ok){const sub=F["subscribe"].checked;cf.reset();plist=[];save();syncAdd();renderList();cf.hidden=false;
-      document.getElementById("pEmpty").textContent="Thank you. Your print list is on its way, and Yoso will reply by email."+(sub?" Buttondown will email you to confirm the mailing list.":"");document.getElementById("pEmpty").hidden=false;cf.hidden=true}
-    else say(ERR[j.error]||ERR.send);
-  }catch{say(ERR.send)}
-  cfSend.disabled=false;
-  if(window.turnstile)try{turnstile.reset("#cfTs")}catch{}
-});
-syncAdd();
-
+    if(r.ok&&j.url){location.href=j.url;return}
+    if(j.error==="retired"&&j.id){plist=plist.filter(x=>x.id!==j.id);save();syncAdd();renderList()}
+    oMsg.textContent=OERR[j.error]||OERR.fail;
+  }catch{oMsg.textContent=OERR.fail}
+  oPay.disabled=false;
+};
+/* Back from Stripe after paying: clear the list and say thank you */
+if(new URLSearchParams(location.search).get("order")==="paid"){
+  plist=[];save();
+  history.replaceState(null,"",location.pathname+"#prints");
+  setTimeout(()=>{open(prints);document.getElementById("pThanks").hidden=false;syncAdd()},0);
+}
+/* Back from Stripe without paying (or a link to #prints): open the print list */
+else if(location.hash==="#prints")setTimeout(()=>open(prints),0);
+/* Shop terms */
+function openTerms(e){if(e)e.preventDefault();open(terms)}
+document.getElementById("toTerms").onclick=openTerms;
+document.querySelectorAll("[data-terms]").forEach(a=>a.onclick=openTerms);
 /* View: Detail and Print preview */
 const look=document.getElementById("look"),zoom=document.getElementById("zoom"),zoomImg=document.getElementById("zoomImg"),zoomPad=document.getElementById("zoomPad");
 const wall=document.getElementById("wall"),sheetp=document.getElementById("sheetp"),sheetImg=document.getElementById("sheetImg");
@@ -589,7 +676,7 @@ look.querySelectorAll("[data-mode]").forEach(b=>b.onclick=()=>setMode(b.dataset.
 document.getElementById("lookClose").onclick=closeLook;
 lookAdd.onclick=()=>{const x=plist.find(y=>y.id===lookId);
   if(x&&(x.border||"White border")===border)plist=plist.filter(y=>y.id!==lookId);
-  else if(x)x.border=border;else plist.push({id:lookId,size:"Not sure yet",border});
+  else if(x)x.border=border;else plist.push({id:lookId,size:"A3",paper:"standard",qty:1,border});
   save();syncAdd();layoutPaper()};
 document.querySelectorAll("#bord button").forEach(x=>x.onclick=()=>{border=x.dataset.b;layoutPaper()});
 viewBtn.onclick=e=>{e.stopPropagation();if(look.hidden)openLook(curId,"detail")};
@@ -620,7 +707,6 @@ zoom.addEventListener("pointerup",endDrag);zoom.addEventListener("pointercancel"
 if(location.hash){const el=document.getElementById(location.hash.slice(1));el&&el.scrollIntoView()}
 </script>
 <script src="assets/list-choice.js" defer></script>
-<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 <script src="assets/stats.js" defer></script>
 </body>
 </html>
