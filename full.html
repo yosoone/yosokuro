@@ -184,6 +184,8 @@ body.still .chrome>*{pointer-events:none}
 .order[hidden]{display:none}
 .order .row{display:flex;justify-content:space-between;align-items:center;gap:16px;font:500 15px/1.4 var(--f-kanji)}
 .order .row span:first-child{color:var(--ash)}
+.order .row span:last-child{text-align:right}
+.order .row small{display:block;font:400 10px/1.4 var(--f-mono);letter-spacing:.1em;color:var(--ash)}
 .order .total{padding-top:12px;border-top:1px solid var(--line);font-size:20px}
 .order .total span:first-child{color:var(--bone)}
 .order select{background:transparent;color:var(--bone);border:1px solid var(--line);font:inherit;font-size:13px;padding:10px 8px;min-height:44px}
@@ -356,7 +358,7 @@ body.still #zooms .zb{pointer-events:none}
       <div class="row"><span>Shipping</span><span id="oShipAmt">–</span></div>
       <div class="row total"><span>Total</span><span id="oTotal">–</span></div>
       <div class="go"><button type="button" id="oPay">Checkout</button><span id="oMsg" role="status" aria-live="polite"></span></div>
-      <p class="small">Prices in yen, the same worldwide; for delivery in Japan they include 10% consumption tax. Payment, your address and your receipt are handled by Stripe; card details never touch this site. Each print is made to order and posted in about <span id="oDays">a week</span>. <a href="#terms" id="toTerms">Shop terms · 特定商取引法に基づく表記</a></p>
+      <p class="small">Prices in yen, the same worldwide; for delivery in Japan they include 10% consumption tax. Dollar amounts are approximate; you pay in yen. Payment, your address and your receipt are handled by Stripe; card details never touch this site. Each print is made to order and posted in about <span id="oDays">a week</span>. <a href="#terms" id="toTerms">Shop terms · 特定商取引法に基づく表記</a></p>
     </div>
   </div>
 </section>
@@ -536,8 +538,13 @@ document.getElementById("toStart").onclick=e=>{e.preventDefault();closeAll();ree
 /* Print list = the cart: kept in this browser only. Prices come from the shop (forms.yoso.one/prices);
    the Worker sets every amount itself at checkout, so what is shown here is for display only. */
 const SHOP_URL="https://forms.yoso.one";
+/* Built-in copy of the price list, so the page works before the Worker answers; the Worker's list
+   (forms.yoso.one/prices, set in worker/shop.js) replaces it as soon as it loads. Keep the two in step. */
 let SHOP={papers:{standard:{name:"Standard",desc:"Printed by PRIO"},premium:{name:"Premium",desc:"Archival, printed by Tokugawa"}},
-  sizes:{A3:"A3 · 297 × 420 mm",A2:"A2 · 420 × 594 mm"},borders:["White border","No border"],prices:null,shipping:null,maxQty:5};
+  sizes:{A3:"A3 · 297 × 420 mm",A2:"A2 · 420 × 594 mm"},borders:["White border","No border"],
+  prices:{standard:{A3:7150,A2:10780},premium:{A3:20900,A2:29700}},
+  shipping:{jp:{name:"Japan",amount:1500,days:[5,9]},intl:{name:"Outside Japan",amount:4500,days:[10,21]}},
+  usdRate:157.557,maxQty:5};
 const SIZES=()=>Object.keys(SHOP.sizes),PAPERS=()=>Object.keys(SHOP.papers),BORDERS=["White border","No border"];
 const KEY="yosokuro-prints";
 const tidy=x=>({id:x.id,size:SIZES().includes(x.size)?x.size:"A3",paper:PAPERS().includes(x.paper)?x.paper:"standard",
@@ -553,6 +560,7 @@ addBtn.onclick=e=>{e.stopPropagation();if(curId)toggle(curId)};
 document.getElementById("openPrints").onclick=()=>open(prints);
 const pList=document.getElementById("pList"),order=document.getElementById("order");
 const yen=n=>"¥"+Number(n).toLocaleString("en-US");
+const usd=n=>SHOP.usdRate?"≈ US$"+(n/SHOP.usdRate).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2}):"";
 const unit=x=>SHOP.prices&&SHOP.prices[x.paper]&&SHOP.prices[x.paper][x.size];
 fetch(SHOP_URL+"/prices").then(r=>r.json()).then(j=>{if(j&&j.shop){SHOP=j.shop;plist=plist.map(tidy);if(!prints.hidden)renderList()}}).catch(()=>{});
 /* Size the paper to fit its box, then add the A3-proportion border (or none) */
@@ -577,7 +585,7 @@ function renderList(){
       `<span class="price"></span>`+
       `<button type="button" class="rm" aria-label="Remove ${label(x.id)}">✕</button>`;
     const pr=li.querySelector(".price");
-    const showPrice=()=>{const u=unit(x);pr.innerHTML=u?`${yen(u*x.qty)}${x.qty>1?`<small>${yen(u)} each</small>`:""}`:""};
+    const showPrice=()=>{const u=unit(x);pr.innerHTML=u?`${yen(u*x.qty)}<small>${usd(u*x.qty)}</small>${x.qty>1?`<small>${yen(u)} each</small>`:""}`:""};
     li.querySelector(".sz").onchange=e=>{x.size=e.target.value;save();showPrice();totals()};
     li.querySelector(".pp").onchange=e=>{x.paper=e.target.value;save();showPrice();totals()};
     li.querySelector(".bd").onchange=e=>{x.border=e.target.value;save();paperThumb(li,x)};
@@ -594,13 +602,14 @@ try{const c=localStorage.getItem("yosokuro-ship");if(c==="intl"||c==="jp")oShip.
 oShip.onchange=()=>{try{localStorage.setItem("yosokuro-ship",oShip.value)}catch{};totals()};
 function totals(){
   const sub=plist.reduce((n,x)=>n+(unit(x)||0)*x.qty,0),sh=SHOP.shipping&&SHOP.shipping[oShip.value];
-  document.getElementById("oSub").textContent=SHOP.prices?yen(sub):"–";
-  document.getElementById("oShipAmt").textContent=sh?yen(sh.amount):"–";
-  document.getElementById("oTotal").textContent=SHOP.prices&&sh?yen(sub+sh.amount):"–";
+  const both=n=>`${yen(n)}<small>${usd(n)}</small>`;
+  document.getElementById("oSub").innerHTML=SHOP.prices?both(sub):"–";
+  document.getElementById("oShipAmt").innerHTML=sh?both(sh.amount):"–";
+  document.getElementById("oTotal").innerHTML=SHOP.prices&&sh?both(sub+sh.amount):"–";
   if(sh)document.getElementById("oDays").textContent=`${sh.days[0]}–${sh.days[1]} working days`;
 }
 const OERR={retired:"One of these photographs has just been retired and can no longer be ordered. It has been removed from your list.",
-  closed:"The shop isn’t open just yet. Please check back soon.",
+  closed:"This is a demo: payment isn’t connected yet, so nothing has been ordered.",
   fail:"Checkout couldn’t start just now. Please try again in a moment."};
 oPay.onclick=async()=>{
   if(!plist.length)return;
@@ -610,6 +619,7 @@ oPay.onclick=async()=>{
       body:JSON.stringify({ship:oShip.value,items:plist.map(x=>({id:x.id,size:x.size,paper:x.paper,border:x.border,qty:x.qty}))})});
     const j=await r.json().catch(()=>({}));
     if(r.ok&&j.url){location.href=j.url;return}
+    if(r.status===404||r.status===503){oMsg.textContent=OERR.closed;oPay.disabled=false;return}
     if(j.error==="retired"&&j.id){plist=plist.filter(x=>x.id!==j.id);save();syncAdd();renderList()}
     oMsg.textContent=OERR[j.error]||OERR.fail;
   }catch{oMsg.textContent=OERR.fail}
