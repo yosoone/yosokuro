@@ -34,6 +34,7 @@ export const SHOP = {
   borders: ["White border", "No border"],
   prices: priced,      // yen, per print, handling and 10% tax included (see BASE above)
   tax: TAX,
+  usdRate: 157.557,    // yen per US dollar, for the approximate $ shown on the site only (Trading Economics, 30 Oct 2026)
   shipping: {          // yen, per order, tax included
     jp:   { name: "Japan",          amount: 1500, days: [5, 9] },
     intl: { name: "Outside Japan",  amount: 4500, days: [10, 21] },
