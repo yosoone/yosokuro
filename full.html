@@ -319,7 +319,7 @@ body.still #zooms .zb{pointer-events:none}
 <body>
 <main id="reel" aria-label="Yosokuro photographs"></main>
 
-<div class="beta-tag"><span class="version" data-version>Beta 0.71</span></div>
+<div class="beta-tag"><span class="version" data-version>Beta 0.72</span></div>
 <div class="chrome top">
   <span class="brand"><a class="name" href="#" id="toStart">Yosokuro</a></span>
   <nav><button type="button" id="openIdx">Index</button><button type="button" id="openPrints">Prints<span id="pCount"></span></button><button type="button" id="openInfo">Info</button></nav>
@@ -409,9 +409,10 @@ body.still #zooms .zb{pointer-events:none}
     <form class="cf" id="cf" action="https://forms.yoso.one/contact" method="post" novalidate>
       <div><label for="cfName">Name</label><input id="cfName" name="name" autocomplete="name" maxlength="120" required></div>
       <div><label for="cfEmail">Email</label><input id="cfEmail" name="email" type="email" autocomplete="email" maxlength="254" required></div>
-            <div class="hp" aria-hidden="true"><label for="cfWebsite">Leave this empty</label><input id="cfWebsite" name="website" tabindex="-1" autocomplete="off"></div>
+      <div class="full"><label for="cfTopic">About</label><select id="cfTopic" name="topic"><option value="order">An order</option><option value="damage">A damaged print</option><option value="print">Prints in general</option><option value="general" selected>Something else</option></select></div>
+      <div class="hp" aria-hidden="true"><label for="cfWebsite">Leave this empty</label><input id="cfWebsite" name="website" tabindex="-1" autocomplete="off"></div>
       <div class="full"><label for="cfMessage">Message</label><textarea id="cfMessage" name="message" maxlength="5000" required></textarea></div>
-      <p class="full note">For a damaged print, Yoso will reply by email; please reply with photographs of the damaged parcel and of the print.</p>
+      <p class="full note" id="cfDamage" hidden>Yoso will reply by email; please reply with photographs of the damaged parcel and of the print.</p>
       <div class="full cf-turnstile" id="cfTs" data-sitekey="0x4AAAAAAFeWKK51BEJbKJSu" data-appearance="interaction-only"></div>
       <div class="full send"><button type="submit" id="cfSend">Send</button><span id="cfMsg" role="status" aria-live="polite"></span></div>
       <p class="full note">Your name, email and message go to Yoso by email and are used only to reply. Nothing is kept on this site. A spam check by Cloudflare runs in the background.</p>
@@ -436,7 +437,7 @@ body.still #zooms .zb{pointer-events:none}
     </form>
 
     <footer>
-      <span>© <a class="hub-link" href="https://hub.yoso.one">Yoso</a> · kuro.yoso.one/full · <span class="version" data-version>Beta 0.71</span></span>
+      <span>© <a class="hub-link" href="https://hub.yoso.one">Yoso</a> · kuro.yoso.one/full · <span class="version" data-version>Beta 0.72</span></span>
       <span><a href="./">Current site</a></span>
     </footer>
   </div>
@@ -655,6 +656,7 @@ else if(location.hash==="#prints")setTimeout(()=>open(prints),0);
 const cf=document.getElementById("cf"),cfMsg=document.getElementById("cfMsg"),cfSend=document.getElementById("cfSend");
 function openContact(e){if(e)e.preventDefault();open(info);setTimeout(()=>{document.getElementById("contact").scrollIntoView({block:"start"});document.getElementById("cfName").focus({preventScroll:true})},50)}
 document.querySelectorAll("[data-contact]").forEach(a=>a.onclick=openContact);
+document.getElementById("cfTopic").onchange=e=>{document.getElementById("cfDamage").hidden=e.target.value!=="damage"};
 const CERR={missing:"Please add your name and a message.",email:"Please check your email address.",spam:"The spam check didn’t pass. Please try again.",
   send:"The message couldn’t be sent just now. Please try again in a moment."};
 cf.addEventListener("submit",async e=>{
@@ -666,7 +668,7 @@ cf.addEventListener("submit",async e=>{
   try{
     const r=await fetch(cf.action,{method:"POST",body:new FormData(cf)});
     const j=await r.json().catch(()=>({}));
-    if(r.ok&&j.ok){cf.reset();cfMsg.textContent="Thank you. Your message is on its way, and Yoso will reply by email."}
+    if(r.ok&&j.ok){cf.reset();document.getElementById("cfDamage").hidden=true;cfMsg.textContent="Thank you. Your message is on its way, and Yoso will reply by email."}
     else cfMsg.textContent=CERR[j.error]||CERR.send;
   }catch{cfMsg.textContent=CERR.send}
   cfSend.disabled=false;
