@@ -121,10 +121,20 @@ export async function checkout(request, env, cors) {
   p.set("metadata[ship]", ship);
   p.set("metadata[items]", lines.map(l => `${l.id}|${l.size}|${l.paper}|${l.border === "No border" ? "nb" : "wb"}|${l.qty}`).join(",").slice(0, 500));
   p.set("payment_intent_data[description]", `Yosokuro prints · ${lines.length} line(s)`);
+  // Stripe's payment page in the Yosokuro look: black ground, bone button, square corners, serif,
+  // the gold Yoso mark and the name 'Yosokuro'. Needs the Stripe API version set below.
+  p.set("branding_settings[display_name]", "Yosokuro");
+  p.set("branding_settings[background_color]", "#000000");
+  p.set("branding_settings[button_color]", "#e9e7e2");
+  p.set("branding_settings[border_style]", "rectangular");
+  p.set("branding_settings[font_family]", "noto_serif");
+  p.set("branding_settings[icon][type]", "url");
+  p.set("branding_settings[icon][url]", `${SITE}/images/yoso-mark.png`);
 
   const r = await fetch("https://api.stripe.com/v1/checkout/sessions", {
     method: "POST",
-    headers: { "Authorization": `Bearer ${env.STRIPE_SECRET_KEY.trim()}`, "Content-Type": "application/x-www-form-urlencoded" },
+    headers: { "Authorization": `Bearer ${env.STRIPE_SECRET_KEY.trim()}`, "Content-Type": "application/x-www-form-urlencoded",
+               "Stripe-Version": "2025-09-30.clover" },  // first version with branding_settings
     body: p,
   });
   const j = await r.json().catch(() => ({}));
