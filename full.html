@@ -145,7 +145,8 @@ body.still{cursor:none}
 .chrome .add{position:absolute;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 40px);transform:translateX(-50%);
   display:inline-flex;align-items:center;gap:10px;min-height:48px;padding:0 6px;font-size:13px;letter-spacing:.2em;pointer-events:auto}
 .chrome .pvbtn{position:absolute;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 4px);transform:translateX(-50%);
-  min-height:40px;padding:0 14px;font-size:11px;letter-spacing:.22em;color:rgba(255,255,255,.8);text-decoration:underline;text-underline-offset:5px;pointer-events:auto;transition:opacity .5s ease}
+  min-height:40px;padding:0 14px;font-size:11px;letter-spacing:.22em;color:rgba(255,255,255,.8);pointer-events:auto;transition:opacity .5s ease}
+.chrome .pvbtn:hover{color:#fff}
 .chrome .pvbtn[hidden]{display:none}
 body.still #pvBtn{opacity:0}
 /* Frame number and count a step quieter than ＋ Print */
@@ -330,7 +331,7 @@ body.still #zooms .zb{pointer-events:none}
 <body>
 <main id="reel" aria-label="Yosokuro photographs"></main>
 
-<div class="beta-tag"><span class="version" data-version>Beta 0.78</span></div>
+<div class="beta-tag"><span class="version" data-version>Beta 0.79</span></div>
 <div class="chrome top">
   <span class="brand"><a class="name" href="#" id="toStart">Yosokuro</a></span>
   <nav><button type="button" id="openIdx">Index</button><button type="button" id="openPrints">Prints<span id="pCount"></span></button><button type="button" id="openInfo">Info</button></nav>
@@ -442,7 +443,7 @@ body.still #zooms .zb{pointer-events:none}
     </form>
 
     <footer>
-      <span>© <a class="hub-link" href="https://hub.yoso.one">Yoso</a> · kuro.yoso.one · <span class="version" data-version>Beta 0.78</span></span>
+      <span>© <a class="hub-link" href="https://hub.yoso.one">Yoso</a> · kuro.yoso.one · <span class="version" data-version>Beta 0.79</span></span>
     </footer>
   </div>
 </section>
