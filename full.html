@@ -287,14 +287,17 @@ body.still #zooms .zb{pointer-events:none}
 #look .sheetp.full img{object-fit:cover}
 #look .bord{display:flex;gap:4px}
 #look .bord[hidden]{display:none}
-@media (max-width:600px){#look .bord{width:100%;justify-content:center;gap:18px}}
+@media (max-width:600px){#look .bord{justify-content:center;gap:18px}}
 #look .bord button{min-height:44px;padding:0 10px;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ash)}
 #look .bord button[aria-pressed="true"]{color:var(--bone);text-decoration:underline;text-underline-offset:6px}
-#look .lfoot{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px 20px;
+#look .lfoot{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:8px 20px;
   padding:8px max(16px,env(safe-area-inset-right,0px)) calc(env(safe-area-inset-bottom,0px) + 10px) var(--edge);font-size:11px;letter-spacing:.12em;color:var(--ash)}
-#look .lfoot .info{text-transform:none;letter-spacing:.04em;font-variant-numeric:tabular-nums}
+#look .lfoot .info{grid-column:1;grid-row:1;justify-self:start;text-transform:none;letter-spacing:.04em;font-variant-numeric:tabular-nums}
 #look .ladd{min-height:44px;padding:0 18px;background:var(--bone);color:var(--night);font-size:11px;letter-spacing:.16em;text-transform:uppercase}
 #look .ladd[hidden]{display:none}
+#look .lfoot .bord{grid-column:2;grid-row:1}
+#look .lfoot .ladd{grid-column:3;grid-row:1;justify-self:end}
+@media (max-width:600px){#look .lfoot{grid-template-columns:1fr}#look .lfoot .bord,#look .lfoot .ladd,#look .lfoot .info{grid-column:1;grid-row:auto;justify-self:center}}
 
 /* Family mark on the cover */
 .family-mark{position:absolute;top:calc(env(safe-area-inset-top,0px) + 20px);left:50%;transform:translateX(-50%);display:block;width:48px;line-height:0}
@@ -326,7 +329,7 @@ body.still #zooms .zb{pointer-events:none}
 <body>
 <main id="reel" aria-label="Yosokuro photographs"></main>
 
-<div class="beta-tag"><span class="version" data-version>Beta 0.74</span></div>
+<div class="beta-tag"><span class="version" data-version>Beta 0.75</span></div>
 <div class="chrome top">
   <span class="brand"><a class="name" href="#" id="toStart">Yosokuro</a></span>
   <nav><button type="button" id="openIdx">Index</button><button type="button" id="openPrints">Prints<span id="pCount"></span></button><button type="button" id="openInfo">Info</button></nav>
@@ -342,17 +345,13 @@ body.still #zooms .zb{pointer-events:none}
 <section id="look" hidden aria-label="Photograph detail and print preview">
   <div class="lbar">
     <span id="lookNo"></span>
-    <span class="modes" role="group" aria-label="View">
-      <button type="button" data-mode="detail" aria-pressed="true">Detail</button>
-      <button type="button" data-mode="print" aria-pressed="false">Print preview</button>
-    </span>
     <button type="button" class="lclose" id="lookClose">Close ✕</button>
   </div>
   <div class="lstage" id="lookStage">
     <div class="zoom" id="zoom"><span class="pad" id="zoomPad"><img id="zoomImg" alt="" draggable="false"></span></div>
     <div class="wall" id="wall" hidden><div class="sheetp" id="sheetp"><img id="sheetImg" alt=""></div></div>
   </div>
-  <div class="lfoot"><span class="bord" id="bord" role="group" aria-label="Border"><button type="button" data-b="White border" aria-pressed="true">White border</button><button type="button" data-b="No border" aria-pressed="false">No border</button></span><span class="info" id="lookInfo"></span></div>
+  <div class="lfoot"><span class="bord" id="bord" role="group" aria-label="Border"><button type="button" data-b="White border" aria-pressed="true">White border</button><button type="button" data-b="No border" aria-pressed="false">No border</button></span><span class="info" id="lookInfo"></span><button type="button" class="ladd" id="lookAdd" hidden></button></div>
 </section>
 
 <section class="ov prints" id="prints" hidden aria-label="Print list">
@@ -442,7 +441,7 @@ body.still #zooms .zb{pointer-events:none}
     </form>
 
     <footer>
-      <span>© <a class="hub-link" href="https://hub.yoso.one">Yoso</a> · kuro.yoso.one/full · <span class="version" data-version>Beta 0.74</span></span>
+      <span>© <a class="hub-link" href="https://hub.yoso.one">Yoso</a> · kuro.yoso.one/full · <span class="version" data-version>Beta 0.75</span></span>
       <span><a href="./">Current site</a></span>
     </footer>
   </div>
@@ -693,7 +692,7 @@ document.querySelectorAll("[data-terms]").forEach(a=>a.onclick=openTerms);
 /* View: Detail and Print preview */
 const look=document.getElementById("look"),zoom=document.getElementById("zoom"),zoomImg=document.getElementById("zoomImg"),zoomPad=document.getElementById("zoomPad");
 const wall=document.getElementById("wall"),sheetp=document.getElementById("sheetp"),sheetImg=document.getElementById("sheetImg");
-const lookInfo=document.getElementById("lookInfo"),viewBtn=document.getElementById("viewBtn");
+const lookInfo=document.getElementById("lookInfo"),lookAdd=document.getElementById("lookAdd"),viewBtn=document.getElementById("viewBtn");
 /* Paper long side, short side and white border on every side, in mm (same as the current site) */
 const PAPER={A4:[297,210,18],A3:[420,297,25.5],A2:[594,420,36],A1:[841,594,50]};
 const mm=x=>String(Math.round(x*100)/100);
@@ -707,7 +706,7 @@ function openLook(id,m){
 function closeLook(){look.hidden=true;document.body.classList.remove("looking");document.getElementById("viewBtn").removeAttribute("aria-disabled");wake()}
 function setMode(m){mode=m;
   look.querySelectorAll("[data-mode]").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.mode===m)));
-  const det=m==="detail";zoom.hidden=!det;wall.hidden=det;document.getElementById("bord").hidden=det;
+  const det=m==="detail";zoom.hidden=!det;wall.hidden=det;lookAdd.hidden=det;document.getElementById("bord").hidden=det;
   if(det)layoutZoom();else layoutPaper();
 }
 function layoutZoom(){
@@ -729,9 +728,15 @@ function layoutPaper(){
   sheetp.style.width=W*k+"px";sheetp.style.height=H*k+"px";sheetp.style.padding=none?"0":b*k+"px";sheetp.classList.toggle("full",none);
   lookInfo.textContent="";
   document.querySelectorAll("#bord button").forEach(x=>x.setAttribute("aria-pressed",String(x.dataset.b===border)));
+  const inList=plist.find(x=>x.id===lookId);
+  lookAdd.textContent=inList&&(inList.border||"White border")===border?`✓ In print list`:inList?`＋ Change to ${border.toLowerCase()}`:`＋ Print`;
 }
 look.querySelectorAll("[data-mode]").forEach(b=>b.onclick=()=>setMode(b.dataset.mode));
 document.getElementById("lookClose").onclick=closeLook;
+lookAdd.onclick=()=>{const x=plist.find(y=>y.id===lookId);
+  if(x&&(x.border||"White border")===border)plist=plist.filter(y=>y.id!==lookId);
+  else if(x)x.border=border;else plist.push({id:lookId,size:"A3",paper:"standard",qty:1,border});
+  save();syncAdd();layoutPaper()};
 document.querySelectorAll("#bord button").forEach(x=>x.onclick=()=>{border=x.dataset.b;layoutPaper()});
 viewBtn.onclick=e=>{e.stopPropagation();if(look.hidden)openLook(curId,"detail")};
 document.getElementById("pvBtn").onclick=e=>{e.stopPropagation();openLook(curId,"print")};
