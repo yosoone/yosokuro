@@ -10,7 +10,19 @@
      npx wrangler secret put STRIPE_WEBHOOK_SECRET  whsec_... from the Stripe webhook endpoint */
 import { EmailMessage } from "cloudflare:email";
 
-// ---- Price list (Japanese yen, consumption tax included). PLACEHOLDERS: Yoso sets the real ones. ----
+// ---- Price list (Japanese yen). The price a buyer sees for each print is
+//      (base price + handling fee) × (1 + consumption tax), worked out below.
+//      Shipping is charged separately, per order, and its amounts are tax included. ----
+const BASE = {         // yen, per print, before handling and tax
+  standard: { A3: 5500,  A2: 8800 },
+  premium:  { A3: 18000, A2: 26000 },
+};
+const HANDLING = 1000; // yen, per print, built into the price
+const TAX = 0.10;      // consumption tax, built into the price
+const withTax = n => Math.round(n * (1 + TAX));
+const priced = Object.fromEntries(Object.entries(BASE).map(([paper, sizes]) =>
+  [paper, Object.fromEntries(Object.entries(sizes).map(([size, b]) => [size, withTax(b + HANDLING)]))]));
+
 export const SHOP = {
   currency: "jpy",
   papers: {
@@ -19,11 +31,9 @@ export const SHOP = {
   },
   sizes: { A3: "A3 · 297 × 420 mm", A2: "A2 · 420 × 594 mm" },
   borders: ["White border", "No border"],
-  prices: {            // yen, per print
-    standard: { A3: 8000,  A2: 12000 },
-    premium:  { A3: 18000, A2: 28000 },
-  },
-  shipping: {          // yen, per order
+  prices: priced,      // yen, per print, handling and 10% tax included (see BASE above)
+  tax: TAX,
+  shipping: {          // yen, per order, tax included
     jp:   { name: "Japan",          amount: 1500, days: [5, 9] },
     intl: { name: "Outside Japan",  amount: 4500, days: [10, 21] },
   },
@@ -97,7 +107,7 @@ export async function checkout(request, env, cors) {
   const s = SHOP.shipping[ship];
   (ship === "jp" ? ["JP"] : INTL).forEach((c, i) => p.set(`shipping_address_collection[allowed_countries][${i}]`, c));
   p.set("shipping_options[0][shipping_rate_data][type]", "fixed_amount");
-  p.set("shipping_options[0][shipping_rate_data][display_name]", `Shipping & handling · ${s.name}`);
+  p.set("shipping_options[0][shipping_rate_data][display_name]", `Tracked shipping · ${s.name}`);
   p.set("shipping_options[0][shipping_rate_data][fixed_amount][amount]", String(s.amount));
   p.set("shipping_options[0][shipping_rate_data][fixed_amount][currency]", SHOP.currency);
   p.set("shipping_options[0][shipping_rate_data][delivery_estimate][minimum][unit]", "business_day");
@@ -151,7 +161,8 @@ export async function webhook(request, env) {
     "Prints:",
     ...items.map(x => "  " + x),
     "",
-    `Total paid: ${yen(s.amount_total || 0)} (shipping & handling ${yen((s.total_details && s.total_details.amount_shipping) || 0)})`,
+    `Total paid: ${yen(s.amount_total || 0)} (shipping ${yen((s.total_details && s.total_details.amount_shipping) || 0)}; ` +
+      `includes 10% consumption tax of ${yen(Math.round((s.amount_total || 0) * TAX / (1 + TAX)))})`,
     "",
     "Ship to:",
     `  ${shipd.name || cust.name || ""}`,
