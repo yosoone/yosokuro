@@ -16,7 +16,7 @@
 <link rel="alternate" type="application/rss+xml" title="Yosokuro" href="https://kuro.yoso.one/feed.xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;800&family=IBM+Plex+Mono:wght@400;500&family=Zen+Kaku+Gothic+New:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;700&family=Zen+Kaku+Gothic+New:wght@400;500&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <style>
 /* Layout: one photograph per screen, edge to edge on black, snapping as you scroll.
    Chapters open with a single kanji. Everything else hides until the visitor moves. */
@@ -326,12 +326,73 @@ body.still #zooms .zb{pointer-events:none}
 .sub-meta{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px 20px;font:400 12px/1.5 var(--f-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--dust)}
 .sub-meta a{color:var(--paper);text-underline-offset:3px}
 #subMsg{min-height:1.5em;text-transform:none;letter-spacing:.02em}
+/* == Yoso family type system (see yoso-microsites skill) == */
+.title .k{font-family:'Shippori Mincho','Hiragino Mincho ProN','Yu Mincho',serif;font-weight:700;font-style:normal}
+.chrome .k,
+.chapters .k{font-family:'Shippori Mincho','Hiragino Mincho ProN','Yu Mincho',serif;font-weight:500;font-style:normal}
+.info h2,
+.prints h2,
+.terms h2{font-family:'Shippori Mincho','Hiragino Mincho ProN','Yu Mincho',serif;font-weight:500;font-style:normal;font-size:clamp(34px,5vw,48px);line-height:1.2;letter-spacing:normal;text-transform:none}
+.sheet h3,
+.info h3{font-family:'Shippori Mincho','Hiragino Mincho ProN','Yu Mincho',serif;font-weight:500;font-style:normal;font-size:26px;line-height:1.25;letter-spacing:normal;text-transform:none}
+.chrome .name,
+.plist .who b{font-family:'Shippori Mincho','Hiragino Mincho ProN','Yu Mincho',serif;font-weight:500;font-style:normal;font-size:20px;line-height:1.3;letter-spacing:.02em;text-transform:none}
+.cover .line,
+.info .epi p{font-family:'Shippori Mincho','Hiragino Mincho ProN','Yu Mincho',serif;font-weight:400;font-style:normal;font-size:clamp(22px,5.5vw,28px);line-height:1.7;letter-spacing:normal}
+.info p{font-family:'Shippori Mincho','Hiragino Mincho ProN','Yu Mincho',serif;font-weight:400;font-style:normal;font-size:clamp(20px,4.5vw,24px);line-height:1.6;letter-spacing:normal}
+.prints .lede,
+.thanks{font-family:'Zen Kaku Gothic New','Hiragino Sans','Yu Gothic',system-ui,sans-serif;font-weight:400;font-style:normal;font-size:18px;line-height:1.85;letter-spacing:normal}
+.info dd,
+.empty,
+.prints .notice,
+.plist .price,
+.order .row,
+#oMsg,
+.terms .ja,
+.terms dd,
+#cfMsg,
+.cf .sub,
+.cf .sub small{font-family:'Zen Kaku Gothic New','Hiragino Sans','Yu Gothic',system-ui,sans-serif;font-weight:400;font-style:normal;font-size:15px;line-height:1.6;letter-spacing:normal;text-transform:none}
+.title .e,
+.chrome .beta,
+.ov .close,
+.chapters .n,
+.sheet h3 span,
+.info dt,
+.info .epi .by,
+.papers-note,
+.plist .price small,
+.order .row small,
+.order .small,
+.terms dt,
+.info footer,
+.cf label,
+.cf .photo-tag,
+.cf .note,
+.sub-form label,
+.sub-meta,
+#look .bord button,
+.plist .who a{font-family:'IBM Plex Mono','Zen Kaku Gothic New',ui-monospace,Menlo,monospace;font-weight:400;font-style:normal;font-size:12px;line-height:1.5;letter-spacing:.14em;text-transform:uppercase}
+#look .ladd,
+.order .go button,
+.cf .send button,
+.sub-row button{font-family:'IBM Plex Mono','Zen Kaku Gothic New',ui-monospace,Menlo,monospace;font-weight:500;font-style:normal;font-size:12px;line-height:1;letter-spacing:.14em;text-transform:uppercase}
+.info dd a,
+.prints .lede a,
+.prints .notice a,
+.terms dd a,
+.cf .note a,
+.sub-meta a{color:var(--gold-ink);text-decoration-color:currentColor;text-underline-offset:3px}
+.info .epi{border-left:2px solid var(--gold);padding-left:24px}
+:root{--gold:#E1BA4B;--gold-ink:#E1BA4B}
+.info .epi .by{margin-top:8px}
+/* == end family type system == */
 </style>
 </head>
 <body>
 <main id="reel" aria-label="Yosokuro photographs"></main>
 
-<div class="beta-tag"><span class="version" data-version>Beta 0.82</span></div>
+<div class="beta-tag"><span class="version" data-version>Beta 0.83</span></div>
 <div class="chrome top">
   <span class="brand"><a class="name" href="#" id="toStart">Yosokuro</a></span>
   <nav><button type="button" id="openIdx">Index</button><button type="button" id="openPrints">Prints<span id="pCount"></span></button><button type="button" id="openInfo">Info</button></nav>
@@ -443,7 +504,7 @@ body.still #zooms .zb{pointer-events:none}
     </form>
 
     <footer>
-      <span>© <a class="hub-link" href="https://hub.yoso.one">Yoso</a> · kuro.yoso.one · <span class="version" data-version>Beta 0.82</span></span>
+      <span>© <a class="hub-link" href="https://hub.yoso.one">Yoso</a> · kuro.yoso.one · <span class="version" data-version>Beta 0.83</span></span>
     </footer>
   </div>
 </section>
