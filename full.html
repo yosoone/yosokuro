@@ -365,14 +365,14 @@ body.still #zooms .zb{pointer-events:none}
 .order .row small,
 .order .small,
 .terms dt,
-.info footer,
 .cf label,
 .cf .photo-tag,
 .cf .note,
 .sub-form label,
 .sub-meta,
 #look .bord button,
-.plist .who a{font-family:'IBM Plex Mono','Zen Kaku Gothic New',ui-monospace,Menlo,monospace;font-weight:400;font-style:normal;font-size:12px;line-height:1.5;letter-spacing:.14em;text-transform:uppercase}
+.plist .who a,
+.chrome nav button{font-family:'IBM Plex Mono','Zen Kaku Gothic New',ui-monospace,Menlo,monospace;font-weight:400;font-style:normal;font-size:12px;line-height:1.5;letter-spacing:.14em;text-transform:uppercase}
 #look .ladd,
 .order .go button,
 .cf .send button,
@@ -386,13 +386,33 @@ body.still #zooms .zb{pointer-events:none}
 .info .epi{border-left:2px solid var(--gold);padding-left:24px}
 :root{--gold:#E1BA4B;--gold-ink:#E1BA4B}
 .info .epi .by{margin-top:8px}
+.info footer{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:8px 24px;margin-top:0;padding:20px 0 48px;border-top:1px solid var(--line);font-family:'IBM Plex Mono','Zen Kaku Gothic New',ui-monospace,Menlo,monospace;font-weight:400;font-size:12px;line-height:1.6;letter-spacing:.06em;text-transform:none;color:var(--ash)}
+.info footer p{margin:0}
+.info footer a{color:inherit;text-decoration:underline;text-decoration-color:currentColor;text-underline-offset:3px;text-decoration-thickness:1px}
+.info footer a:hover,
+.chrome nav button:hover,
+.chrome .name:hover,
+.ov .close:hover,
+.chrome .pvbtn:hover,
+#look .bord button:hover,
+.plist .who a:hover,
+.chapters a:hover .k,
+.info dd a:hover,
+.terms dd a:hover{color:var(--gold-ink)}
+.chrome nav button[aria-current="true"]{text-decoration:underline;text-decoration-color:var(--gold-ink);text-decoration-thickness:1px;text-underline-offset:6px}
+#look .ladd:hover,
+.order .go button:hover,
+.cf .send button:hover,
+.sub-row button:hover{background:var(--gold);border-color:var(--gold);color:#1C1C1A;opacity:1}
+.plist .rm:hover,
+.cf .photo-tag button:hover{border-color:var(--gold-ink);color:inherit}
 /* == end family type system == */
 </style>
 </head>
 <body>
 <main id="reel" aria-label="Yosokuro photographs"></main>
 
-<div class="beta-tag"><span class="version" data-version>Beta 0.83</span></div>
+<div class="beta-tag"><span class="version" data-version>Beta 0.84</span></div>
 <div class="chrome top">
   <span class="brand"><a class="name" href="#" id="toStart">Yosokuro</a></span>
   <nav><button type="button" id="openIdx">Index</button><button type="button" id="openPrints">Prints<span id="pCount"></span></button><button type="button" id="openInfo">Info</button></nav>
@@ -504,7 +524,8 @@ body.still #zooms .zb{pointer-events:none}
     </form>
 
     <footer>
-      <span>© <a class="hub-link" href="https://hub.yoso.one">Yoso</a> · kuro.yoso.one · <span class="version" data-version>Beta 0.83</span></span>
+      <span>&copy; 2026 <a class="hub-link" href="https://hub.yoso.one">Yoso</a> · Miyazaki, Japan</span>
+      <span><a href="feed.xml">RSS</a> · <span class="version" data-version>Beta 0.84</span></span>
     </footer>
   </div>
 </section>

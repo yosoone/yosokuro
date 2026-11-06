@@ -21,56 +21,6 @@ html{-webkit-text-size-adjust:100%}
 :root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 body{margin:0}
 img{max-width:100%}
-/* == Yoso family type system (see yoso-microsites skill) == */
-.ch h2,
-.kuro-bg span{font-family:'Shippori Mincho','Hiragino Mincho ProN','Yu Mincho',serif;font-weight:700;font-style:normal}
-.idx .k,
-.top .k,
-.lb .cap .k{font-family:'Shippori Mincho','Hiragino Mincho ProN','Yu Mincho',serif;font-weight:500;font-style:normal}
-.open h1,
-.prof h1{font-family:'Shippori Mincho','Hiragino Mincho ProN','Yu Mincho',serif;font-weight:700;font-style:normal;font-size:clamp(52px,12vw,80px);line-height:1;letter-spacing:-.01em;text-transform:none}
-.sub-band h2,
-.contact h2{font-family:'Shippori Mincho','Hiragino Mincho ProN','Yu Mincho',serif;font-weight:500;font-style:normal;font-size:26px;line-height:1.25;letter-spacing:normal;text-transform:none}
-.prints .pt,
-.bar-top .name,
-footer b{font-family:'Shippori Mincho','Hiragino Mincho ProN','Yu Mincho',serif;font-weight:500;font-style:normal;font-size:20px;line-height:1.3;letter-spacing:.02em;text-transform:none}
-.intro p,
-.prof .bio .lede{font-family:'Shippori Mincho','Hiragino Mincho ProN','Yu Mincho',serif;font-weight:400;font-style:normal;font-size:clamp(20px,4.5vw,24px);line-height:1.6;letter-spacing:normal}
-.prof .bio p{font-family:'Zen Kaku Gothic New','Hiragino Sans','Yu Gothic',system-ui,sans-serif;font-weight:400;font-style:normal;font-size:18px;line-height:1.85;letter-spacing:normal}
-.facts dd,
-#cfMsg,
-.cf .sub,
-.cf .sub small{font-family:'Zen Kaku Gothic New','Hiragino Sans','Yu Gothic',system-ui,sans-serif;font-weight:400;font-style:normal;font-size:15px;line-height:1.6;letter-spacing:normal;text-transform:none}
-.open .sub,
-.prints .ps,
-.idx .e,
-.idx .n,
-.ch .meta,
-footer,
-.bar-top nav a,
-.prof figcaption,
-.prof .role,
-.facts dt,
-.sub-form label,
-.sub-meta,
-.cf label,
-.cf .photo-tag,
-.cf .note,
-.lb .bar,
-.lb button,
-.lb .cap{font-family:'IBM Plex Mono','Zen Kaku Gothic New',ui-monospace,Menlo,monospace;font-weight:400;font-style:normal;font-size:12px;line-height:1.5;letter-spacing:.14em;text-transform:uppercase}
-.prints .btn,
-.sub-row button,
-.cf .send button{font-family:'IBM Plex Mono','Zen Kaku Gothic New',ui-monospace,Menlo,monospace;font-weight:500;font-style:normal;font-size:12px;line-height:1;letter-spacing:.14em;text-transform:uppercase}
-.prof .bio a,
-.facts dd a,
-.cf .note a,
-.sub-meta a{color:var(--gold-ink);text-decoration-color:currentColor;text-underline-offset:3px}
-:root{--gold:#E1BA4B;--gold-ink:#E1BA4B}
-@media (prefers-color-scheme: light){:root:not([data-theme="dark"]){--gold-ink:#86641A}}
-:root[data-theme="light"]{--gold-ink:#86641A}
-.prof .bio .lede{font-size:clamp(20px,4.5vw,24px)}
-/* == end family type system == */
 </style>
 <style>
 /* Layout: a photobook read top to bottom. One full-bleed opening frame, then chapters,
@@ -285,6 +235,71 @@ footer b{font:800 18px/1 var(--f-kanji);letter-spacing:0;text-transform:none;col
   .lb .nav{width:30%;opacity:0}
 }
 @media (prefers-reduced-motion:reduce){.f img{transition:none}.f:hover img{transform:none}}
+/* == Yoso family type system (see yoso-microsites skill) == */
+.ch h2,
+.kuro-bg span{font-family:'Shippori Mincho','Hiragino Mincho ProN','Yu Mincho',serif;font-weight:700;font-style:normal}
+.idx .k,
+.top .k,
+.lb .cap .k{font-family:'Shippori Mincho','Hiragino Mincho ProN','Yu Mincho',serif;font-weight:500;font-style:normal}
+.open h1,
+.prof h1{font-family:'Shippori Mincho','Hiragino Mincho ProN','Yu Mincho',serif;font-weight:700;font-style:normal;font-size:clamp(52px,12vw,80px);line-height:1;letter-spacing:-.01em;text-transform:none}
+.sub-band h2,
+.contact h2{font-family:'Shippori Mincho','Hiragino Mincho ProN','Yu Mincho',serif;font-weight:500;font-style:normal;font-size:26px;line-height:1.25;letter-spacing:normal;text-transform:none}
+.prints .pt,
+.bar-top .name{font-family:'Shippori Mincho','Hiragino Mincho ProN','Yu Mincho',serif;font-weight:500;font-style:normal;font-size:20px;line-height:1.3;letter-spacing:.02em;text-transform:none}
+.intro p,
+.prof .bio .lede{font-family:'Shippori Mincho','Hiragino Mincho ProN','Yu Mincho',serif;font-weight:400;font-style:normal;font-size:clamp(20px,4.5vw,24px);line-height:1.6;letter-spacing:normal}
+.prof .bio p{font-family:'Zen Kaku Gothic New','Hiragino Sans','Yu Gothic',system-ui,sans-serif;font-weight:400;font-style:normal;font-size:18px;line-height:1.85;letter-spacing:normal}
+.facts dd,
+#cfMsg,
+.cf .sub,
+.cf .sub small{font-family:'Zen Kaku Gothic New','Hiragino Sans','Yu Gothic',system-ui,sans-serif;font-weight:400;font-style:normal;font-size:15px;line-height:1.6;letter-spacing:normal;text-transform:none}
+.open .sub,
+.prints .ps,
+.idx .e,
+.idx .n,
+.ch .meta,
+.bar-top nav a,
+.prof figcaption,
+.prof .role,
+.facts dt,
+.sub-form label,
+.sub-meta,
+.cf label,
+.cf .photo-tag,
+.cf .note,
+.lb .bar,
+.lb button,
+.lb .cap{font-family:'IBM Plex Mono','Zen Kaku Gothic New',ui-monospace,Menlo,monospace;font-weight:400;font-style:normal;font-size:12px;line-height:1.5;letter-spacing:.14em;text-transform:uppercase}
+.prints .btn,
+.sub-row button,
+.cf .send button{font-family:'IBM Plex Mono','Zen Kaku Gothic New',ui-monospace,Menlo,monospace;font-weight:500;font-style:normal;font-size:12px;line-height:1;letter-spacing:.14em;text-transform:uppercase}
+.prof .bio a,
+.facts dd a,
+.cf .note a,
+.sub-meta a{color:var(--gold-ink);text-decoration-color:currentColor;text-underline-offset:3px}
+:root{--gold:#E1BA4B;--gold-ink:#E1BA4B}
+@media (prefers-color-scheme: light){:root:not([data-theme="dark"]){--gold-ink:#86641A}}
+:root[data-theme="light"]{--gold-ink:#86641A}
+.prof .bio .lede{font-size:clamp(20px,4.5vw,24px)}
+footer{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:8px 24px;margin-top:0;padding:20px 0 48px;border-top:1px solid var(--rule);font-family:'IBM Plex Mono','Zen Kaku Gothic New',ui-monospace,Menlo,monospace;font-weight:400;font-size:12px;line-height:1.6;letter-spacing:.06em;text-transform:none;color:var(--dust)}
+footer p{margin:0}
+footer a{color:inherit;text-decoration:underline;text-decoration-color:currentColor;text-underline-offset:3px;text-decoration-thickness:1px}
+footer a:hover,
+.bar-top nav a:hover,
+.bar-top .name:hover,
+.mail:hover,
+.lb button:hover,
+.idx a:hover .k,
+.idx a:hover .e{color:var(--gold-ink)}
+.bar-top nav a[aria-current="page"]{text-decoration:underline;text-decoration-color:var(--gold-ink);text-decoration-thickness:1px;text-underline-offset:6px}
+.prints .btn:hover,
+.sub-row button:hover,
+.cf .send button:hover{background:var(--gold);border-color:var(--gold);color:#1C1C1A;opacity:1}
+.cf .photo-tag button:hover,
+.top:hover,
+.lb .cap .order:hover{border-color:var(--gold-ink);color:inherit}
+/* == end family type system == */
 </style>
 </head>
 <body>
@@ -408,10 +423,9 @@ footer b{font:800 18px/1 var(--f-kanji);letter-spacing:0;text-transform:none;col
     </form>
   </section>
   <footer>
-    <span><b>Yosokuro</b></span>
-    <span>© <a class="hub-link" href="https://hub.yoso.one">Yoso</a> · kuro.yoso.one · <a href="feed.xml">RSS</a> · <span class="version" data-version>Beta 0.83</span></span>
-    <span>Ricoh GR II · GR III</span>
-  </footer>
+  <span>&copy; 2026 <a class="hub-link" href="https://hub.yoso.one">Yoso</a> · Miyazaki, Japan</span>
+  <span><a href="feed.xml">RSS</a> · <span class="version" data-version>Beta 0.84</span></span>
+</footer>
 </div>
 
 <button type="button" class="top" id="toTop" aria-label="Back to top" tabindex="-1"><span class="k">上</span>Top</button>
