@@ -447,7 +447,7 @@ body.sheet-open #zoomOutBtn svg{opacity:.3}
 <body>
 <main id="reel" aria-label="Yosokuro photographs"></main>
 
-<div class="beta-tag"><span class="version" data-version>Beta 0.112</span></div>
+<div class="beta-tag"><span class="version" data-version>Beta 0.113</span></div>
 <div class="chrome top">
   <span class="brand"><a class="name" href="#" id="toStart">Yosokuro</a></span>
   <nav><button type="button" id="openIdx">Collection</button><button type="button" id="openPrints"><svg class="cart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 3.5h3l2.4 11.2a1.5 1.5 0 0 0 1.5 1.2h8.4a1.5 1.5 0 0 0 1.5-1.1L21 8H6.6"/><circle cx="10" cy="20" r="1.3"/><circle cx="17.5" cy="20" r="1.3"/></svg><span class="pl">Prints<span id="pCount"></span></span></button><button type="button" id="openInfo">Info</button></nav>
@@ -860,16 +860,18 @@ function layoutPaper(){
   document.querySelectorAll("#bord button").forEach(x=>x.setAttribute("aria-pressed",String(x.dataset.b===border)));
   syncLookAdd();
 }
-function syncLookAdd(){const on=!!plist.find(x=>x.id===lookId);lookAdd.setAttribute("aria-pressed",on);lookAdd.querySelector(".plus").textContent=on?"✓":"＋";lookAdd.setAttribute("aria-label",on?"Print: in your list, tap to remove":"Print: add to your list")}
+/* Print preview: ✓ only when this photograph is in the list with the border on screen. Detail: any version */
+const lookItem=()=>plist.find(x=>x.id===lookId&&(mode!=="print"||x.border===border));
+function syncLookAdd(){const on=!!lookItem();lookAdd.setAttribute("aria-pressed",on);lookAdd.querySelector(".plus").textContent=on?"✓":"＋";lookAdd.setAttribute("aria-label",on?"Print: in your list, tap to remove":"Print: add to your list")}
 look.querySelectorAll("[data-mode]").forEach(b=>b.onclick=()=>setMode(b.dataset.mode));
 document.getElementById("lookClose").onclick=closeLook;
 /* In the list: tap to take it out. Not in the list: tap to add it with the border shown. */
-lookAdd.onclick=()=>{const x=plist.find(y=>y.id===lookId);
-  if(x)plist=plist.filter(y=>y.id!==lookId);else plist.push({id:lookId,size:"A3",paper:"standard",qty:1,border});flashPrints();
+lookAdd.onclick=()=>{const x=lookItem();
+  if(x)plist=mode==="print"?plist.filter(y=>y!==x):plist.filter(y=>y.id!==lookId);
+  else plist.push({id:lookId,size:"A3",paper:"standard",qty:1,border});flashPrints();
   save();syncAdd();if(mode==="detail")syncLookAdd();else layoutPaper()};
-/* The border switch also sets the border of this print in the list, if it is there */
-document.querySelectorAll("#bord button").forEach(x=>x.onclick=()=>{border=x.dataset.b;
-  const it=plist.find(y=>y.id===lookId);if(it){it.border=border;save()}layoutPaper()});
+/* The border switch only changes what is shown; ＋/✓ then says whether that version is in the list */
+document.querySelectorAll("#bord button").forEach(x=>x.onclick=()=>{border=x.dataset.b;layoutPaper()});
 viewBtn.onclick=e=>{e.stopPropagation();if(!idx.hidden){closeAll();return}if(look.hidden)openLook(curId,"detail");else if(mode!=="detail")setMode("detail")};
 /* On the contact sheet: move the gold frame to the previous or next photograph (the photographs follow behind) */
 function sheetStep(d){
