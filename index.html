@@ -308,8 +308,8 @@ body.still #zooms .zb{pointer-events:none}
 #look .lfoot .ladd{grid-column:3;grid-row:1;justify-self:end}
 @media (max-width:600px){#look .lfoot{grid-template-columns:1fr}#look .lfoot .bord,#look .lfoot .ladd,#look .lfoot .info{grid-column:1;grid-row:auto;justify-self:center}}
 
-/* Phones: the top bar on two lines (the name, then the menu across the width) */
-@media (max-width:560px){.chrome.top{flex-wrap:wrap;row-gap:8px}.chrome.top nav{flex-basis:100%;justify-content:space-between;gap:0}
+/* Phones: the top bar on two lines (the name centred, then the menu across the width) */
+@media (max-width:560px){.chrome.top{flex-wrap:wrap;row-gap:8px}.chrome.top .brand{flex-basis:100%;justify-content:center}.chrome.top nav{flex-basis:100%;justify-content:space-between;gap:0}
   .ov{padding-top:calc(env(safe-area-inset-top,0px) + 104px)}}
 .info .epi{margin:0 0 32px;padding-left:14px;border-left:2px solid var(--gold)}
 .info .epi p{margin:0 0 6px;font:500 italic clamp(22px,5.5vw,28px)/1.5 var(--f-kanji)}
@@ -419,7 +419,7 @@ body.still #zooms .zb{pointer-events:none}
 <body>
 <main id="reel" aria-label="Yosokuro photographs"></main>
 
-<div class="beta-tag"><span class="version" data-version>Beta 0.98</span></div>
+<div class="beta-tag"><span class="version" data-version>Beta 0.99</span></div>
 <div class="chrome top">
   <span class="brand"><a class="name" href="#" id="toStart">Yosokuro</a></span>
   <nav><button type="button" id="openIdx">Collection</button><button type="button" id="openPrints">Prints<span id="pCount"></span></button><button type="button" id="openInfo">Info</button></nav>
