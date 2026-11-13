@@ -24,7 +24,7 @@
   --night:#000;            /* black ground behind every frame */
   --keyline:#3a3a38;       /* fine line round each photograph, so dark edges still read on black */
   --bone:#e9e7e2;          /* text */
-  --ash:#8b8984;           /* secondary text */
+  --ash:#a9a7a2;           /* secondary text */
   --line:#3a3a38;          /* hairlines in overlays */
   --veil:rgba(0,0,0,.94);
   --gold:#e3bb4a;          /* the family mark's gold: marks the frame you were watching */  /* index and info overlays */
@@ -32,7 +32,7 @@
   --f-mono:"IBM Plex Mono","Zen Kaku Gothic New",ui-monospace,Menlo,monospace;
   --edge:max(16px,env(safe-area-inset-left,0px));
   /* names the shared sign-up form styles expect */
-  --ink:#000;--paper:#e9e7e2;--dust:#8b8984;--rule:#3a3a38;
+  --ink:#000;--paper:#e9e7e2;--dust:#a9a7a2;--rule:#3a3a38;
   --f-text:"Zen Kaku Gothic New","Hiragino Sans","Yu Gothic","Helvetica Neue",Arial,sans-serif;
   color-scheme:dark;
 }
@@ -196,6 +196,8 @@ body.on-cover.still .chrome.top>*{pointer-events:auto}
 .plist select option{background:var(--night)}
 .plist .rm{border:1px solid var(--line);min-width:44px;min-height:44px;font-size:12px;color:var(--ash)}
 .plist .rm:hover{color:var(--bone);border-color:var(--bone)}
+.plist button.ph{background:none;border:0;padding:0;cursor:zoom-in}
+.plist button.ph:focus-visible{outline:1px solid var(--bone);outline-offset:3px}
 .plist .again{justify-self:start;min-height:40px;padding:0;margin-top:2px;font:400 11px/1 var(--f-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--ash);text-decoration:underline;text-underline-offset:4px;text-decoration-thickness:1px}
 .plist .again:hover{color:var(--gold-ink)}
 .plist .again:focus-visible{outline:1px solid var(--bone);outline-offset:3px}
@@ -207,7 +209,7 @@ body.on-cover.still .chrome.top>*{pointer-events:auto}
 .prints .cf{max-width:640px}
 /* Shop: price per line, quantity, order summary and checkout */
 .plist .who .opts{grid-template-columns:repeat(2,minmax(0,1fr));margin-top:10px;max-width:380px}
-.plist .who .opts select{width:100%}
+.plist .who .opts select{width:100%;letter-spacing:.02em;padding-inline:8px 4px;text-overflow:clip}
 .papers-note{max-width:760px;margin:-20px 0 28px;font:400 12px/1.7 var(--f-mono);letter-spacing:.06em;color:var(--ash)}
 .papers-note[hidden]{display:none}
 .plist .price{font:500 15px/1.3 var(--f-kanji);color:var(--bone);white-space:nowrap;justify-self:end}
@@ -447,7 +449,7 @@ body.sheet-open #zoomOutBtn svg{opacity:.3}
 <body>
 <main id="reel" aria-label="Yosokuro photographs"></main>
 
-<div class="beta-tag"><span class="version" data-version>Beta 0.113</span></div>
+<div class="beta-tag"><span class="version" data-version>Beta 0.114</span></div>
 <div class="chrome top">
   <span class="brand"><a class="name" href="#" id="toStart">Yosokuro</a></span>
   <nav><button type="button" id="openIdx">Collection</button><button type="button" id="openPrints"><svg class="cart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 3.5h3l2.4 11.2a1.5 1.5 0 0 0 1.5 1.2h8.4a1.5 1.5 0 0 0 1.5-1.1L21 8H6.6"/><circle cx="10" cy="20" r="1.3"/><circle cx="17.5" cy="20" r="1.3"/></svg><span class="pl">Prints<span id="pCount"></span></span></button><button type="button" id="openInfo">Info</button></nav>
@@ -622,7 +624,7 @@ reel.querySelectorAll("section").forEach(s=>seen.observe(s));
 const screens=()=>[...reel.children];
 function step(d){const h=reel.clientHeight;reel.scrollTo({top:Math.round(reel.scrollTop/h+d)*h,behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth"})}
 addEventListener("keydown",e=>{
-  if(!look.hidden){if(e.key==="Escape")closeLook();else if(mode==="print"&&["ArrowDown","ArrowRight","PageDown"," "].includes(e.key)){e.preventDefault();lookStep(1)}else if(mode==="print"&&["ArrowUp","ArrowLeft","PageUp"].includes(e.key)){e.preventDefault();lookStep(-1)}return}
+  if(!look.hidden){if(e.key==="Escape")backFromLook();else if(mode==="print"&&["ArrowDown","ArrowRight","PageDown"," "].includes(e.key)){e.preventDefault();lookStep(1)}else if(mode==="print"&&["ArrowUp","ArrowLeft","PageUp"].includes(e.key)){e.preventDefault();lookStep(-1)}return}
   if(!idx.hidden||!info.hidden||!prints.hidden||!terms.hidden){if(e.key==="Escape")closeAll();return}
   if(e.key==="v"||e.key==="V"){if(curId)openLook(curId,"detail");return}
   if(e.key==="p"||e.key==="P"){if(curId)toggle(curId);return}
@@ -729,9 +731,9 @@ function opt(list,cur,lab){return list.map(v=>`<option value="${v}"${v===cur?" s
 function renderList(){
   pList.textContent="";
   plist.forEach(x=>{const li=document.createElement("li");
-    li.innerHTML=`<span class="ph"><span class="mp"><img src="img/thumb/${x.id}.jpg" alt="Frame ${label(x.id)}" loading="lazy"></span></span>`+
+    li.innerHTML=`<button type="button" class="ph" aria-label="Print preview of ${label(x.id)}"><span class="mp"><img src="img/thumb/${x.id}.jpg" alt="Frame ${label(x.id)}" loading="lazy"></span></button>`+
       `<span class="who"><a href="#f-${x.id}" data-go="${x.id}">${label(x.id)}</a>`+
-      `<span class="opts"><select class="sz" aria-label="Size for ${label(x.id)}">${opt(SIZES(),x.size,v=>SHOP.sizes[v].replace(/ mm$/,""))}</select>`+
+      `<span class="opts"><select class="sz" aria-label="Size for ${label(x.id)}">${opt(SIZES(),x.size,v=>SHOP.sizes[v].replace(" × ","×"))}</select>`+
       `<select class="pp" aria-label="Paper for ${label(x.id)}">${opt(PAPERS(),x.paper,v=>SHOP.papers[v].name)}</select>`+
       `<select class="bd" aria-label="Border for ${label(x.id)}">${opt(BORDERS,x.border)}</select>`+
       `<select class="qt" aria-label="Quantity for ${label(x.id)}">${opt([...Array(SHOP.maxQty||5)].map((_,i)=>String(i+1)),String(x.qty),v=>"× "+v)}</select></span>`+
@@ -749,6 +751,7 @@ function renderList(){
     li.querySelector(".again").onclick=()=>{const c={...x,qty:1,border:x.border==="No border"?"White border":"No border"};
       plist.splice(plist.indexOf(x)+1,0,c);save();syncAdd();renderList();flashPrints();
       const n=pList.children[plist.indexOf(c)];if(n){n.scrollIntoView({block:"nearest"});const s=n.querySelector(".bd");s&&s.focus({preventScroll:true})}};
+    li.querySelector(".ph").onclick=()=>{openLook(x.id,"print");border=x.border;layoutPaper();lookFrom="prints"};
     li.querySelector("[data-go]").onclick=e=>{e.preventDefault();closeAll();document.getElementById("f-"+x.id).scrollIntoView()};
     pList.appendChild(li);paperThumb(li,x);showPrice()});
   document.getElementById("pEmpty").hidden=plist.length>0;order.hidden=plist.length===0;totals();
@@ -826,8 +829,11 @@ const lookInfo=document.getElementById("lookInfo"),lookAdd=document.getElementBy
 const PAPER={A4:[297,210,18],A3:[420,297,25.5],A2:[594,420,36],A1:[841,594,50]};
 const mm=x=>String(Math.round(x*100)/100);
 let lookId="",mode="detail";
+let lookFrom=null;
+/* Leaving the preview by − or Escape: back to the print list if that is where it was opened from */
+function backFromLook(){const f=lookFrom;closeLook();if(f==="prints")open(prints)}
 function openLook(id,m){
-  if(!id)return;lookId=id;mode=m||mode;
+  if(!id)return;lookFrom=null;lookId=id;mode=m||mode;
   {const x=plist.find(y=>y.id===id);if(x)border=x.border||"White border"}
   document.getElementById("lookNo").textContent=label(id);
   zoomImg.src=sheetImg.src=`img/full/${id}.jpg`;zoomImg.alt=sheetImg.alt=`Frame ${label(id)}`;
@@ -900,7 +906,7 @@ for(const [b,d] of [["prevBtn",-1],["nextBtn",1]])document.getElementById(b).onc
 /* Pressing any of the arrows or zoom icons keeps the menu and icons showing (the fade timer starts again) */
 document.getElementById("zooms").addEventListener("click",()=>wake(),true);
 document.getElementById("coverNext").onclick=e=>{e.stopPropagation();step(1)};
-document.getElementById("zoomOutBtn").onclick=e=>{e.stopPropagation();if(!idx.hidden)return;if(!look.hidden)closeLook();else openSheet()};
+document.getElementById("zoomOutBtn").onclick=e=>{e.stopPropagation();if(!idx.hidden)return;if(!look.hidden)backFromLook();else openSheet()};
 addEventListener("resize",()=>{if(!look.hidden){mode==="detail"?layoutZoom():layoutPaper()}if(!prints.hidden)renderList()});
 /* Drag to look around in Detail (mouse); touch scrolls natively */
 let dragging=null;
