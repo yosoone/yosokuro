@@ -157,7 +157,7 @@ body.still #pvBtn{opacity:0}
 #nowNo,#nowN{opacity:.55}
 .chrome .add .plus{font:300 32px/1 var(--f-mono);letter-spacing:0;transform:translateY(-1px)}
 .chrome .add[hidden]{display:none}
-/* With Collections, Prints, Info or the shop terms open, the top bar (Yosokuro and the menu) stays on top
+/* With Collection, Prints, Info or the shop terms open, the top bar (Yosokuro and the menu) stays on top
    and always visible; there is no Close button: the menu switches or closes, Yosokuro goes home. */
 body.ov-open .chrome.top{z-index:15;opacity:1!important;background:var(--night)}
 body.ov-open .chrome.top>*{pointer-events:auto!important}
@@ -416,10 +416,10 @@ body.still #zooms .zb{pointer-events:none}
 <body>
 <main id="reel" aria-label="Yosokuro photographs"></main>
 
-<div class="beta-tag"><span class="version" data-version>Beta 0.90</span></div>
+<div class="beta-tag"><span class="version" data-version>Beta 0.91</span></div>
 <div class="chrome top">
   <span class="brand"><a class="name" href="#" id="toStart">Yosokuro</a></span>
-  <nav><button type="button" id="openIdx">Collections</button><button type="button" id="openPrints">Prints<span id="pCount"></span></button><button type="button" id="openInfo">Info</button></nav>
+  <nav><button type="button" id="openIdx">Collection</button><button type="button" id="openPrints">Prints<span id="pCount"></span></button><button type="button" id="openInfo">Info</button></nav>
 </div>
 <div class="zooms" id="zooms" hidden><button type="button" class="zb" id="prevBtn" aria-label="Previous photograph" title="Previous photograph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 15l6-6 6 6"/></svg></button><button type="button" class="zb" id="viewBtn" aria-label="Zoom in to detail" title="Zoom in: detail and print preview"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21"/><path d="M7.5 10.5h6M10.5 7.5v6"/></svg></button><button type="button" class="zb" id="zoomOutBtn" aria-label="Zoom out to all photographs" title="Zoom out: all photographs"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21"/><path d="M7.5 10.5h6"/></svg></button><button type="button" class="zb" id="nextBtn" aria-label="Next photograph" title="Next photograph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button></div>
 <div class="chrome bot"><span><span class="k" id="nowK" hidden></span><span id="nowNo"></span><button type="button" class="add" id="addBtn" aria-pressed="false" hidden><span class="plus">＋</span><span class="lbl">Print</span></button><button type="button" class="pvbtn" id="pvBtn" hidden>Preview</button></span><span id="nowN"></span></div>
@@ -529,7 +529,7 @@ body.still #zooms .zb{pointer-events:none}
 
     <footer>
       <span>&copy; 2026 <a class="hub-link" href="https://hub.yoso.one">Yoso</a> · Miyazaki, Japan</span>
-      <span><a href="feed.xml">RSS</a> · <span class="version" data-version>Beta 0.90</span></span>
+      <span><a href="feed.xml">RSS</a> · <span class="version" data-version>Beta 0.91</span></span>
     </footer>
   </div>
 </section>
