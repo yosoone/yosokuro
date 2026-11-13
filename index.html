@@ -461,7 +461,7 @@ body.sheet-open #zoomOutBtn svg{opacity:.3}
 <body>
 <main id="reel" aria-label="Yosokuro photographs"></main>
 
-<div class="beta-tag"><span class="version" data-version>Beta 0.135</span></div>
+<div class="beta-tag"><span class="version" data-version>Beta 0.136</span></div>
 <div class="chrome top">
   <span class="brand"><a class="name" href="#" id="toStart">Yosokuro</a></span>
   <nav><button type="button" id="openIdx">Collection</button><button type="button" id="openPrints"><svg class="cart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 3.5h3l2.4 11.2a1.5 1.5 0 0 0 1.5 1.2h8.4a1.5 1.5 0 0 0 1.5-1.1L21 8H6.6"/><circle cx="10" cy="20" r="1.3"/><circle cx="17.5" cy="20" r="1.3"/></svg><span class="pl">Prints<span id="pCount"></span></span></button><button type="button" id="openInfo">Info</button></nav>
@@ -495,6 +495,14 @@ body.sheet-open #zoomOutBtn svg{opacity:.3}
     <p class="thanks" id="pThanks" role="status" hidden>Thank you for your order. A receipt is on its way from Stripe, and Yoso will email you when your prints are on their way.</p>
     <p class="empty" id="pEmpty">Your print list is empty. <a href="#collection" data-collection>Browse the collection</a> and tap ＋ Print on any photograph to add it here.</p>
     <ol class="plist" id="pList"></ol>
+    <div class="order" id="order" hidden>
+      <div class="row"><label for="oShip">Ship to</label><select id="oShip"><option value="jp">Japan</option><option value="intl">Outside Japan</option></select></div>
+      <div class="row"><span>Prints</span><span id="oSub">–</span></div>
+      <div class="row"><span>Shipping</span><span id="oShipAmt">–</span></div>
+      <div class="row total"><span>Total</span><span id="oTotal">–</span></div>
+      <div class="go"><button type="button" id="oPay">Checkout</button><span id="oMsg" role="status" aria-live="polite"></span></div>
+      <p class="small">Prices in yen, the same worldwide; for delivery in Japan they include 10% consumption tax. Dollar amounts are approximate; you pay in yen. Payment, your address and your receipt are handled by Stripe; card details never touch this site. Each print is made to order and posted in about <span id="oDays">a week</span>.</p>
+    </div>
     <section class="papers" aria-label="The two papers">
       <div class="paper"><h3>Standard: poster</h3><p>Deep matt blacks on a thin, cloth-like paper. Not archival.</p></div>
       <div class="paper"><h3>Premium: archival print</h3><p>Pigment inks on Hahnemühle Photo Rag, 100% cotton, matt, 305 gsm. Acid-free and made to last, with rich, smooth greys.</p></div>
@@ -504,14 +512,6 @@ body.sheet-open #zoomOutBtn svg{opacity:.3}
         <p>Sizes: A3 (297 × 420 mm) and A2 (420 × 594 mm). Other sizes and framing are available on request: please <a href="#contact" data-contact>get in touch</a>.</p>
       </div>
     </section>
-    <div class="order" id="order" hidden>
-      <div class="row"><label for="oShip">Ship to</label><select id="oShip"><option value="jp">Japan</option><option value="intl">Outside Japan</option></select></div>
-      <div class="row"><span>Prints</span><span id="oSub">–</span></div>
-      <div class="row"><span>Shipping</span><span id="oShipAmt">–</span></div>
-      <div class="row total"><span>Total</span><span id="oTotal">–</span></div>
-      <div class="go"><button type="button" id="oPay">Checkout</button><span id="oMsg" role="status" aria-live="polite"></span></div>
-      <p class="small">Prices in yen, the same worldwide; for delivery in Japan they include 10% consumption tax. Dollar amounts are approximate; you pay in yen. Payment, your address and your receipt are handled by Stripe; card details never touch this site. Each print is made to order and posted in about <span id="oDays">a week</span>.</p>
-    </div>
     <footer><span>&copy; 2026 <a class="hub-link" href="https://hub.yoso.one">Yoso</a> · Miyazaki, Japan</span><span><a href="#terms" data-terms>Shop terms</a> · <a href="#contact" data-contact>Contact</a> · <a href="feed.xml">RSS</a></span></footer>
   </div>
 </section>
