@@ -420,7 +420,7 @@ body.still #zooms .zb{pointer-events:none}
 <body>
 <main id="reel" aria-label="Yosokuro photographs"></main>
 
-<div class="beta-tag"><span class="version" data-version>Beta 0.94</span></div>
+<div class="beta-tag"><span class="version" data-version>Beta 0.95</span></div>
 <div class="chrome top">
   <span class="brand"><a class="name" href="#" id="toStart">Yosokuro</a></span>
   <span class="family-mark"><img src="images/yoso-mark.png" alt="Yoso" width="28" height="28"></span>
@@ -808,7 +808,7 @@ function layoutZoom(){
     const vw=zoom.clientWidth,vh=zoom.clientHeight,px=Math.max(0,(vw-W)/2),py=Math.max(0,(vh-H)/2);
     zoomPad.style.padding=`${py}px ${px}px`;zoomImg.style.width=W+"px";zoomImg.style.height=H+"px";
     zoom.scrollLeft=(W+2*px-vw)/2;zoom.scrollTop=(H+2*py-vh)/2;
-    lookInfo.textContent="Detail · the full file · drag to look around";};
+    lookInfo.textContent="Drag to look around";};
   if(zoomImg.complete&&zoomImg.naturalWidth)go();else zoomImg.onload=go;
 }
 let border="White border";
