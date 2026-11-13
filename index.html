@@ -158,7 +158,10 @@ body.still #pvBtn{opacity:0}
 #nowNo,#nowN{opacity:.55}
 .chrome .add .plus{font:300 32px/1 var(--f-mono);letter-spacing:0;transform:translateY(-1px)}
 .chrome .add[hidden]{display:none}
-/* PRINTS in the top menu flickers gold when a print is added */
+/* Shopping-cart icon before PRINTS in the top menu */
+#openPrints{display:inline-flex;align-items:center;gap:7px}
+#openPrints .cart{width:16px;height:16px;flex:none;transform:translateY(-1px)}
+/* PRINTS in the top menu flickers gold when a print is added or removed */
 #openPrints.flash{animation:pflash .9s steps(1,end) 1}
 @keyframes pflash{0%,33%,66%{color:var(--gold-ink)}16%,50%,83%,100%{color:inherit}}
 @media (prefers-reduced-motion:reduce){#openPrints.flash{animation:pfade 1.2s ease-out 1}@keyframes pfade{from{color:var(--gold-ink)}to{color:inherit}}}
@@ -441,10 +444,10 @@ body.sheet-open #zoomOutBtn svg{opacity:.3}
 <body>
 <main id="reel" aria-label="Yosokuro photographs"></main>
 
-<div class="beta-tag"><span class="version" data-version>Beta 0.107</span></div>
+<div class="beta-tag"><span class="version" data-version>Beta 0.108</span></div>
 <div class="chrome top">
   <span class="brand"><a class="name" href="#" id="toStart">Yosokuro</a></span>
-  <nav><button type="button" id="openIdx">Collection</button><button type="button" id="openPrints">Prints<span id="pCount"></span></button><button type="button" id="openInfo">Info</button></nav>
+  <nav><button type="button" id="openIdx">Collection</button><button type="button" id="openPrints"><svg class="cart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 3.5h3l2.4 11.2a1.5 1.5 0 0 0 1.5 1.2h8.4a1.5 1.5 0 0 0 1.5-1.1L21 8H6.6"/><circle cx="10" cy="20" r="1.3"/><circle cx="17.5" cy="20" r="1.3"/></svg>Prints<span id="pCount"></span></button><button type="button" id="openInfo">Info</button></nav>
 </div>
 <div class="zooms" id="zooms" hidden><button type="button" class="zb" id="prevBtn" aria-label="Previous photograph" title="Previous photograph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 15l6-6 6 6"/></svg></button><button type="button" class="zb" id="viewBtn" aria-label="Zoom in to detail" title="Zoom in: detail and print preview"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21"/><path d="M7.5 10.5h6M10.5 7.5v6"/></svg></button><button type="button" class="zb" id="zoomOutBtn" aria-label="Zoom out to all photographs" title="Zoom out: all photographs"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21"/><path d="M7.5 10.5h6"/></svg></button><button type="button" class="zb" id="nextBtn" aria-label="Next photograph" title="Next photograph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button></div>
 <div class="chrome bot"><span><span class="k" id="nowK" hidden></span><span id="nowNo"></span><button type="button" class="add" id="addBtn" aria-pressed="false" hidden><span class="plus">＋</span><span class="lbl">Print</span></button><button type="button" class="pvbtn" id="pvBtn" hidden>Preview</button></span><span id="nowN"></span></div>
@@ -697,7 +700,7 @@ const addBtn=document.getElementById("addBtn"),pCount=document.getElementById("p
 function syncAdd(){addBtn.hidden=!curId;document.getElementById("pvBtn").hidden=!curId;document.getElementById("zooms").hidden=!curId;const on=has(curId);addBtn.setAttribute("aria-pressed",on);addBtn.querySelector(".plus").textContent=on?"✓":"＋";addBtn.setAttribute("aria-label",on?"Print: in your list, tap to remove":"Print: add to your list");
   pCount.textContent=plist.length?" ("+plist.reduce((n,x)=>n+x.qty,0)+")":""}
 function flashPrints(){const b=document.getElementById("openPrints");b.classList.remove("flash");void b.offsetWidth;b.classList.add("flash")}
-function toggle(id){const adding=!has(id);plist=adding?[...plist,tidy({id})]:plist.filter(x=>x.id!==id);save();syncAdd();wake();if(adding)flashPrints()}
+function toggle(id){const adding=!has(id);plist=adding?[...plist,tidy({id})]:plist.filter(x=>x.id!==id);save();syncAdd();wake();flashPrints()}
 addBtn.onclick=e=>{e.stopPropagation();if(curId)toggle(curId)};
 document.getElementById("openPrints").onclick=()=>{if(prints.hidden)open(prints)};
 const pList=document.getElementById("pList"),order=document.getElementById("order");
@@ -732,7 +735,7 @@ function renderList(){
     li.querySelector(".pp").onchange=e=>{x.paper=e.target.value;save();showPrice();totals()};
     li.querySelector(".bd").onchange=e=>{x.border=e.target.value;save();paperThumb(li,x)};
     li.querySelector(".qt").onchange=e=>{x.qty=parseInt(e.target.value,10)||1;save();showPrice();totals();syncAdd()};
-    li.querySelector(".rm").onclick=()=>{plist=plist.filter(y=>y.id!==x.id);save();syncAdd();renderList()};
+    li.querySelector(".rm").onclick=()=>{plist=plist.filter(y=>y.id!==x.id);save();syncAdd();renderList();flashPrints()};
     li.querySelector("[data-go]").onclick=e=>{e.preventDefault();closeAll();document.getElementById("f-"+x.id).scrollIntoView()};
     pList.appendChild(li);paperThumb(li,x);showPrice()});
   document.getElementById("pEmpty").hidden=plist.length>0;order.hidden=plist.length===0;totals();
@@ -849,7 +852,7 @@ look.querySelectorAll("[data-mode]").forEach(b=>b.onclick=()=>setMode(b.dataset.
 document.getElementById("lookClose").onclick=closeLook;
 /* In the list: tap to take it out. Not in the list: tap to add it with the border shown. */
 lookAdd.onclick=()=>{const x=plist.find(y=>y.id===lookId);
-  if(x)plist=plist.filter(y=>y.id!==lookId);else{plist.push({id:lookId,size:"A3",paper:"standard",qty:1,border});flashPrints()}
+  if(x)plist=plist.filter(y=>y.id!==lookId);else plist.push({id:lookId,size:"A3",paper:"standard",qty:1,border});flashPrints();
   save();syncAdd();if(mode==="detail")syncLookAdd();else layoutPaper()};
 /* The border switch also sets the border of this print in the list, if it is there */
 document.querySelectorAll("#bord button").forEach(x=>x.onclick=()=>{border=x.dataset.b;
