@@ -43,11 +43,6 @@ export const SHOP = {
   maxLines: 20,
 };
 
-// TEMPORARY: a hidden ¥100 'Test' paper for one real end-to-end test order. Not in /prices, so the
-// site only offers it at kuro.yoso.one/?test=1. A test order holds one test line only, ships free.
-// Remove this block (and its two uses below) after the test.
-const TEST = { paper: "test", name: "Test", desc: "Test order, not a print", amount: 100 };
-
 // Countries Stripe may ship to when 'Outside Japan' is chosen (Japan is excluded there).
 const INTL = ["AU","AT","BE","CA","CH","CN","CZ","DE","DK","ES","FI","FR","GB","GR","HK","HU","IE","IL","IN","IS",
   "IT","KR","LU","MX","MY","NL","NO","NZ","PH","PL","PT","SE","SG","TH","TW","US","VN","ZA","AE","BR","AR","CL","ID"];
@@ -86,16 +81,14 @@ export async function checkout(request, env, cors) {
   const lines = [];
   for (const it of items) {
     const id = String(it.id || "").toLowerCase();
-    const paper = SHOP.papers[it.paper] || it.paper === TEST.paper ? it.paper : null;
+    const paper = SHOP.papers[it.paper] ? it.paper : null;
     const size = SHOP.sizes[it.size] ? it.size : null;
     const border = SHOP.borders.includes(it.border) ? it.border : SHOP.borders[0];
     const qty = Math.max(1, Math.min(SHOP.maxQty, parseInt(it.qty, 10) || 1));
     if (!ids.has(id)) return json(cors, 409, { ok: false, error: "retired", id });
     if (!paper || !size) return json(cors, 400, { ok: false, error: "options", id });
-    lines.push({ id, paper, size, border, qty, amount: paper === TEST.paper ? TEST.amount : SHOP.prices[paper][size] });
+    lines.push({ id, paper, size, border, qty, amount: SHOP.prices[paper][size] });
   }
-  const isTest = lines.some(l => l.paper === TEST.paper);
-  if (isTest && (lines.length !== 1 || lines[0].qty !== 1)) return json(cors, 400, { ok: false, error: "options" });
 
   const p = new URLSearchParams();
   p.set("mode", "payment");
@@ -109,15 +102,15 @@ export async function checkout(request, env, cors) {
     p.set(`${k}[quantity]`, String(l.qty));
     p.set(`${k}[price_data][currency]`, SHOP.currency);
     p.set(`${k}[price_data][unit_amount]`, String(l.amount));
-    p.set(`${k}[price_data][product_data][name]`, `Yosokuro ${label(l.id)} · ${l.size} · ${(SHOP.papers[l.paper] || TEST).name}`);
-    p.set(`${k}[price_data][product_data][description]`, `${SHOP.sizes[l.size]} · ${(SHOP.papers[l.paper] || TEST).desc} · ${l.border}`);
+    p.set(`${k}[price_data][product_data][name]`, `Yosokuro ${label(l.id)} · ${l.size} · ${SHOP.papers[l.paper].name}`);
+    p.set(`${k}[price_data][product_data][description]`, `${SHOP.sizes[l.size]} · ${SHOP.papers[l.paper].desc} · ${l.border}`);
     p.set(`${k}[price_data][product_data][images][0]`, `${SITE}/img/thumb/${l.id}.jpg`);
   });
   const s = SHOP.shipping[ship];
   (ship === "jp" ? ["JP"] : INTL).forEach((c, i) => p.set(`shipping_address_collection[allowed_countries][${i}]`, c));
   p.set("shipping_options[0][shipping_rate_data][type]", "fixed_amount");
-  p.set("shipping_options[0][shipping_rate_data][display_name]", isTest ? "Test order · no shipping" : `Tracked shipping · ${s.name}`);
-  p.set("shipping_options[0][shipping_rate_data][fixed_amount][amount]", String(isTest ? 0 : s.amount));
+  p.set("shipping_options[0][shipping_rate_data][display_name]", `Tracked shipping · ${s.name}`);
+  p.set("shipping_options[0][shipping_rate_data][fixed_amount][amount]", String(s.amount));
   p.set("shipping_options[0][shipping_rate_data][fixed_amount][currency]", SHOP.currency);
   p.set("shipping_options[0][shipping_rate_data][delivery_estimate][minimum][unit]", "business_day");
   p.set("shipping_options[0][shipping_rate_data][delivery_estimate][minimum][value]", String(s.days[0]));
