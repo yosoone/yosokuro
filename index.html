@@ -78,6 +78,10 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;paddin
   font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:var(--ash);animation:hintIn 1.2s cubic-bezier(.2,.7,.2,1) .6s both,hint 2.4s ease-in-out 1.8s infinite}
 .title .hint svg{display:block;width:30px;height:30px;animation:drop 2.4s ease-in-out 1.8s infinite}
 @keyframes hint{0%,100%{opacity:1}50%{opacity:.45}}
+/* The scroll cue is a button: click or tap it to go to the first photograph */
+button.hint{background:none;border:0;padding:8px 18px;margin:0;font-family:inherit;cursor:pointer;min-height:44px;left:50%;translate:-50% 0}
+button.hint:hover{color:#fff}
+button.hint:focus-visible{outline:1px solid #fff;outline-offset:4px}
 @keyframes drop{0%,100%{transform:translateY(0)}50%{transform:translateY(6px)}}
 @media (prefers-reduced-motion:reduce){.title .hint,.title .hint svg,.title.cover .k,.title.cover .line{animation:none;opacity:1}}
 
@@ -412,12 +416,12 @@ body.still #zooms .zb{pointer-events:none}
 <body>
 <main id="reel" aria-label="Yosokuro photographs"></main>
 
-<div class="beta-tag"><span class="version" data-version>Beta 0.87</span></div>
+<div class="beta-tag"><span class="version" data-version>Beta 0.88</span></div>
 <div class="chrome top">
   <span class="brand"><a class="name" href="#" id="toStart">Yosokuro</a></span>
   <nav><button type="button" id="openIdx">Index</button><button type="button" id="openPrints">Prints<span id="pCount"></span></button><button type="button" id="openInfo">Info</button></nav>
 </div>
-<div class="zooms" id="zooms" hidden><button type="button" class="zb" id="viewBtn" aria-label="Zoom in to detail" title="Zoom in: detail and print preview"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21"/><path d="M7.5 10.5h6M10.5 7.5v6"/></svg></button><button type="button" class="zb" id="zoomOutBtn" aria-label="Zoom out to all photographs" title="Zoom out: all photographs"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21"/><path d="M7.5 10.5h6"/></svg></button></div>
+<div class="zooms" id="zooms" hidden><button type="button" class="zb" id="prevBtn" aria-label="Previous photograph" title="Previous photograph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 15l6-6 6 6"/></svg></button><button type="button" class="zb" id="viewBtn" aria-label="Zoom in to detail" title="Zoom in: detail and print preview"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21"/><path d="M7.5 10.5h6M10.5 7.5v6"/></svg></button><button type="button" class="zb" id="zoomOutBtn" aria-label="Zoom out to all photographs" title="Zoom out: all photographs"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21"/><path d="M7.5 10.5h6"/></svg></button><button type="button" class="zb" id="nextBtn" aria-label="Next photograph" title="Next photograph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button></div>
 <div class="chrome bot"><span><span class="k" id="nowK" hidden></span><span id="nowNo"></span><button type="button" class="add" id="addBtn" aria-pressed="false" hidden><span class="plus">＋</span><span class="lbl">Print</span></button><button type="button" class="pvbtn" id="pvBtn" hidden>Preview</button></span><span id="nowN"></span></div>
 
 <section class="ov" id="idx" hidden aria-label="Contact sheet">
@@ -525,7 +529,7 @@ body.still #zooms .zb{pointer-events:none}
 
     <footer>
       <span>&copy; 2026 <a class="hub-link" href="https://hub.yoso.one">Yoso</a> · Miyazaki, Japan</span>
-      <span><a href="feed.xml">RSS</a> · <span class="version" data-version>Beta 0.87</span></span>
+      <span><a href="feed.xml">RSS</a> · <span class="version" data-version>Beta 0.88</span></span>
     </footer>
   </div>
 </section>
@@ -539,7 +543,7 @@ const total=Object.keys(R).length;
 const pad=n=>String(n).padStart(3,"0");
 
 /* Cover screen */
-reel.insertAdjacentHTML("beforeend",`<section class="title cover" data-k="" data-no="" data-n=""><img class="bg" src="img/full/r024804.jpg" alt="From above: the long shadow of a palm frond across pale paving stones." fetchpriority="high"><span class="family-mark"><img src="images/yoso-mark.png" alt="Yoso" width="48" height="48"></span><div class="k">黒</div><p class="line">Yosokuro. Black-and-white photography of Japan by Yoso.</p><div class="hint" aria-hidden="true">Scroll<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 5l6 6 6-6"/><path d="M6 12l6 6 6-6"/></svg></div></section>`);
+reel.insertAdjacentHTML("beforeend",`<section class="title cover" data-k="" data-no="" data-n=""><img class="bg" src="img/full/r024804.jpg" alt="From above: the long shadow of a palm frond across pale paving stones." fetchpriority="high"><span class="family-mark"><img src="images/yoso-mark.png" alt="Yoso" width="48" height="48"></span><div class="k">黒</div><p class="line">Yosokuro. Black-and-white photography of Japan by Yoso.</p><button type="button" class="hint" id="coverNext" aria-label="Scroll to the first photograph">Scroll<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 5l6 6 6-6"/><path d="M6 12l6 6 6-6"/></svg></button></section>`);
 
 /* Chapters: one kanji screen, then each frame full screen */
 /* One continuous sequence: every frame in list order, no chapter screens or labels */
@@ -840,6 +844,9 @@ look.addEventListener("touchstart",e=>{if(mode!=="print"){lsx=null;return}lsx=e.
 look.addEventListener("touchend",e=>{if(lsx===null||mode!=="print")return;const dx=e.changedTouches[0].clientX-lsx,dy=e.changedTouches[0].clientY-lsy;lsx=null;
   if(Math.max(Math.abs(dx),Math.abs(dy))<50)return;lookStep((Math.abs(dy)>Math.abs(dx)?dy:dx)<0?1:-1)},{passive:true});
 look.addEventListener("wheel",e=>{if(mode!=="print")return;if(Math.abs(e.deltaY)<30||wall._wt)return;wall._wt=setTimeout(()=>wall._wt=0,500);lookStep(e.deltaY>0?1:-1)},{passive:true});
+/* Arrows above and below the zoom icons: previous and next photograph (in Detail and print preview too) */
+for(const [b,d] of [["prevBtn",-1],["nextBtn",1]])document.getElementById(b).onclick=e=>{e.stopPropagation();if(!look.hidden)lookStep(d);else step(d)};
+document.getElementById("coverNext").onclick=e=>{e.stopPropagation();step(1)};
 document.getElementById("zoomOutBtn").onclick=e=>{e.stopPropagation();if(!look.hidden)closeLook();else openSheet()};
 addEventListener("resize",()=>{if(!look.hidden){mode==="detail"?layoutZoom():layoutPaper()}if(!prints.hidden)renderList()});
 /* Drag to look around in Detail (mouse); touch scrolls natively */
