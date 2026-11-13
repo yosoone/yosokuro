@@ -88,3 +88,8 @@ The print list on `index.html` is the cart. Buyers choose size (A3, A2), paper (
 ## Mailing list
 
 The sign-up form asks for an email address first; pressing **Continue** shows a list of Yoso's newsletters (One, Yosokuro, Shinsei, River, On), with this site's own one already ticked. Each ticked box reaches Buttondown as a tag (`one`, `yosokuro`, `shinsei`, `river`, `on`), so to write to one newsletter's readers, send to that tag. The step is run by `assets/list-choice.js`, which is the same file on every site; without it the boxes simply show under the email field and the form still works. To add or rename a newsletter, change the boxes in every form, `NEWSLETTERS` in `check.py`, and this list, on every site.
+
+## Exceptions to the family rules (for now)
+
+- The gold family mark sits in the black bar at the top and is **not** a link (the shared rule says it links to the hub). The footer's 'Yoso' still links to the hub.
+- The beta number shows only on the opening screen, not in the Info footer.

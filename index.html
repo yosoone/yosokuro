@@ -166,6 +166,9 @@ body.ov-open .chrome.top>*{pointer-events:auto!important}
 .chrome nav button[aria-current="true"]{text-decoration:underline;text-underline-offset:6px;text-decoration-thickness:1px}
 .ov:focus{outline:none}
 body.still .chrome>*{pointer-events:none}
+/* On the opening screen the top bar stays: it never fades */
+body.on-cover.still .chrome.top{opacity:1}
+body.on-cover.still .chrome.top>*{pointer-events:auto}
 .plist{list-style:none;margin:0 0 36px;padding:0;max-width:760px}
 .plist .opts{display:grid;gap:8px}
 .plist li{display:grid;grid-template-columns:240px minmax(0,1fr) auto auto;gap:20px;align-items:center;padding-block:16px;border-top:1px solid var(--line)}
@@ -417,7 +420,7 @@ body.still #zooms .zb{pointer-events:none}
 <body>
 <main id="reel" aria-label="Yosokuro photographs"></main>
 
-<div class="beta-tag"><span class="version" data-version>Beta 0.93</span></div>
+<div class="beta-tag"><span class="version" data-version>Beta 0.94</span></div>
 <div class="chrome top">
   <span class="brand"><a class="name" href="#" id="toStart">Yosokuro</a></span>
   <span class="family-mark"><img src="images/yoso-mark.png" alt="Yoso" width="28" height="28"></span>
@@ -626,7 +629,7 @@ reel.addEventListener("touchmove",e=>{if(!pinch0||e.touches.length!==2)return;
 /* A tap on hidden labels only reveals them; it never presses a button underneath */
 let wasStill=false;
 addEventListener("pointerdown",()=>{wasStill=document.body.classList.contains("still")},{capture:true,passive:true});
-document.querySelectorAll(".chrome").forEach(ch=>ch.addEventListener("click",e=>{if(wasStill){e.preventDefault();e.stopPropagation();wasStill=false}},{capture:true}));
+document.querySelectorAll(".chrome").forEach(ch=>ch.addEventListener("click",e=>{if(wasStill&&!(ch.classList.contains("top")&&document.body.classList.contains("on-cover"))){e.preventDefault();e.stopPropagation();wasStill=false}},{capture:true}));
 wake();
 
 /* Overlays */
