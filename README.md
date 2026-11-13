@@ -102,4 +102,4 @@ Opening Collection, Prints, Info, the shop terms, the print preview or Detail ad
 
 ## Auto-advance
 
-The opening screen moves on to the first photograph after 5 seconds, then the site moves to the next photograph every 15 seconds. Any scroll, swipe, key, click, tap or mouse movement starts the count again. It waits while a panel or view is open or the tab is hidden, and stops at the last photograph. The two timings are `AUTO_FIRST` and `AUTO_EVERY` (in milliseconds) in `index.html`.
+The opening screen moves on to the first photograph after 5 seconds, then the site moves to the next photograph every 15 seconds. Any scroll, swipe, key, click, tap or mouse movement starts the count again. It waits while a panel or view is open or the tab is hidden. After the last photograph it goes back to the opening screen and starts again. The two timings are `AUTO_FIRST` and `AUTO_EVERY` (in milliseconds) in `index.html`.
