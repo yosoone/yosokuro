@@ -27,8 +27,8 @@ const priced = Object.fromEntries(Object.entries(BASE).map(([paper, sizes]) =>
 export const SHOP = {
   currency: "jpy",
   papers: {
-    standard: { name: "Standard", desc: "Printed by PRIO" },
-    premium:  { name: "Premium",  desc: "Archival, printed by Tokugawa" },
+    standard: { name: "Standard", desc: "Poster" },
+    premium:  { name: "Premium",  desc: "Archival print" },
   },
   sizes: { A3: "A3 · 297 × 420 mm", A2: "A2 · 420 × 594 mm" },
   borders: ["White border", "No border"],
@@ -120,7 +120,8 @@ export async function checkout(request, env, cors) {
   p.set("metadata[shop]", "yosokuro");
   p.set("metadata[ship]", ship);
   p.set("metadata[items]", lines.map(l => `${l.id}|${l.size}|${l.paper}|${l.border === "No border" ? "nb" : "wb"}|${l.qty}`).join(",").slice(0, 500));
-  p.set("payment_intent_data[description]", `Yosokuro prints · ${lines.length} line(s)`);
+  { const n = lines.reduce((a, l) => a + l.qty, 0);
+    p.set("payment_intent_data[description]", `Yosokuro prints: ${n} print${n === 1 ? "" : "s"}`); }
   // Stripe's payment page in the Yosokuro look: black ground, bone button, square corners, serif,
   // the gold Yoso mark and the name 'Yosokuro'. Needs the Stripe API version set below.
   p.set("branding_settings[display_name]", "Yosokuro");
