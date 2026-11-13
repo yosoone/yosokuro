@@ -157,7 +157,7 @@ body.still #pvBtn{opacity:0}
 #nowNo,#nowN{opacity:.55}
 .chrome .add .plus{font:300 32px/1 var(--f-mono);letter-spacing:0;transform:translateY(-1px)}
 .chrome .add[hidden]{display:none}
-/* With Index, Prints, Info or the shop terms open, the top bar (Yosokuro and the menu) stays on top
+/* With Collections, Prints, Info or the shop terms open, the top bar (Yosokuro and the menu) stays on top
    and always visible; there is no Close button: the menu switches or closes, Yosokuro goes home. */
 body.ov-open .chrome.top{z-index:15;opacity:1!important;background:var(--night)}
 body.ov-open .chrome.top>*{pointer-events:auto!important}
@@ -416,10 +416,10 @@ body.still #zooms .zb{pointer-events:none}
 <body>
 <main id="reel" aria-label="Yosokuro photographs"></main>
 
-<div class="beta-tag"><span class="version" data-version>Beta 0.89</span></div>
+<div class="beta-tag"><span class="version" data-version>Beta 0.90</span></div>
 <div class="chrome top">
   <span class="brand"><a class="name" href="#" id="toStart">Yosokuro</a></span>
-  <nav><button type="button" id="openIdx">Index</button><button type="button" id="openPrints">Prints<span id="pCount"></span></button><button type="button" id="openInfo">Info</button></nav>
+  <nav><button type="button" id="openIdx">Collections</button><button type="button" id="openPrints">Prints<span id="pCount"></span></button><button type="button" id="openInfo">Info</button></nav>
 </div>
 <div class="zooms" id="zooms" hidden><button type="button" class="zb" id="prevBtn" aria-label="Previous photograph" title="Previous photograph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 15l6-6 6 6"/></svg></button><button type="button" class="zb" id="viewBtn" aria-label="Zoom in to detail" title="Zoom in: detail and print preview"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21"/><path d="M7.5 10.5h6M10.5 7.5v6"/></svg></button><button type="button" class="zb" id="zoomOutBtn" aria-label="Zoom out to all photographs" title="Zoom out: all photographs"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21"/><path d="M7.5 10.5h6"/></svg></button><button type="button" class="zb" id="nextBtn" aria-label="Next photograph" title="Next photograph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button></div>
 <div class="chrome bot"><span><span class="k" id="nowK" hidden></span><span id="nowNo"></span><button type="button" class="add" id="addBtn" aria-pressed="false" hidden><span class="plus">＋</span><span class="lbl">Print</span></button><button type="button" class="pvbtn" id="pvBtn" hidden>Preview</button></span><span id="nowN"></span></div>
@@ -529,7 +529,7 @@ body.still #zooms .zb{pointer-events:none}
 
     <footer>
       <span>&copy; 2026 <a class="hub-link" href="https://hub.yoso.one">Yoso</a> · Miyazaki, Japan</span>
-      <span><a href="feed.xml">RSS</a> · <span class="version" data-version>Beta 0.89</span></span>
+      <span><a href="feed.xml">RSS</a> · <span class="version" data-version>Beta 0.90</span></span>
     </footer>
   </div>
 </section>
@@ -636,9 +636,9 @@ function open(o){closeAll();o.hidden=false;if(o===prints)renderList();
   o.setAttribute("tabindex","-1");o.focus({preventScroll:true});wake()}
 function closeAll(){idx.hidden=true;info.hidden=true;prints.hidden=true;terms.hidden=true;
   document.body.classList.remove("ov-open");Object.values(NAV).forEach(b=>document.getElementById(b).setAttribute("aria-current","false"))}
-/* Pressing the menu item of the panel that is open closes it */
-document.getElementById("openIdx").onclick=()=>idx.hidden?openSheet():closeAll();
-document.getElementById("openInfo").onclick=()=>info.hidden?open(info):closeAll();
+/* Pressing the menu item of the panel already open leaves it open (Close ✕ or Escape closes it) */
+document.getElementById("openIdx").onclick=()=>{if(idx.hidden)openSheet()};
+document.getElementById("openInfo").onclick=()=>{if(info.hidden)open(info)};
 document.querySelectorAll("[data-close]").forEach(b=>b.onclick=closeAll);
 sheet.addEventListener("click",e=>{const a=e.target.closest("[data-go]");if(!a)return;e.preventDefault();closeAll();document.getElementById("f-"+a.dataset.go).scrollIntoView()});
 /* Opening the sheet: load the small images once, mark where you are and what's in the print list */
@@ -673,7 +673,7 @@ function syncAdd(){addBtn.hidden=!curId;document.getElementById("pvBtn").hidden=
   pCount.textContent=plist.length?" ("+plist.reduce((n,x)=>n+x.qty,0)+")":""}
 function toggle(id){plist=has(id)?plist.filter(x=>x.id!==id):[...plist,tidy({id})];save();syncAdd();wake()}
 addBtn.onclick=e=>{e.stopPropagation();if(curId)toggle(curId)};
-document.getElementById("openPrints").onclick=()=>prints.hidden?open(prints):closeAll();
+document.getElementById("openPrints").onclick=()=>{if(prints.hidden)open(prints)};
 const pList=document.getElementById("pList"),order=document.getElementById("order");
 const yen=n=>"¥"+Number(n).toLocaleString("en-US");
 const usd=n=>SHOP.usdRate?"≈ US$"+(n/SHOP.usdRate).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2}):"";
