@@ -265,6 +265,11 @@ body.on-cover.still .chrome.top>*{pointer-events:auto}
 .zooms[hidden]{display:none}
 /* In Detail (the closest zoom) the icons stay: − steps back to the photograph, + is at its limit */
 body.looking .zooms{z-index:12;opacity:1!important}
+/* Detail (the closest zoom): the same top bar as everywhere else, in place of the frame number and Close */
+body.looking.detail #look .lbar{display:none}
+body.looking.detail .chrome.top{z-index:13}
+#look .lstage{grid-row:2}
+#look .lfoot{grid-row:3}
 body.looking .zooms .zb{pointer-events:auto!important}
 body.looking #viewBtn{pointer-events:none!important;cursor:default}
 body.looking #viewBtn svg{opacity:.3}
@@ -429,7 +434,7 @@ body.sheet-open #zoomOutBtn svg{opacity:.3}
 <body>
 <main id="reel" aria-label="Yosokuro photographs"></main>
 
-<div class="beta-tag"><span class="version" data-version>Beta 0.103</span></div>
+<div class="beta-tag"><span class="version" data-version>Beta 0.104</span></div>
 <div class="chrome top">
   <span class="brand"><a class="name" href="#" id="toStart">Yosokuro</a></span>
   <nav><button type="button" id="openIdx">Collection</button><button type="button" id="openPrints">Prints<span id="pCount"></span></button><button type="button" id="openInfo">Info</button></nav>
@@ -647,7 +652,7 @@ function open(o){closeAll();o.hidden=false;if(o===prints)renderList();
   document.body.classList.add("ov-open");
   Object.entries(NAV).forEach(([k,b])=>document.getElementById(b).setAttribute("aria-current",k===o.id?"true":"false"));
   o.setAttribute("tabindex","-1");o.focus({preventScroll:true});wake()}
-function closeAll(){document.body.classList.remove("sheet-open");idx.hidden=true;info.hidden=true;prints.hidden=true;terms.hidden=true;
+function closeAll(){if(!document.getElementById("look").hidden)closeLook();document.body.classList.remove("sheet-open");idx.hidden=true;info.hidden=true;prints.hidden=true;terms.hidden=true;
   document.body.classList.remove("ov-open");Object.values(NAV).forEach(b=>document.getElementById(b).setAttribute("aria-current","false"))}
 /* Pressing the menu item of the panel already open leaves it open (Close ✕ or Escape closes it) */
 document.getElementById("openIdx").onclick=()=>{if(idx.hidden)openSheet()};
@@ -804,10 +809,10 @@ function openLook(id,m){
   zoomImg.src=sheetImg.src=`img/full/${id}.jpg`;zoomImg.alt=sheetImg.alt=`Frame ${label(id)}`;
   closeAll();look.hidden=false;document.body.classList.add("looking");document.getElementById("viewBtn").setAttribute("aria-disabled","true");wake();setMode(mode);document.getElementById("lookClose").focus();
 }
-function closeLook(){look.hidden=true;document.body.classList.remove("looking");document.getElementById("viewBtn").removeAttribute("aria-disabled");wake()}
+function closeLook(){look.hidden=true;document.body.classList.remove("looking","detail");document.getElementById("viewBtn").removeAttribute("aria-disabled");wake()}
 function setMode(m){mode=m;
   look.querySelectorAll("[data-mode]").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.mode===m)));
-  const det=m==="detail";zoom.hidden=!det;wall.hidden=det;lookAdd.hidden=false;syncLookAdd();document.getElementById("bord").hidden=det;
+  const det=m==="detail";document.body.classList.toggle("detail",det);zoom.hidden=!det;wall.hidden=det;lookAdd.hidden=false;syncLookAdd();document.getElementById("bord").hidden=det;
   if(det)layoutZoom();else layoutPaper();
 }
 function layoutZoom(){
