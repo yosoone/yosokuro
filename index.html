@@ -271,6 +271,12 @@ body.looking #viewBtn svg{opacity:.3}
 .zb svg{width:22px;height:22px;display:block}
 body.still #zooms{opacity:0}
 body.still #zooms .zb{pointer-events:none}
+/* On the contact sheet the arrows and zoom icons stay, above the sheet: + goes back in to the photograph,
+   − is at its limit (dimmed), the arrows move the gold frame */
+body.sheet-open .zooms{z-index:12;opacity:1!important}
+body.sheet-open .zooms .zb{pointer-events:auto!important}
+body.sheet-open #zoomOutBtn{pointer-events:none!important;cursor:default}
+body.sheet-open #zoomOutBtn svg{opacity:.3}
 #zooms{transition:opacity .5s ease}
 #look{position:fixed;inset:0;z-index:11;background:var(--night);display:grid;grid-template-rows:auto minmax(0,1fr) auto}
 #look[hidden]{display:none}
@@ -419,7 +425,7 @@ body.still #zooms .zb{pointer-events:none}
 <body>
 <main id="reel" aria-label="Yosokuro photographs"></main>
 
-<div class="beta-tag"><span class="version" data-version>Beta 0.99</span></div>
+<div class="beta-tag"><span class="version" data-version>Beta 0.100</span></div>
 <div class="chrome top">
   <span class="brand"><a class="name" href="#" id="toStart">Yosokuro</a></span>
   <nav><button type="button" id="openIdx">Collection</button><button type="button" id="openPrints">Prints<span id="pCount"></span></button><button type="button" id="openInfo">Info</button></nav>
@@ -637,7 +643,7 @@ function open(o){closeAll();o.hidden=false;if(o===prints)renderList();
   document.body.classList.add("ov-open");
   Object.entries(NAV).forEach(([k,b])=>document.getElementById(b).setAttribute("aria-current",k===o.id?"true":"false"));
   o.setAttribute("tabindex","-1");o.focus({preventScroll:true});wake()}
-function closeAll(){idx.hidden=true;info.hidden=true;prints.hidden=true;terms.hidden=true;
+function closeAll(){document.body.classList.remove("sheet-open");idx.hidden=true;info.hidden=true;prints.hidden=true;terms.hidden=true;
   document.body.classList.remove("ov-open");Object.values(NAV).forEach(b=>document.getElementById(b).setAttribute("aria-current","false"))}
 /* Pressing the menu item of the panel already open leaves it open (Close ✕ or Escape closes it) */
 document.getElementById("openIdx").onclick=()=>{if(idx.hidden)openSheet()};
@@ -648,7 +654,7 @@ sheet.addEventListener("click",e=>{const a=e.target.closest("[data-go]");if(!a)r
 function openSheet(){
   sheet.querySelectorAll("img[data-src]").forEach(im=>{im.src=im.dataset.src;im.removeAttribute("data-src")});
   sheet.querySelectorAll(".m").forEach(m=>{const id=m.dataset.go;m.classList.toggle("now",id===curId);m.classList.toggle("inlist",has(id))});
-  open(idx);
+  open(idx);document.body.classList.add("sheet-open");
   const here=curId?sheet.querySelector(`[data-go="${curId}"]`):null;
   sheet.querySelectorAll(".glow").forEach(m=>m.classList.remove("glow"));
   if(here){here.scrollIntoView({block:"center"});here.focus({preventScroll:true});void here.offsetWidth;here.classList.add("glow")}else idx.scrollTop=0;
@@ -831,7 +837,14 @@ lookAdd.onclick=()=>{const x=plist.find(y=>y.id===lookId);
 /* The border switch also sets the border of this print in the list, if it is there */
 document.querySelectorAll("#bord button").forEach(x=>x.onclick=()=>{border=x.dataset.b;
   const it=plist.find(y=>y.id===lookId);if(it){it.border=border;save()}layoutPaper()});
-viewBtn.onclick=e=>{e.stopPropagation();if(look.hidden)openLook(curId,"detail")};
+viewBtn.onclick=e=>{e.stopPropagation();if(!idx.hidden){closeAll();return}if(look.hidden)openLook(curId,"detail")};
+/* On the contact sheet: move the gold frame to the previous or next photograph (the photographs follow behind) */
+function sheetStep(d){
+  const i=ORDER.indexOf(curId)+d;if(i<0||i>=ORDER.length)return;
+  const id=ORDER[i],f=document.getElementById("f-"+id);if(f){curSec=f;reel.scrollTop=f.offsetTop}curId=id;syncAdd();
+  sheet.querySelectorAll(".m.now").forEach(m=>m.classList.remove("now","glow"));
+  const m=sheet.querySelector(`[data-go="${id}"]`);if(m){m.classList.add("now");m.scrollIntoView({block:"nearest"})}
+}
 document.getElementById("pvBtn").onclick=e=>{e.stopPropagation();openLook(curId,"print")};
 /* In print preview, swipe (or the arrow keys) to the next or previous photograph */
 function lookStep(d){
@@ -848,9 +861,9 @@ look.addEventListener("touchend",e=>{if(lsx===null||mode!=="print")return;const 
   if(Math.max(Math.abs(dx),Math.abs(dy))<50)return;lookStep((Math.abs(dy)>Math.abs(dx)?dy:dx)<0?1:-1)},{passive:true});
 look.addEventListener("wheel",e=>{if(mode!=="print")return;if(Math.abs(e.deltaY)<30||wall._wt)return;wall._wt=setTimeout(()=>wall._wt=0,500);lookStep(e.deltaY>0?1:-1)},{passive:true});
 /* Arrows above and below the zoom icons: previous and next photograph (in Detail and print preview too) */
-for(const [b,d] of [["prevBtn",-1],["nextBtn",1]])document.getElementById(b).onclick=e=>{e.stopPropagation();if(!look.hidden)lookStep(d);else step(d)};
+for(const [b,d] of [["prevBtn",-1],["nextBtn",1]])document.getElementById(b).onclick=e=>{e.stopPropagation();if(!look.hidden)lookStep(d);else if(!idx.hidden)sheetStep(d);else step(d)};
 document.getElementById("coverNext").onclick=e=>{e.stopPropagation();step(1)};
-document.getElementById("zoomOutBtn").onclick=e=>{e.stopPropagation();if(!look.hidden)closeLook();else openSheet()};
+document.getElementById("zoomOutBtn").onclick=e=>{e.stopPropagation();if(!idx.hidden)return;if(!look.hidden)closeLook();else openSheet()};
 addEventListener("resize",()=>{if(!look.hidden){mode==="detail"?layoutZoom():layoutPaper()}if(!prints.hidden)renderList()});
 /* Drag to look around in Detail (mouse); touch scrolls natively */
 let dragging=null;
