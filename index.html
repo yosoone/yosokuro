@@ -444,7 +444,7 @@ body.sheet-open #zoomOutBtn svg{opacity:.3}
 <body>
 <main id="reel" aria-label="Yosokuro photographs"></main>
 
-<div class="beta-tag"><span class="version" data-version>Beta 0.108</span></div>
+<div class="beta-tag"><span class="version" data-version>Beta 0.109</span></div>
 <div class="chrome top">
   <span class="brand"><a class="name" href="#" id="toStart">Yosokuro</a></span>
   <nav><button type="button" id="openIdx">Collection</button><button type="button" id="openPrints"><svg class="cart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 3.5h3l2.4 11.2a1.5 1.5 0 0 0 1.5 1.2h8.4a1.5 1.5 0 0 0 1.5-1.1L21 8H6.6"/><circle cx="10" cy="20" r="1.3"/><circle cx="17.5" cy="20" r="1.3"/></svg>Prints<span id="pCount"></span></button><button type="button" id="openInfo">Info</button></nav>
@@ -639,7 +639,12 @@ addEventListener("pointermove",e=>{if(e.pointerType!=="mouse")return;
 addEventListener("keydown",wake,{capture:true});
 let tx=0,ty=0,tt=0;
 addEventListener("touchstart",e=>{const p=e.touches[0];tx=p.clientX;ty=p.clientY;tt=Date.now()},{passive:true,capture:true});
-addEventListener("touchend",e=>{const p=e.changedTouches[0];if(Math.hypot(p.clientX-tx,p.clientY-ty)<10&&Date.now()-tt<400)wake()},{passive:true,capture:true});
+addEventListener("touchend",e=>{const p=e.changedTouches[0],dx=p.clientX-tx,dy=p.clientY-ty;
+  if(Math.hypot(dx,dy)<10&&Date.now()-tt<400)wake();
+  /* A sideways swipe (left or right) also brings back the menu and icons */
+  else if(Math.abs(dx)>40&&Math.abs(dx)>Math.abs(dy)*1.5)wake()},{passive:true,capture:true});
+/* The same for a sideways swipe on a trackpad */
+let wxT=0;addEventListener("wheel",e=>{if(Math.abs(e.deltaX)>12&&Math.abs(e.deltaX)>Math.abs(e.deltaY)*1.5&&Date.now()-wxT>300){wxT=Date.now();wake()}},{passive:true,capture:true});
 addEventListener("focusin",wake);
 /* Click or tap anywhere on the photographs: just bring the menu back (the zoom icons do the zooming) */
 reel.addEventListener("click",()=>wake());
