@@ -94,6 +94,8 @@ button.hint:focus-visible{outline:1px solid #fff;outline-offset:4px}
 .chrome .brand{display:flex;align-items:baseline;gap:12px}
 .chrome .beta{font-size:12px;letter-spacing:.18em;opacity:.7}
 /* Beta number: small, bottom left, above the photographs and below the overlays */
+/* Beta number: only on the opening screen */
+body:not(.on-cover) .beta-tag{display:none}
 .beta-tag{position:fixed;z-index:6;left:max(12px,env(safe-area-inset-left,0px));bottom:calc(env(safe-area-inset-bottom,0px) + 8px);
   font:400 9px/1 var(--f-mono);letter-spacing:.16em;text-transform:uppercase;color:#fff;opacity:.4;pointer-events:none}
 .chrome .name{font:800 15px/1 var(--f-kanji);letter-spacing:.04em;text-transform:none;text-decoration:none}
@@ -306,7 +308,6 @@ body.still #zooms .zb{pointer-events:none}
 /* Family mark: inside the black bar at the top, centred; on phones it sits between the name and the menu */
 .chrome.top .family-mark{position:absolute;left:50%;top:calc(env(safe-area-inset-top,0px) + 9px);transform:translateX(-50%);display:block;width:28px;line-height:0}
 .chrome.top .family-mark img{display:block;width:28px;height:28px}
-.chrome.top .family-mark:focus-visible{outline:1px solid var(--gold);outline-offset:3px}
 @media (max-width:560px){.chrome.top .family-mark{position:static;transform:none;margin-inline:auto}.chrome nav{gap:16px}}
 .info .epi{margin:0 0 32px;padding-left:14px;border-left:2px solid var(--gold)}
 .info .epi p{margin:0 0 6px;font:500 italic clamp(22px,5.5vw,28px)/1.5 var(--f-kanji)}
@@ -416,10 +417,10 @@ body.still #zooms .zb{pointer-events:none}
 <body>
 <main id="reel" aria-label="Yosokuro photographs"></main>
 
-<div class="beta-tag"><span class="version" data-version>Beta 0.92</span></div>
+<div class="beta-tag"><span class="version" data-version>Beta 0.93</span></div>
 <div class="chrome top">
   <span class="brand"><a class="name" href="#" id="toStart">Yosokuro</a></span>
-  <a class="family-mark" href="https://hub.yoso.one"><img src="images/yoso-mark.png" alt="Yoso" width="28" height="28"></a>
+  <span class="family-mark"><img src="images/yoso-mark.png" alt="Yoso" width="28" height="28"></span>
   <nav><button type="button" id="openIdx">Collection</button><button type="button" id="openPrints">Prints<span id="pCount"></span></button><button type="button" id="openInfo">Info</button></nav>
 </div>
 <div class="zooms" id="zooms" hidden><button type="button" class="zb" id="prevBtn" aria-label="Previous photograph" title="Previous photograph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 15l6-6 6 6"/></svg></button><button type="button" class="zb" id="viewBtn" aria-label="Zoom in to detail" title="Zoom in: detail and print preview"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21"/><path d="M7.5 10.5h6M10.5 7.5v6"/></svg></button><button type="button" class="zb" id="zoomOutBtn" aria-label="Zoom out to all photographs" title="Zoom out: all photographs"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21"/><path d="M7.5 10.5h6"/></svg></button><button type="button" class="zb" id="nextBtn" aria-label="Next photograph" title="Next photograph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button></div>
@@ -530,7 +531,7 @@ body.still #zooms .zb{pointer-events:none}
 
     <footer>
       <span>&copy; 2026 <a class="hub-link" href="https://hub.yoso.one">Yoso</a> · Miyazaki, Japan</span>
-      <span><a href="feed.xml">RSS</a> · <span class="version" data-version>Beta 0.92</span></span>
+      <span><a href="feed.xml">RSS</a></span>
     </footer>
   </div>
 </section>
@@ -584,7 +585,7 @@ function setAddress(sec){clearTimeout(addrT);addrT=setTimeout(()=>{
   const h=sec.classList.contains("frame")?"#f-"+sec.dataset.id:(sec.id?"#"+sec.id:"");
   if(location.hash!==h)try{history.replaceState(null,"",h||location.pathname+location.search)}catch{}},250)}
 const nowK=document.getElementById("nowK"),nowNo=document.getElementById("nowNo"),nowN=document.getElementById("nowN");
-const seen=new IntersectionObserver(es=>es.forEach(e=>{if(e.intersectionRatio<.6||resizing)return;curSec=e.target;const d=e.target.dataset;
+const seen=new IntersectionObserver(es=>es.forEach(e=>{if(e.intersectionRatio<.6||resizing)return;curSec=e.target;document.body.classList.toggle("on-cover",e.target.classList.contains("cover"));const d=e.target.dataset;
   nowK.textContent=d.k;nowNo.textContent=e.target.classList.contains("frame")?d.no:"";nowN.textContent=d.n;curId=d.id||"";syncAdd();setAddress(e.target)}),{root:reel,threshold:.6});
 reel.querySelectorAll("section").forEach(s=>seen.observe(s));
 
