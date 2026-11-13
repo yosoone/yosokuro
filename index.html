@@ -461,7 +461,7 @@ body.sheet-open #zoomOutBtn svg{opacity:.3}
 <body>
 <main id="reel" aria-label="Yosokuro photographs"></main>
 
-<div class="beta-tag"><span class="version" data-version>Beta 0.126</span></div>
+<div class="beta-tag"><span class="version" data-version>Beta 0.127</span></div>
 <div class="chrome top">
   <span class="brand"><a class="name" href="#" id="toStart">Yosokuro</a></span>
   <nav><button type="button" id="openIdx">Collection</button><button type="button" id="openPrints"><svg class="cart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 3.5h3l2.4 11.2a1.5 1.5 0 0 0 1.5 1.2h8.4a1.5 1.5 0 0 0 1.5-1.1L21 8H6.6"/><circle cx="10" cy="20" r="1.3"/><circle cx="17.5" cy="20" r="1.3"/></svg><span class="pl">Prints<span id="pCount"></span></span></button><button type="button" id="openInfo">Info</button></nav>
@@ -651,7 +651,7 @@ addEventListener("keydown",e=>{
 });
 
 /* Chrome fades after 2.5 s without movement */
-let t;function wake(){document.body.classList.remove("still");clearTimeout(t);t=setTimeout(()=>{if(idx.hidden&&info.hidden&&prints.hidden&&terms.hidden&&look.hidden)document.body.classList.add("still")},2500)}
+let t;function wake(){autoNext();document.body.classList.remove("still");clearTimeout(t);t=setTimeout(()=>{if(idx.hidden&&info.hidden&&prints.hidden&&terms.hidden&&look.hidden)document.body.classList.add("still")},2500)}
 /* Swipes and scrolling leave it hidden; a tap, a mouse move or keyboard focus brings it back */
 /* Only a real mouse movement counts: browsers also send "moves" while the page scrolls under a still mouse */
 let mx=null,my=null;
@@ -931,6 +931,18 @@ zoom.addEventListener("pointermove",e=>{if(!dragging)return;zoom.scrollLeft=drag
 const endDrag=()=>{dragging=null;zoom.classList.remove("drag")};
 zoom.addEventListener("pointerup",endDrag);zoom.addEventListener("pointercancel",endDrag);
 
+/* Auto-advance: the opening screen moves on after 5 s, then the next photograph every 15 s.
+   Any scroll, swipe, key, click, tap or mouse movement starts the count again; it waits while a
+   panel or view is open or the tab is hidden, and stops at the last photograph. */
+var AUTO_FIRST=5000,AUTO_EVERY=15000,autoT;
+function onCover(){return !curSec||curSec.classList.contains("cover")}
+function autoNext(){clearTimeout(autoT);autoT=setTimeout(()=>{
+  if(panelOpen()||document.hidden){autoNext();return}
+  if(reel.scrollTop+reel.clientHeight>=reel.scrollHeight-2)return;
+  step(1);autoNext()},onCover()?AUTO_FIRST:AUTO_EVERY)}
+["wheel","touchstart","keydown","pointerdown"].forEach(ev=>addEventListener(ev,()=>autoNext(),{passive:true,capture:true}));
+document.addEventListener("visibilitychange",()=>{if(!document.hidden)autoNext()});
+autoNext();
 /* Browser history: Back and Forward (browser buttons, mouse side buttons, swipe gestures) step through
    panels and views. Opening a panel or view adds a step; Close, − and Escape step back. */
 let fromPop=false;
