@@ -274,8 +274,8 @@ body.looking:not(.detail) #look .lstage{margin-top:calc(env(safe-area-inset-top,
 #look .lstage{grid-row:2}
 #look .lfoot{grid-row:3}
 body.looking .zooms .zb{pointer-events:auto!important}
-body.looking #viewBtn{pointer-events:none!important;cursor:default}
-body.looking #viewBtn svg{opacity:.3}
+body.looking.detail #viewBtn{pointer-events:none!important;cursor:default}
+body.looking.detail #viewBtn svg{opacity:.3}
 .zb{display:flex;align-items:center;justify-content:center;width:44px;height:44px;background:#000;color:#fff;pointer-events:auto}
 .zb:hover{background:#111}
 .zb:focus-visible{outline:1px solid #fff;outline-offset:2px}
@@ -437,7 +437,7 @@ body.sheet-open #zoomOutBtn svg{opacity:.3}
 <body>
 <main id="reel" aria-label="Yosokuro photographs"></main>
 
-<div class="beta-tag"><span class="version" data-version>Beta 0.105</span></div>
+<div class="beta-tag"><span class="version" data-version>Beta 0.106</span></div>
 <div class="chrome top">
   <span class="brand"><a class="name" href="#" id="toStart">Yosokuro</a></span>
   <nav><button type="button" id="openIdx">Collection</button><button type="button" id="openPrints">Prints<span id="pCount"></span></button><button type="button" id="openInfo">Info</button></nav>
@@ -815,7 +815,7 @@ function openLook(id,m){
 function closeLook(){look.hidden=true;document.body.classList.remove("looking","detail");document.getElementById("viewBtn").removeAttribute("aria-disabled");wake()}
 function setMode(m){mode=m;
   look.querySelectorAll("[data-mode]").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.mode===m)));
-  const det=m==="detail";document.body.classList.toggle("detail",det);zoom.hidden=!det;wall.hidden=det;lookAdd.hidden=false;syncLookAdd();document.getElementById("bord").hidden=det;
+  const det=m==="detail";document.body.classList.toggle("detail",det);if(det)viewBtn.setAttribute("aria-disabled","true");else viewBtn.removeAttribute("aria-disabled");zoom.hidden=!det;wall.hidden=det;lookAdd.hidden=false;syncLookAdd();document.getElementById("bord").hidden=det;
   if(det)layoutZoom();else layoutPaper();
 }
 function layoutZoom(){
@@ -849,7 +849,7 @@ lookAdd.onclick=()=>{const x=plist.find(y=>y.id===lookId);
 /* The border switch also sets the border of this print in the list, if it is there */
 document.querySelectorAll("#bord button").forEach(x=>x.onclick=()=>{border=x.dataset.b;
   const it=plist.find(y=>y.id===lookId);if(it){it.border=border;save()}layoutPaper()});
-viewBtn.onclick=e=>{e.stopPropagation();if(!idx.hidden){closeAll();return}if(look.hidden)openLook(curId,"detail")};
+viewBtn.onclick=e=>{e.stopPropagation();if(!idx.hidden){closeAll();return}if(look.hidden)openLook(curId,"detail");else if(mode!=="detail")setMode("detail")};
 /* On the contact sheet: move the gold frame to the previous or next photograph (the photographs follow behind) */
 function sheetStep(d){
   const i=ORDER.indexOf(curId)+d;if(i<0||i>=ORDER.length)return;
