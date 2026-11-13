@@ -274,6 +274,9 @@ body.still #zooms .zb{pointer-events:none}
 /* On the contact sheet the arrows and zoom icons stay, above the sheet: + goes back in to the photograph,
    − is at its limit (dimmed), the arrows move the gold frame */
 body.sheet-open .zooms{z-index:12;opacity:1!important}
+/* Keep them clear of the sheet's scrollbar: its measured width, or at least 16px for scrollbars that
+   only appear while scrolling (Safari on a Mac) */
+body.sheet-open .zooms{right:calc(max(8px,env(safe-area-inset-right,0px)) + max(var(--sbw,0px),16px))}
 body.sheet-open .zooms .zb{pointer-events:auto!important}
 body.sheet-open #zoomOutBtn{pointer-events:none!important;cursor:default}
 body.sheet-open #zoomOutBtn svg{opacity:.3}
@@ -425,7 +428,7 @@ body.sheet-open #zoomOutBtn svg{opacity:.3}
 <body>
 <main id="reel" aria-label="Yosokuro photographs"></main>
 
-<div class="beta-tag"><span class="version" data-version>Beta 0.100</span></div>
+<div class="beta-tag"><span class="version" data-version>Beta 0.101</span></div>
 <div class="chrome top">
   <span class="brand"><a class="name" href="#" id="toStart">Yosokuro</a></span>
   <nav><button type="button" id="openIdx">Collection</button><button type="button" id="openPrints">Prints<span id="pCount"></span></button><button type="button" id="openInfo">Info</button></nav>
@@ -654,7 +657,7 @@ sheet.addEventListener("click",e=>{const a=e.target.closest("[data-go]");if(!a)r
 function openSheet(){
   sheet.querySelectorAll("img[data-src]").forEach(im=>{im.src=im.dataset.src;im.removeAttribute("data-src")});
   sheet.querySelectorAll(".m").forEach(m=>{const id=m.dataset.go;m.classList.toggle("now",id===curId);m.classList.toggle("inlist",has(id))});
-  open(idx);document.body.classList.add("sheet-open");
+  open(idx);document.body.classList.add("sheet-open");document.body.style.setProperty("--sbw",(idx.offsetWidth-idx.clientWidth)+"px");
   const here=curId?sheet.querySelector(`[data-go="${curId}"]`):null;
   sheet.querySelectorAll(".glow").forEach(m=>m.classList.remove("glow"));
   if(here){here.scrollIntoView({block:"center"});here.focus({preventScroll:true});void here.offsetWidth;here.classList.add("glow")}else idx.scrollTop=0;
