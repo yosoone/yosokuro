@@ -311,7 +311,9 @@ body.still #zooms .zb{pointer-events:none}
 /* Family mark: inside the black bar at the top, centred; on phones it sits between the name and the menu */
 .chrome.top .family-mark{position:absolute;left:50%;top:calc(env(safe-area-inset-top,0px) + 9px);transform:translateX(-50%);display:block;width:28px;line-height:0}
 .chrome.top .family-mark img{display:block;width:28px;height:28px}
-@media (max-width:560px){.chrome.top .family-mark{position:static;transform:none;margin-inline:auto}.chrome nav{gap:16px}}
+/* Phones: the top bar on two lines (the name and mark, then the menu across the width) */
+@media (max-width:560px){.chrome.top{flex-wrap:wrap;row-gap:8px}.chrome.top nav{flex-basis:100%;justify-content:space-between;gap:0}
+  .ov{padding-top:calc(env(safe-area-inset-top,0px) + 104px)}}
 .info .epi{margin:0 0 32px;padding-left:14px;border-left:2px solid var(--gold)}
 .info .epi p{margin:0 0 6px;font:500 italic clamp(22px,5.5vw,28px)/1.5 var(--f-kanji)}
 .info .epi .by{margin:0;font:400 12px/1.6 var(--f-mono);letter-spacing:.16em;text-transform:uppercase;color:var(--ash)}
@@ -420,7 +422,7 @@ body.still #zooms .zb{pointer-events:none}
 <body>
 <main id="reel" aria-label="Yosokuro photographs"></main>
 
-<div class="beta-tag"><span class="version" data-version>Beta 0.96</span></div>
+<div class="beta-tag"><span class="version" data-version>Beta 0.97</span></div>
 <div class="chrome top">
   <span class="brand"><a class="name" href="#" id="toStart">Yosokuro</a></span>
   <span class="family-mark"><img src="images/yoso-mark.png" alt="Yoso" width="28" height="28"></span>
