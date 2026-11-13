@@ -36,8 +36,8 @@ export const SHOP = {
   tax: TAX,
   usdRate: 157.557,    // yen per US dollar, for the approximate $ shown on the site only (Trading Economics, 30 Oct 2026)
   shipping: {          // yen, per order, tax included
-    jp:   { name: "Japan",          amount: 1500, days: [5, 9] },
-    intl: { name: "Outside Japan",  amount: 4500, days: [10, 21] },
+    jp:   { name: "Japan",          amount: 1500, days: [9, 12] },   // posted in 7–9 working days, then 2–3 days in transit
+    intl: { name: "Outside Japan",  amount: 4500, days: [17, 29] },  // posted in 7–9 working days, then about 10–20 days in transit
   },
   maxQty: 5,           // per line
   maxLines: 20,
