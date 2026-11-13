@@ -93,8 +93,8 @@ export async function checkout(request, env, cors) {
   const p = new URLSearchParams();
   p.set("mode", "payment");
   p.set("locale", "auto");
-  p.set("success_url", `${SITE}/full.html?order=paid&session={CHECKOUT_SESSION_ID}#prints`);
-  p.set("cancel_url", `${SITE}/full.html#prints`);
+  p.set("success_url", `${SITE}/?order=paid&session={CHECKOUT_SESSION_ID}#prints`);
+  p.set("cancel_url", `${SITE}/#prints`);
   p.set("billing_address_collection", "auto");
   p.set("phone_number_collection[enabled]", "true");
   lines.forEach((l, i) => {
@@ -164,7 +164,7 @@ export async function webhook(request, env) {
     const [id, size, paper, b, qty] = x.split("|");
     const each = SHOP.prices[paper] && SHOP.prices[paper][size];
     return `${qty} × ${label(id)} · ${size} · ${(SHOP.papers[paper] || {}).name || paper} · ${b === "nb" ? "No border" : "White border"}` +
-           (each ? ` · ${yen(each)} each` : "") + `\n    ${SITE}/full.html#f-${id}`;
+           (each ? ` · ${yen(each)} each` : "") + `\n    ${SITE}/#f-${id}`;
   });
   const order = (s.payment_intent || s.id || "").slice(-8).toUpperCase();
   const body = [
