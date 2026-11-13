@@ -99,7 +99,3 @@ The sign-up form asks for an email address first; pressing **Continue** shows a 
 ## Browser Back and Forward
 
 Opening Collection, Prints, Info, the shop terms, the print preview or Detail adds a step to the browser's history, so Back and Forward (browser buttons, mouse side buttons, swipe gestures) move between them. Close ✕, − and Escape step back. Each view has its own address, which can be shared: `#collection`, `#prints`, `#info`, `#terms`, `#preview-r025450`, `#detail-r025450`, and `#f-r025450` for a photograph. Scrolling through the photographs does not add steps.
-
-## Auto-advance
-
-The opening screen moves on to the first photograph after 5 seconds, then the site moves to the next photograph every 15 seconds. Any scroll, swipe, key, click, tap or mouse movement starts the count again. It waits while a panel or view is open or the tab is hidden. After the last photograph it goes back to the opening screen and starts again. The two timings are `AUTO_FIRST` and `AUTO_EVERY` (in milliseconds) in `index.html`.
