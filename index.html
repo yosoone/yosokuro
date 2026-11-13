@@ -158,6 +158,10 @@ body.still #pvBtn{opacity:0}
 #nowNo,#nowN{opacity:.55}
 .chrome .add .plus{font:300 32px/1 var(--f-mono);letter-spacing:0;transform:translateY(-1px)}
 .chrome .add[hidden]{display:none}
+/* PRINTS in the top menu flickers gold when a print is added */
+#openPrints.flash{animation:pflash .9s steps(1,end) 1}
+@keyframes pflash{0%,33%,66%{color:var(--gold-ink)}16%,50%,83%,100%{color:inherit}}
+@media (prefers-reduced-motion:reduce){#openPrints.flash{animation:pfade 1.2s ease-out 1}@keyframes pfade{from{color:var(--gold-ink)}to{color:inherit}}}
 /* With Collection, Prints, Info or the shop terms open, the top bar (Yosokuro and the menu) stays on top
    and always visible; there is no Close button: the menu switches or closes, Yosokuro goes home. */
 body.ov-open .chrome.top{z-index:15;opacity:1!important;background:var(--night)}
@@ -437,7 +441,7 @@ body.sheet-open #zoomOutBtn svg{opacity:.3}
 <body>
 <main id="reel" aria-label="Yosokuro photographs"></main>
 
-<div class="beta-tag"><span class="version" data-version>Beta 0.106</span></div>
+<div class="beta-tag"><span class="version" data-version>Beta 0.107</span></div>
 <div class="chrome top">
   <span class="brand"><a class="name" href="#" id="toStart">Yosokuro</a></span>
   <nav><button type="button" id="openIdx">Collection</button><button type="button" id="openPrints">Prints<span id="pCount"></span></button><button type="button" id="openInfo">Info</button></nav>
@@ -692,7 +696,8 @@ const has=id=>plist.some(x=>x.id===id);
 const addBtn=document.getElementById("addBtn"),pCount=document.getElementById("pCount");
 function syncAdd(){addBtn.hidden=!curId;document.getElementById("pvBtn").hidden=!curId;document.getElementById("zooms").hidden=!curId;const on=has(curId);addBtn.setAttribute("aria-pressed",on);addBtn.querySelector(".plus").textContent=on?"✓":"＋";addBtn.setAttribute("aria-label",on?"Print: in your list, tap to remove":"Print: add to your list");
   pCount.textContent=plist.length?" ("+plist.reduce((n,x)=>n+x.qty,0)+")":""}
-function toggle(id){plist=has(id)?plist.filter(x=>x.id!==id):[...plist,tidy({id})];save();syncAdd();wake()}
+function flashPrints(){const b=document.getElementById("openPrints");b.classList.remove("flash");void b.offsetWidth;b.classList.add("flash")}
+function toggle(id){const adding=!has(id);plist=adding?[...plist,tidy({id})]:plist.filter(x=>x.id!==id);save();syncAdd();wake();if(adding)flashPrints()}
 addBtn.onclick=e=>{e.stopPropagation();if(curId)toggle(curId)};
 document.getElementById("openPrints").onclick=()=>{if(prints.hidden)open(prints)};
 const pList=document.getElementById("pList"),order=document.getElementById("order");
@@ -844,7 +849,7 @@ look.querySelectorAll("[data-mode]").forEach(b=>b.onclick=()=>setMode(b.dataset.
 document.getElementById("lookClose").onclick=closeLook;
 /* In the list: tap to take it out. Not in the list: tap to add it with the border shown. */
 lookAdd.onclick=()=>{const x=plist.find(y=>y.id===lookId);
-  if(x)plist=plist.filter(y=>y.id!==lookId);else plist.push({id:lookId,size:"A3",paper:"standard",qty:1,border});
+  if(x)plist=plist.filter(y=>y.id!==lookId);else{plist.push({id:lookId,size:"A3",paper:"standard",qty:1,border});flashPrints()}
   save();syncAdd();if(mode==="detail")syncLookAdd();else layoutPaper()};
 /* The border switch also sets the border of this print in the list, if it is there */
 document.querySelectorAll("#bord button").forEach(x=>x.onclick=()=>{border=x.dataset.b;
