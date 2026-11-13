@@ -79,6 +79,8 @@ The Contact section posts to a small Cloudflare Worker at `https://forms.yoso.on
 
 The print list on `index.html` is the cart. Buyers choose size (A3, A2), paper (Standard by PRIO, Premium archival by Tokugawa), border and quantity, pick 'Ship to', then **Checkout** opens Stripe's own payment page, which collects their name, address, phone and card. No form on this site.
 
+'Add another version' under a line adds the same photograph again on its own line (starting with the other border), so one order can hold, say, a bordered and a borderless print of the same frame. ＋ Print elsewhere on the site adds or removes the photograph as a whole.
+
 - **Prices, papers, sizes and shipping** are set in one place only: `SHOP` at the top of `worker/shop.js`. The site reads them from `https://forms.yoso.one/prices`. The Worker works out every amount itself at checkout, so prices can't be changed in a browser. After changing them: `npx wrangler deploy` in `worker/`.
 - **A retired photograph can't be bought:** the Worker checks each frame against `assets/works.js` on the live site. Remove a frame there and it leaves the shop too.
 - **Orders:** when a payment completes, Stripe tells the Worker (`/stripe-webhook`), which emails the order to yosotattoo@gmail.com with the frames, sizes, paper, border, quantities, address and a link to the payment in Stripe. Replying to that email writes to the buyer. Stripe emails the buyer's receipt.
