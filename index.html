@@ -265,9 +265,12 @@ body.on-cover.still .chrome.top>*{pointer-events:auto}
 .zooms[hidden]{display:none}
 /* In Detail (the closest zoom) the icons stay: − steps back to the photograph, + is at its limit */
 body.looking .zooms{z-index:12;opacity:1!important}
-/* Detail (the closest zoom): the same top bar as everywhere else, in place of the frame number and Close */
-body.looking.detail #look .lbar{display:none}
-body.looking.detail .chrome.top{z-index:13}
+/* Detail and print preview: the same top bar as everywhere else, in place of the frame number and Close */
+body.looking #look .lbar{display:none}
+body.looking .chrome.top{z-index:13}
+/* In print preview the paper sits below the top bar (Detail can be dragged under it) */
+body.looking:not(.detail) #look .lstage{margin-top:calc(env(safe-area-inset-top,0px) + 46px)}
+@media (max-width:560px){body.looking:not(.detail) #look .lstage{margin-top:calc(env(safe-area-inset-top,0px) + 72px)}}
 #look .lstage{grid-row:2}
 #look .lfoot{grid-row:3}
 body.looking .zooms .zb{pointer-events:auto!important}
@@ -434,7 +437,7 @@ body.sheet-open #zoomOutBtn svg{opacity:.3}
 <body>
 <main id="reel" aria-label="Yosokuro photographs"></main>
 
-<div class="beta-tag"><span class="version" data-version>Beta 0.104</span></div>
+<div class="beta-tag"><span class="version" data-version>Beta 0.105</span></div>
 <div class="chrome top">
   <span class="brand"><a class="name" href="#" id="toStart">Yosokuro</a></span>
   <nav><button type="button" id="openIdx">Collection</button><button type="button" id="openPrints">Prints<span id="pCount"></span></button><button type="button" id="openInfo">Info</button></nav>
