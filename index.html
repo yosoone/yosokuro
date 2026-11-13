@@ -168,6 +168,9 @@ body.ov-open .chrome.top>*{pointer-events:auto!important}
 body.still .chrome>*{pointer-events:none}
 /* On the opening screen the top bar stays: it never fades */
 body.on-cover.still .chrome.top{opacity:1}
+/* The bottom bar is not shown on the opening screen */
+body.on-cover .chrome.bot{opacity:0!important}
+body.on-cover .chrome.bot>*{pointer-events:none!important}
 body.on-cover.still .chrome.top>*{pointer-events:auto}
 .plist{list-style:none;margin:0 0 36px;padding:0;max-width:760px}
 .plist .opts{display:grid;gap:8px}
@@ -428,7 +431,7 @@ body.sheet-open #zoomOutBtn svg{opacity:.3}
 <body>
 <main id="reel" aria-label="Yosokuro photographs"></main>
 
-<div class="beta-tag"><span class="version" data-version>Beta 0.101</span></div>
+<div class="beta-tag"><span class="version" data-version>Beta 0.102</span></div>
 <div class="chrome top">
   <span class="brand"><a class="name" href="#" id="toStart">Yosokuro</a></span>
   <nav><button type="button" id="openIdx">Collection</button><button type="button" id="openPrints">Prints<span id="pCount"></span></button><button type="button" id="openInfo">Info</button></nav>
@@ -806,7 +809,7 @@ function openLook(id,m){
 function closeLook(){look.hidden=true;document.body.classList.remove("looking");document.getElementById("viewBtn").removeAttribute("aria-disabled");wake()}
 function setMode(m){mode=m;
   look.querySelectorAll("[data-mode]").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.mode===m)));
-  const det=m==="detail";zoom.hidden=!det;wall.hidden=det;lookAdd.hidden=det;document.getElementById("bord").hidden=det;
+  const det=m==="detail";zoom.hidden=!det;wall.hidden=det;lookAdd.hidden=false;syncLookAdd();document.getElementById("bord").hidden=det;
   if(det)layoutZoom();else layoutPaper();
 }
 function layoutZoom(){
@@ -828,15 +831,15 @@ function layoutPaper(){
   sheetp.style.width=W*k+"px";sheetp.style.height=H*k+"px";sheetp.style.padding=none?"0":b*k+"px";sheetp.classList.toggle("full",none);
   lookInfo.textContent="";
   document.querySelectorAll("#bord button").forEach(x=>x.setAttribute("aria-pressed",String(x.dataset.b===border)));
-  const inList=plist.find(x=>x.id===lookId);
-  lookAdd.textContent=inList?`✓ In print list`:`＋ Add to print list`;
+  syncLookAdd();
 }
+function syncLookAdd(){lookAdd.textContent=plist.find(x=>x.id===lookId)?`✓ In print list`:`＋ Add to print list`}
 look.querySelectorAll("[data-mode]").forEach(b=>b.onclick=()=>setMode(b.dataset.mode));
 document.getElementById("lookClose").onclick=closeLook;
 /* In the list: tap to take it out. Not in the list: tap to add it with the border shown. */
 lookAdd.onclick=()=>{const x=plist.find(y=>y.id===lookId);
   if(x)plist=plist.filter(y=>y.id!==lookId);else plist.push({id:lookId,size:"A3",paper:"standard",qty:1,border});
-  save();syncAdd();layoutPaper()};
+  save();syncAdd();if(mode==="detail")syncLookAdd();else layoutPaper()};
 /* The border switch also sets the border of this print in the list, if it is there */
 document.querySelectorAll("#bord button").forEach(x=>x.onclick=()=>{border=x.dataset.b;
   const it=plist.find(y=>y.id===lookId);if(it){it.border=border;save()}layoutPaper()});
@@ -856,7 +859,7 @@ function lookStep(d){
   document.getElementById("lookNo").textContent=label(id);
   zoomImg.src=sheetImg.src=`img/full/${id}.jpg`;zoomImg.alt=sheetImg.alt=`Frame ${label(id)}`;
   const f=document.getElementById("f-"+id);if(f){curSec=f;reel.scrollTop=f.offsetTop}
-  mode==="detail"?layoutZoom():layoutPaper();
+  mode==="detail"?(layoutZoom(),syncLookAdd()):layoutPaper();
 }
 let lsx=null,lsy=null;
 look.addEventListener("touchstart",e=>{if(mode!=="print"){lsx=null;return}lsx=e.touches[0].clientX;lsy=e.touches[0].clientY},{passive:true});
