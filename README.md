@@ -91,5 +91,5 @@ The sign-up form asks for an email address first; pressing **Continue** shows a 
 
 ## Exceptions to the family rules (for now)
 
-- The gold family mark sits in the black bar at the top and is **not** a link (the shared rule says it links to the hub). The footer's 'Yoso' still links to the hub.
+- No gold family mark at the top (the shared rule asks for one). The footer's 'Yoso' still links to the hub.
 - The beta number shows only on the opening screen, not in the Info footer.

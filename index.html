@@ -308,10 +308,7 @@ body.still #zooms .zb{pointer-events:none}
 #look .lfoot .ladd{grid-column:3;grid-row:1;justify-self:end}
 @media (max-width:600px){#look .lfoot{grid-template-columns:1fr}#look .lfoot .bord,#look .lfoot .ladd,#look .lfoot .info{grid-column:1;grid-row:auto;justify-self:center}}
 
-/* Family mark: inside the black bar at the top, centred; on phones it sits between the name and the menu */
-.chrome.top .family-mark{position:absolute;left:50%;top:calc(env(safe-area-inset-top,0px) + 9px);transform:translateX(-50%);display:block;width:28px;line-height:0}
-.chrome.top .family-mark img{display:block;width:28px;height:28px}
-/* Phones: the top bar on two lines (the name and mark, then the menu across the width) */
+/* Phones: the top bar on two lines (the name, then the menu across the width) */
 @media (max-width:560px){.chrome.top{flex-wrap:wrap;row-gap:8px}.chrome.top nav{flex-basis:100%;justify-content:space-between;gap:0}
   .ov{padding-top:calc(env(safe-area-inset-top,0px) + 104px)}}
 .info .epi{margin:0 0 32px;padding-left:14px;border-left:2px solid var(--gold)}
@@ -422,10 +419,9 @@ body.still #zooms .zb{pointer-events:none}
 <body>
 <main id="reel" aria-label="Yosokuro photographs"></main>
 
-<div class="beta-tag"><span class="version" data-version>Beta 0.97</span></div>
+<div class="beta-tag"><span class="version" data-version>Beta 0.98</span></div>
 <div class="chrome top">
   <span class="brand"><a class="name" href="#" id="toStart">Yosokuro</a></span>
-  <span class="family-mark"><img src="images/yoso-mark.png" alt="Yoso" width="28" height="28"></span>
   <nav><button type="button" id="openIdx">Collection</button><button type="button" id="openPrints">Prints<span id="pCount"></span></button><button type="button" id="openInfo">Info</button></nav>
 </div>
 <div class="zooms" id="zooms" hidden><button type="button" class="zb" id="prevBtn" aria-label="Previous photograph" title="Previous photograph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 15l6-6 6 6"/></svg></button><button type="button" class="zb" id="viewBtn" aria-label="Zoom in to detail" title="Zoom in: detail and print preview"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21"/><path d="M7.5 10.5h6M10.5 7.5v6"/></svg></button><button type="button" class="zb" id="zoomOutBtn" aria-label="Zoom out to all photographs" title="Zoom out: all photographs"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21"/><path d="M7.5 10.5h6"/></svg></button><button type="button" class="zb" id="nextBtn" aria-label="Next photograph" title="Next photograph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button></div>
