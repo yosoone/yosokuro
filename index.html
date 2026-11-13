@@ -181,7 +181,7 @@ body.on-cover .chrome.bot>*{pointer-events:none!important}
 body.on-cover.still .chrome.top>*{pointer-events:auto}
 .plist{list-style:none;margin:0 0 36px;padding:0;max-width:760px}
 .plist .opts{display:grid;gap:8px}
-.plist li{display:grid;grid-template-columns:240px minmax(0,1fr) auto auto;gap:20px;align-items:center;padding-block:16px;border-top:1px solid var(--line)}
+.plist li{display:grid;grid-template-columns:240px minmax(0,1fr) 116px auto;gap:16px;align-items:center;padding-block:16px;border-top:1px solid var(--line)}
 /* Each frame shown whole, in its own shape, up to 240 × 200 */
 .plist .ph{display:flex;align-items:center;justify-content:center;width:240px;height:200px}
 .plist img{display:block;max-width:100%;max-height:100%;width:auto;height:auto;background:#2a2a29}
@@ -212,7 +212,9 @@ body.on-cover.still .chrome.top>*{pointer-events:auto}
 .plist .who .opts select{width:100%;letter-spacing:.02em;padding-inline:8px 4px;text-overflow:clip}
 .papers-note{max-width:760px;margin:-20px 0 28px;font:400 12px/1.7 var(--f-mono);letter-spacing:.06em;color:var(--ash)}
 .papers-note[hidden]{display:none}
-.plist .price{font:500 15px/1.3 var(--f-kanji);color:var(--bone);white-space:nowrap;justify-self:end}
+.plist .price{font:500 15px/1.3 var(--f-kanji);color:var(--bone);white-space:nowrap;justify-self:start}
+/* A fixed price column and an always-kept third line, so changing size, paper or quantity moves nothing */
+.plist .price small.each.none{visibility:hidden}
 .plist .price small{display:block;font:400 12px/1.4 var(--f-mono);letter-spacing:.1em;color:var(--ash)}
 .order{max-width:760px;margin:0 0 28px;padding-top:20px;border-top:1px solid var(--line);display:grid;gap:14px}
 .order[hidden]{display:none}
@@ -449,7 +451,7 @@ body.sheet-open #zoomOutBtn svg{opacity:.3}
 <body>
 <main id="reel" aria-label="Yosokuro photographs"></main>
 
-<div class="beta-tag"><span class="version" data-version>Beta 0.114</span></div>
+<div class="beta-tag"><span class="version" data-version>Beta 0.115</span></div>
 <div class="chrome top">
   <span class="brand"><a class="name" href="#" id="toStart">Yosokuro</a></span>
   <nav><button type="button" id="openIdx">Collection</button><button type="button" id="openPrints"><svg class="cart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 3.5h3l2.4 11.2a1.5 1.5 0 0 0 1.5 1.2h8.4a1.5 1.5 0 0 0 1.5-1.1L21 8H6.6"/><circle cx="10" cy="20" r="1.3"/><circle cx="17.5" cy="20" r="1.3"/></svg><span class="pl">Prints<span id="pCount"></span></span></button><button type="button" id="openInfo">Info</button></nav>
@@ -741,7 +743,7 @@ function renderList(){
       `<span class="price"></span>`+
       `<button type="button" class="rm" aria-label="Remove ${label(x.id)}">✕</button>`;
     const pr=li.querySelector(".price");
-    const showPrice=()=>{const u=unit(x);pr.innerHTML=u?`${yen(u*x.qty)}<small>${usd(u*x.qty)}</small>${x.qty>1?`<small>${yen(u)} each</small>`:""}`:""};
+    const showPrice=()=>{const u=unit(x);pr.innerHTML=u?`${yen(u*x.qty)}<small>${usd(u*x.qty)}</small><small class="each${x.qty>1?"":" none"}">${yen(u)} each</small>`:""};
     li.querySelector(".sz").onchange=e=>{x.size=e.target.value;save();showPrice();totals()};
     li.querySelector(".pp").onchange=e=>{x.paper=e.target.value;save();showPrice();totals()};
     li.querySelector(".bd").onchange=e=>{x.border=e.target.value;save();paperThumb(li,x)};
