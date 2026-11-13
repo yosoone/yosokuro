@@ -461,7 +461,7 @@ body.sheet-open #zoomOutBtn svg{opacity:.3}
 <body>
 <main id="reel" aria-label="Yosokuro photographs"></main>
 
-<div class="beta-tag"><span class="version" data-version>Beta 0.134</span></div>
+<div class="beta-tag"><span class="version" data-version>Beta 0.135</span></div>
 <div class="chrome top">
   <span class="brand"><a class="name" href="#" id="toStart">Yosokuro</a></span>
   <nav><button type="button" id="openIdx">Collection</button><button type="button" id="openPrints"><svg class="cart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 3.5h3l2.4 11.2a1.5 1.5 0 0 0 1.5 1.2h8.4a1.5 1.5 0 0 0 1.5-1.1L21 8H6.6"/><circle cx="10" cy="20" r="1.3"/><circle cx="17.5" cy="20" r="1.3"/></svg><span class="pl">Prints<span id="pCount"></span></span></button><button type="button" id="openInfo">Info</button></nav>
@@ -729,6 +729,11 @@ let SHOP={papers:{standard:{name:"Standard",desc:"Poster"},premium:{name:"Premiu
   prices:{standard:{A3:7150,A2:10780},premium:{A3:20900,A2:29700}},
   shipping:{jp:{name:"Japan",amount:1500,days:[5,9]},intl:{name:"Outside Japan",amount:4500,days:[10,21]}},
   usdRate:157.557,maxQty:5};
+/* TEMPORARY: at kuro.yoso.one/?test=1 a hidden 'Test' paper (¥100, no shipping) for one real test order.
+   The Worker accepts it on its own; remove both after the test. */
+const TEST_MODE=new URLSearchParams(location.search).get("test")==="1";
+function addTest(S){if(TEST_MODE&&S.papers&&!S.papers.test){S.papers.test={name:"Test (¥100)",desc:"Test order, not a print"};if(S.prices)S.prices.test={A3:100,A2:100}}return S}
+addTest(SHOP);
 const SIZES=()=>Object.keys(SHOP.sizes),PAPERS=()=>Object.keys(SHOP.papers),BORDERS=["White border","No border"];
 const KEY="yosokuro-prints";
 const tidy=x=>({id:x.id,size:SIZES().includes(x.size)?x.size:"A3",paper:PAPERS().includes(x.paper)?x.paper:"standard",
@@ -747,7 +752,7 @@ const pList=document.getElementById("pList"),order=document.getElementById("orde
 const yen=n=>"¥"+Number(n).toLocaleString("en-US");
 const usd=n=>SHOP.usdRate?"≈ US$"+(n/SHOP.usdRate).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2}):"";
 const unit=x=>SHOP.prices&&SHOP.prices[x.paper]&&SHOP.prices[x.paper][x.size];
-fetch(SHOP_URL+"/prices").then(r=>r.json()).then(j=>{if(j&&j.shop){SHOP=j.shop;plist=plist.map(tidy);if(!prints.hidden)renderList()}}).catch(()=>{});
+fetch(SHOP_URL+"/prices").then(r=>r.json()).then(j=>{if(j&&j.shop){SHOP=addTest(j.shop);plist=plist.map(tidy);if(!prints.hidden)renderList()}}).catch(()=>{});
 /* Size the paper to fit its box, then add the A3-proportion border (or none) */
 function paperThumb(li,x){
   const ph=li.querySelector(".ph"),mp=li.querySelector(".mp"),r=R[x.id]||1.5,land=r>=1;
@@ -790,7 +795,8 @@ const oShip=document.getElementById("oShip"),oPay=document.getElementById("oPay"
 try{const c=localStorage.getItem("yosokuro-ship");if(c==="intl"||c==="jp")oShip.value=c}catch{}
 oShip.onchange=()=>{try{localStorage.setItem("yosokuro-ship",oShip.value)}catch{};totals()};
 function totals(){
-  const sub=plist.reduce((n,x)=>n+(unit(x)||0)*x.qty,0),sh=SHOP.shipping&&SHOP.shipping[oShip.value];
+  const sub=plist.reduce((n,x)=>n+(unit(x)||0)*x.qty,0);let sh=SHOP.shipping&&SHOP.shipping[oShip.value];
+  if(sh&&plist.some(x=>x.paper==="test"))sh={...sh,amount:0};
   const both=n=>`${yen(n)}<small>${usd(n)}</small>`;
   document.getElementById("oSub").innerHTML=SHOP.prices?both(sub):"–";
   document.getElementById("oShipAmt").innerHTML=sh?both(sh.amount):"–";
