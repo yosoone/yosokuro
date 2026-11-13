@@ -210,8 +210,15 @@ body.on-cover.still .chrome.top>*{pointer-events:auto}
 /* Shop: price per line, quantity, order summary and checkout */
 .plist .who .opts{grid-template-columns:repeat(2,minmax(0,1fr));margin-top:10px;max-width:380px}
 .plist .who .opts select{width:100%;letter-spacing:.02em;padding-inline:8px 4px;text-overflow:clip}
-.papers-note{max-width:760px;margin:-20px 0 28px;font:400 12px/1.7 var(--f-mono);letter-spacing:.06em;color:var(--ash)}
-.papers-note[hidden]{display:none}
+/* The two papers, below the print list: side by side, stacked on phones; shared notes underneath */
+.papers{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px 32px;max-width:760px;margin:8px 0 36px;padding-top:20px;border-top:1px solid var(--line)}
+.papers h3{margin:0 0 6px;font:500 18px/1.3 'Shippori Mincho','Hiragino Mincho ProN','Yu Mincho',serif;color:var(--bone)}
+.papers p{margin:0;font:400 15px/1.7 var(--f-text);color:var(--ash)}
+.papers .pnotes{grid-column:1/-1;display:grid;gap:4px}
+.papers .pnotes p{font-size:14px}
+.papers a{color:var(--bone);text-underline-offset:3px}
+.papers a:hover{color:var(--gold-ink)}
+@media (max-width:600px){.papers{grid-template-columns:1fr}}
 .plist .price{font:500 15px/1.3 var(--f-kanji);color:var(--bone);white-space:nowrap;justify-self:start}
 /* A fixed price column and an always-kept third line, so changing size, paper or quantity moves nothing */
 .plist .price small.each.none{visibility:hidden}
@@ -451,7 +458,7 @@ body.sheet-open #zoomOutBtn svg{opacity:.3}
 <body>
 <main id="reel" aria-label="Yosokuro photographs"></main>
 
-<div class="beta-tag"><span class="version" data-version>Beta 0.117</span></div>
+<div class="beta-tag"><span class="version" data-version>Beta 0.118</span></div>
 <div class="chrome top">
   <span class="brand"><a class="name" href="#" id="toStart">Yosokuro</a></span>
   <nav><button type="button" id="openIdx">Collection</button><button type="button" id="openPrints"><svg class="cart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 3.5h3l2.4 11.2a1.5 1.5 0 0 0 1.5 1.2h8.4a1.5 1.5 0 0 0 1.5-1.1L21 8H6.6"/><circle cx="10" cy="20" r="1.3"/><circle cx="17.5" cy="20" r="1.3"/></svg><span class="pl">Prints<span id="pCount"></span></span></button><button type="button" id="openInfo">Info</button></nav>
@@ -485,7 +492,15 @@ body.sheet-open #zoomOutBtn svg{opacity:.3}
     <p class="thanks" id="pThanks" role="status" hidden>Thank you for your order. A receipt is on its way from Stripe, and Yoso will email you when your prints are on their way.</p>
     <p class="empty" id="pEmpty">Your print list is empty. Tap ＋ Print beside any frame number to add it here.</p>
     <ol class="plist" id="pList"></ol>
-    <p class="papers-note" id="papersNote" hidden></p>
+    <section class="papers" aria-label="The two papers">
+      <div class="paper"><h3>Standard: poster</h3><p>Deep matt blacks on a thin, cloth-like paper. Not archival.</p></div>
+      <div class="paper"><h3>Premium: archival print</h3><p>Pigment inks on Hahnemühle Photo Rag, 100% cotton, matt, 305 gsm. Acid-free and made to last, with rich, smooth greys.</p></div>
+      <div class="pnotes">
+        <p>Keep out of direct sunlight and handle with care.</p>
+        <p>Every print is signed by hand: on the front in the white border, or on the back for prints with no border.</p>
+        <p>Sizes: A3 (297 × 420 mm) and A2 (420 × 594 mm). Other sizes and framing are available on request: please <a href="#contact" data-contact>get in touch</a>.</p>
+      </div>
+    </section>
     <div class="order" id="order" hidden>
       <div class="row"><label for="oShip">Ship to</label><select id="oShip"><option value="jp">Japan</option><option value="intl">Outside Japan</option></select></div>
       <div class="row"><span>Prints</span><span id="oSub">–</span></div>
@@ -756,8 +771,6 @@ function renderList(){
     li.querySelector("[data-go]").onclick=e=>{e.preventDefault();closeAll();document.getElementById("f-"+x.id).scrollIntoView()};
     pList.appendChild(li);paperThumb(li,x);showPrice()});
   document.getElementById("pEmpty").hidden=plist.length>0;order.hidden=plist.length===0;totals();
-  const pn=document.getElementById("papersNote");pn.hidden=plist.length===0;
-  pn.textContent=PAPERS().map(k=>`${SHOP.papers[k].name}: ${SHOP.papers[k].desc.charAt(0).toLowerCase()+SHOP.papers[k].desc.slice(1)}.`).join(" ")+" Sizes in mm.";
 }
 const oShip=document.getElementById("oShip"),oPay=document.getElementById("oPay"),oMsg=document.getElementById("oMsg");
 try{const c=localStorage.getItem("yosokuro-ship");if(c==="intl"||c==="jp")oShip.value=c}catch{}
