@@ -95,3 +95,7 @@ The sign-up form asks for an email address first; pressing **Continue** shows a 
 
 - No gold family mark at the top (the shared rule asks for one). The footer's 'Yoso' still links to the hub.
 - The beta number shows only on the opening screen, not in the Info footer.
+
+## Browser Back and Forward
+
+Opening Collection, Prints, Info, the shop terms, the print preview or Detail adds a step to the browser's history, so Back and Forward (browser buttons, mouse side buttons, swipe gestures) move between them. Close ✕, − and Escape step back. Each view has its own address, which can be shared: `#collection`, `#prints`, `#info`, `#terms`, `#preview-r025450`, `#detail-r025450`, and `#f-r025450` for a photograph. Scrolling through the photographs does not add steps.
