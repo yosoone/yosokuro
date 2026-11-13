@@ -416,7 +416,7 @@ body.still #zooms .zb{pointer-events:none}
 <body>
 <main id="reel" aria-label="Yosokuro photographs"></main>
 
-<div class="beta-tag"><span class="version" data-version>Beta 0.88</span></div>
+<div class="beta-tag"><span class="version" data-version>Beta 0.89</span></div>
 <div class="chrome top">
   <span class="brand"><a class="name" href="#" id="toStart">Yosokuro</a></span>
   <nav><button type="button" id="openIdx">Index</button><button type="button" id="openPrints">Prints<span id="pCount"></span></button><button type="button" id="openInfo">Info</button></nav>
@@ -529,7 +529,7 @@ body.still #zooms .zb{pointer-events:none}
 
     <footer>
       <span>&copy; 2026 <a class="hub-link" href="https://hub.yoso.one">Yoso</a> · Miyazaki, Japan</span>
-      <span><a href="feed.xml">RSS</a> · <span class="version" data-version>Beta 0.88</span></span>
+      <span><a href="feed.xml">RSS</a> · <span class="version" data-version>Beta 0.89</span></span>
     </footer>
   </div>
 </section>
@@ -803,7 +803,7 @@ function layoutZoom(){
     const vw=zoom.clientWidth,vh=zoom.clientHeight,px=Math.max(0,(vw-W)/2),py=Math.max(0,(vh-H)/2);
     zoomPad.style.padding=`${py}px ${px}px`;zoomImg.style.width=W+"px";zoomImg.style.height=H+"px";
     zoom.scrollLeft=(W+2*px-vw)/2;zoom.scrollTop=(H+2*py-vh)/2;
-    lookInfo.textContent=`Detail · the full file, ${W} × ${H} px · drag to look around`;};
+    lookInfo.textContent="Detail · the full file · drag to look around";};
   if(zoomImg.complete&&zoomImg.naturalWidth)go();else zoomImg.onload=go;
 }
 let border="White border";
